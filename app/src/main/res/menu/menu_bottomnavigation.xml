@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/plannerItem"
+        android:icon="@drawable/ic_baseline_calendar_today_24"
+        android:title="Planner"
+        />
+    <item
+        android:id="@+id/trackerItem"
+        android:icon="@drawable/ic_baseline_monochrome_photos_24"
+        android:title="Tracker" />
+    <item
+        android:id="@+id/settingItem"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="Setting" />
+</menu>
