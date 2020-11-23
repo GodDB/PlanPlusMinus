@@ -1,15 +1,16 @@
 package com.example.todoplusminus.controllers
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.room.Room
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
@@ -24,12 +25,16 @@ import com.example.todoplusminus.util.DeviceManager
 import com.example.todoplusminus.util.DpConverter
 import com.example.todoplusminus.util.VibrateHelper
 import com.example.todoplusminus.vm.PlannerViewModel
-import kotlin.math.abs
+import com.example.todoplusminus.vm.ViewModelFactory
 import kotlin.math.max
 import kotlin.math.min
 
 
 class PlannerController : DBControllerBase {
+
+    companion object{
+        const val TAG = "planner_controller"
+    }
 
     private lateinit var binder: ControllerPlannerBinding
     private lateinit var planVM: PlannerViewModel
@@ -41,17 +46,18 @@ class PlannerController : DBControllerBase {
         binder = DataBindingUtil.inflate(inflater, R.layout.controller_planner, container, false)
 
         //todo test
-        planVM = PlannerViewModel(
-            PlannerRepository(
-                LocalDataSourceImpl(
-                    Room.databaseBuilder(
-                        applicationContext!!,
-                        PlannerDatabase::class.java,
-                        "plannerDB.sqlite3"
-                    ).build()
-                )
-            )
-        )
+        val db =  Room.databaseBuilder(
+            applicationContext!!,
+            PlannerDatabase::class.java,
+            "plannerDB.sqlite3"
+        ).build()
+
+        val dataSource = LocalDataSourceImpl(db)
+        val plannerRepo = PlannerRepository(dataSource)
+
+        val factory = ViewModelFactory(plannerRepo) // aac viewModel은 factory를 이용해서 생성함.
+        planVM = ViewModelProviders.of(activity as AppCompatActivity, factory).get(PlannerViewModel::class.java)
+
         binder.vm = planVM
         binder.lifecycleOwner = this
         return binder.root
@@ -68,6 +74,11 @@ class PlannerController : DBControllerBase {
     private fun configureRV() {
         binder.planList.adapter = PlanListAdapter(planVM)
         binder.planList.layoutManager = LinearLayoutManager(activity!!)
+
+     /*   val animator: ItemAnimator? = binder.planList.getItemAnimator()
+        if (animator is SimpleItemAnimator) {
+            (animator as SimpleItemAnimator).supportsChangeAnimations = false
+        }*/
 
         itemTouchHelperCallback =
             ItemTouchHelperCallback(binder.planList.adapter as PlanListAdapter)

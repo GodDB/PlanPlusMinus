@@ -1,8 +1,11 @@
 package com.example.todoplusminus.util
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.view.View
+import android.view.animation.Animation
 
 object CommonAnimationHelper {
 
@@ -20,6 +23,29 @@ object CommonAnimationHelper {
 
         v.tag = animator
         animator.start()
+    }
+
+    fun startFadeAnimation(v : View, isShowing : Boolean){
+        if(isShowing)
+            v.animate()
+                .alpha(1f)
+                .setDuration(500)
+                .setListener(object: AnimatorListenerAdapter(){
+                    override fun onAnimationStart(animation: Animator?) {
+                        v.visibility = View.VISIBLE
+                    }
+                })
+
+        else
+            v.animate()
+                .alpha(0f)
+                .setDuration(500)
+                .setListener(object : AnimatorListenerAdapter(){
+                    override fun onAnimationEnd(animation: Animator?) {
+                        v.visibility = View.GONE
+                    }
+                })
+
     }
 
 

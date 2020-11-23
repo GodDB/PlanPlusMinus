@@ -2,6 +2,7 @@ package com.example.todoplusminus.bindingAdapter
 
 
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import androidx.cardview.widget.CardView
 import androidx.databinding.BindingAdapter
@@ -27,22 +28,19 @@ fun items(rv: RecyclerView, dataList: LiveData<List<PlanData>>) {
 
 @BindingAdapter("bind:editMode")
 fun setEditMode(view: View, isEdit: Boolean) {
-    if (isEdit)
-        view.visibility = View.VISIBLE
-    else
-        view.visibility = View.GONE
+    CommonAnimationHelper.startFadeAnimation(view, isEdit)
 }
 
 @BindingAdapter("bind:backgroundColor")
-fun setBackgroundColor(view : CardView, data: PlanData){
-    if(data.count >= 1) view.setCardBackgroundColor(data.bgColor)
+fun setBackgroundColor(view: CardView, data: PlanData) {
+    if (data.count >= 1) view.setCardBackgroundColor(data.bgColor)
     else view.setCardBackgroundColor(Color.WHITE)
 }
 
 
 @BindingAdapter("bind:animation")
 fun setAnimation(v: View, isEdit: Boolean) {
-    if(isEdit)
+    if (isEdit)
         CommonAnimationHelper.startVibrateAnimation(v)
     else
         CommonAnimationHelper.stop(v)

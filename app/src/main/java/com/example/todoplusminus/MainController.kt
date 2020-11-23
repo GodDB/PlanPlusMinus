@@ -4,6 +4,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bluelinelabs.conductor.Controller
+import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.base.VBControllerBase
 import com.example.todoplusminus.controllers.PlannerController
@@ -16,6 +18,7 @@ class MainController : VBControllerBase {
     private lateinit var binder: ControllerMainBinding
 
     private val mainRouter = router
+    private lateinit var childRouter: Router
 
     constructor() : super()
 
@@ -31,21 +34,50 @@ class MainController : VBControllerBase {
 
     private fun configureUI() {
         configureBottomMenu()
+
+        childRouter = getChildRouter(binder.mainArea)
+        pushControllerByTag(
+            childRouter,
+            RouterTransaction.with(PlannerController()).apply {
+                tag(PlannerController.TAG)
+                retainViewMode = RetainViewMode.RETAIN_DETACH
+            },
+            PlannerController.TAG
+        )
     }
 
 
-    private fun configureBottomMenu(){
+    private fun configureBottomMenu() {
         binder.bottomMenu.setOnNavigationItemSelectedListener {
-
-            val childRouter = getChildRouter(binder.mainArea)
-
-            when(it.itemId){
-                R.id.plannerItem -> childRouter.setRoot(RouterTransaction.with(PlannerController()))
-                R.id.trackerItem -> childRouter.setRoot(RouterTransaction.with(TrackerController()))
-                R.id.settingItem -> childRouter.setRoot(RouterTransaction.with(SettingController()))
+            when (it.itemId) {
+                R.id.plannerItem -> pushControllerByTag(
+                    childRouter,
+                    RouterTransaction.with(PlannerController()).apply {
+                        tag(PlannerController.TAG)
+                        retainViewMode = RetainViewMode.RETAIN_DETACH
+                    },
+                    PlannerController.TAG
+                )
+                R.id.trackerItem -> pushControllerByTag(
+                    childRouter,
+                    RouterTransaction.with(TrackerController()).apply {
+                        tag(TrackerController.TAG)
+                        retainViewMode = RetainViewMode.RETAIN_DETACH
+                    },
+                    TrackerController.TAG
+                )
+                R.id.settingItem -> pushControllerByTag(
+                    childRouter,
+                    RouterTransaction.with(SettingController()).apply {
+                        tag(SettingController.TAG)
+                        retainViewMode = RetainViewMode.RETAIN_DETACH
+                    },
+                    SettingController.TAG
+                )
             }
             true
         }
     }
+
 
 }

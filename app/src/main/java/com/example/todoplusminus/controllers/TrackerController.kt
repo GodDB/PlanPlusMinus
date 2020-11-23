@@ -12,6 +12,10 @@ import com.example.todoplusminus.databinding.ControllerTrackerBinding
 
 class TrackerController : DBControllerBase {
 
+    companion object{
+        const val TAG = "tracker_controller"
+    }
+
     private lateinit var binder : ControllerTrackerBinding
 
     constructor() : super()

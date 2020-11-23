@@ -4,6 +4,7 @@
     <item
         android:id="@+id/plannerItem"
         android:icon="@drawable/ic_baseline_calendar_today_24"
+        
         android:title="Planner"
         />
     <item

@@ -12,6 +12,10 @@ import com.example.todoplusminus.databinding.ControllerSettingBinding
 
 class SettingController : DBControllerBase {
 
+    companion object{
+        const val TAG = "setting_controller"
+    }
+
     private lateinit var binder: ControllerSettingBinding
 
     constructor() : super()

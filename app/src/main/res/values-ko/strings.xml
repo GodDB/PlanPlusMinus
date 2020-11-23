@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">TodoPlusMinus</string>
     <string name="please_write_here">여기에 적어주세요</string>
+    <string name="edit_title">계획 수정하기</string>
 </resources>

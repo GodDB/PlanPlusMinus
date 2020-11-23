@@ -4,6 +4,7 @@
     xmlns:bind="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.example.todoplusminus.vm.PlannerViewModel" />
@@ -16,11 +17,10 @@
         <com.example.todoplusminus.ui.SquaredPaperView
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintRight_toRightOf="@id/guide_right"
-            app:layout_constraintTop_toTopOf="@id/guide_top"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="@id/guide_top" />
 
         <com.example.todoplusminus.ui.MainWatchView
             android:id="@+id/main_watch"
@@ -29,60 +29,77 @@
             android:textColor="@color/black"
             android:textSize="25sp"
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
-            app:layout_constraintTop_toTopOf="@id/guide_top" />
+            app:layout_constraintTop_toTopOf="@id/guide_top"
+            bind:editMode="@{!vm.isEditMode().booleanValue()}" />
 
+        <TextView
+            android:id="@+id/edit_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/edit_title"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="@id/guide_left"
+            app:layout_constraintTop_toTopOf="@id/guide_top"
+            bind:editMode="@{vm.isEditMode().booleanValue()}" />
 
         <ImageView
             android:id="@+id/btn_calendar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_baseline_date_range_24"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/calendar"
             app:layout_constraintRight_toLeftOf="@id/btn_memo"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            bind:editMode="@{!vm.isEditMode().booleanValue()}"
-            />
+            bind:editMode="@{!vm.isEditMode().booleanValue()}" />
 
         <ImageView
             android:id="@+id/btn_memo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_baseline_rate_review_24"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/write"
             app:layout_constraintRight_toLeftOf="@id/btn_edit"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            bind:editMode="@{!vm.isEditMode().booleanValue()}"
-            />
+            bind:editMode="@{!vm.isEditMode().booleanValue()}" />
 
         <ImageView
             android:id="@+id/btn_edit"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_baseline_playlist_add_24"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:onClick="@{() -> vm.switchEditMode()}"
+            android:src="@drawable/playlist"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            bind:editMode="@{!vm.isEditMode().booleanValue()}"
-            android:onClick="@{() -> vm.switchEditMode()}"
-            />
+            bind:editMode="@{!vm.isEditMode().booleanValue()}" />
 
         <ImageView
             android:id="@+id/btn_done"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_baseline_check_24"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:onClick="@{() -> vm.switchEditMode()}"
+            android:src="@drawable/done"
+            android:visibility="gone"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            bind:editMode="@{vm.isEditMode().booleanValue()}"
-            android:onClick="@{() -> vm.switchEditMode()}"
-            />
+            bind:editMode="@{vm.isEditMode().booleanValue()}" />
 
         <com.example.todoplusminus.ui.SubWatchView
             android:id="@+id/sub_watch"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="50dp"
             app:layout_constraintRight_toRightOf="@id/guide_right"
-            app:layout_constraintTop_toBottomOf="@id/btn_edit" />
+            app:layout_constraintTop_toBottomOf="@id/guide_top" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/plan_list"
@@ -92,19 +109,19 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
-            bind:items="@{vm.planList}"
-            />
+            bind:items="@{vm.planList}" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_margin="30dp"
-            app:srcCompat="@android:drawable/ic_dialog_email"
-            bind:editMode="@{vm.isEditMode().booleanValue()}"
-            android:onClick="@{() -> vm.onInsert()}" />
+            android:onClick="@{() -> vm.onInsert()}"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:srcCompat="@drawable/plus"
+            bind:editMode="@{vm.isEditMode().booleanValue()}" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guide_planlist_top"
@@ -118,7 +135,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.05" />
+            app:layout_constraintGuide_percent="0.1" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guide_right"
