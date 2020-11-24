@@ -1,6 +1,7 @@
 package com.example.todoplusminus.controllers
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -20,6 +21,7 @@ import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.repository.LocalDataSourceImpl
 import com.example.todoplusminus.repository.PlannerRepository
+import com.example.todoplusminus.ui.CreatePlanView
 import com.example.todoplusminus.util.CommonDiffUtil
 import com.example.todoplusminus.util.DeviceManager
 import com.example.todoplusminus.util.DpConverter
@@ -32,7 +34,7 @@ import kotlin.math.min
 
 class PlannerController : DBControllerBase {
 
-    companion object{
+    companion object {
         const val TAG = "planner_controller"
     }
 
@@ -46,7 +48,7 @@ class PlannerController : DBControllerBase {
         binder = DataBindingUtil.inflate(inflater, R.layout.controller_planner, container, false)
 
         //todo test
-        val db =  Room.databaseBuilder(
+        val db = Room.databaseBuilder(
             applicationContext!!,
             PlannerDatabase::class.java,
             "plannerDB.sqlite3"
@@ -56,7 +58,8 @@ class PlannerController : DBControllerBase {
         val plannerRepo = PlannerRepository(dataSource)
 
         val factory = ViewModelFactory(plannerRepo) // aac viewModel은 factory를 이용해서 생성함.
-        planVM = ViewModelProviders.of(activity as AppCompatActivity, factory).get(PlannerViewModel::class.java)
+        planVM = ViewModelProviders.of(activity as AppCompatActivity, factory)
+            .get(PlannerViewModel::class.java)
 
         binder.vm = planVM
         binder.lifecycleOwner = this
@@ -67,18 +70,23 @@ class PlannerController : DBControllerBase {
         binder.subWatch.startAnimation()
         binder.mainWatch.startAnimation()
 
+        configureUi()
         configureRV()
         onSubscribe()
+    }
+
+    private fun configureUi(){
+        binder.createPlanView.setDelegate(creatPlanViewDelegate)
     }
 
     private fun configureRV() {
         binder.planList.adapter = PlanListAdapter(planVM)
         binder.planList.layoutManager = LinearLayoutManager(activity!!)
 
-     /*   val animator: ItemAnimator? = binder.planList.getItemAnimator()
-        if (animator is SimpleItemAnimator) {
-            (animator as SimpleItemAnimator).supportsChangeAnimations = false
-        }*/
+        /*   val animator: ItemAnimator? = binder.planList.getItemAnimator()
+           if (animator is SimpleItemAnimator) {
+               (animator as SimpleItemAnimator).supportsChangeAnimations = false
+           }*/
 
         itemTouchHelperCallback =
             ItemTouchHelperCallback(binder.planList.adapter as PlanListAdapter)
@@ -209,6 +217,13 @@ class PlannerController : DBControllerBase {
             v.x = originX
         }
     }
+
+    private val creatPlanViewDelegate = object : CreatePlanView.Delegate{
+        override fun onDone(title: String, bgColor: Int) {
+            planVM.onItemInsert(title, bgColor)
+        }
+
+    }
 }
 
 
@@ -220,23 +235,19 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
     RecyclerView.Adapter<PlanListAdapter.PlanListVH>(),
     ItemTouchHelperCallback.ItemTouchHelperListener {
 
+
     private val curDataList = mutableListOf<PlanData>()
     private lateinit var binder: PlanListItemBinding
 
     fun updateItems(newDatalist: List<PlanData>) {
-        val callback = CommonDiffUtil(
-            curDataList,
-            newDatalist
-        )
-        val result = DiffUtil.calculateDiff(callback)
-
         this.curDataList.clear()
         this.curDataList.addAll(newDatalist)
-        result.dispatchUpdatesTo(this)
+
+        notifyDataSetChanged()
     }
 
     fun invalidateItems() {
-        this.notifyDataSetChanged()
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlanListVH {
@@ -293,6 +304,7 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
         RecyclerView.ViewHolder(binder.root) {
 
         fun bind(planVM: PlannerViewModel) {
+            Log.d("godgod", "bind")
             binder.vm = planVM
             binder.index = adapterPosition
         }

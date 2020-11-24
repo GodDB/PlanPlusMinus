@@ -68,4 +68,7 @@ interface UserPlanDao{
 
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid and info.date == :date")
     suspend fun getPlannerDataByDate(date : String) : List<PlanData>
+
+    @Query("select MAX(`index`) as Int from PlannerItem")
+    fun getLastIndex() : LiveData<Int>
 }

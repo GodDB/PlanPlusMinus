@@ -101,6 +101,20 @@
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toBottomOf="@id/guide_top" />
 
+        <com.example.todoplusminus.ui.CreatePlanView
+            android:id="@+id/create_plan_view"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
+            android:visibility="gone"
+            bind:editMode="@{vm.isEditMode().booleanValue()}"
+            />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/plan_list"
             android:layout_width="0dp"
@@ -109,19 +123,24 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
-            bind:items="@{vm.planList}" />
+            bind:items="@{vm.planList}"
+            bind:editMode="@{vm.isEditMode().booleanValue()}"
+            />
 
+<!--
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
-            android:onClick="@{() -> vm.onInsert()}"
+            android:onClick="@{() -> vm.onItemInsert()}"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:srcCompat="@drawable/plus"
+            bind:animation="@{vm.isEditMode().booleanValue()}"
             bind:editMode="@{vm.isEditMode().booleanValue()}" />
+-->
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guide_planlist_top"

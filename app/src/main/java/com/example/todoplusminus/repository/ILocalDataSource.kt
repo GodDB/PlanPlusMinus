@@ -11,6 +11,8 @@ interface ILocalDataSource {
 
     fun getPlannerData() : LiveData<MutableList<PlanData>>
 
+    fun getLastIndex() : LiveData<Int>
+
     suspend fun deletePlannerDataById(id : String)
 
     suspend fun insertPlannerData(planData: PlanData)
@@ -18,6 +20,8 @@ interface ILocalDataSource {
     suspend fun updatePlannerDataList(dataList : List<PlanData>)
 
     suspend fun updatePlannerData(data : PlanData)
+
+    suspend fun deleteAndUpdateAll(deleteTarget : PlanData, updateTarget : List<PlanData>)
 }
 
 class PlannerMapper() {

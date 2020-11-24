@@ -12,8 +12,12 @@ class PlannerRepository(
     private val localSource: ILocalDataSource
 ) {
 
-
+    /**
+     * initialize function
+     * */
     fun getAllPlannerData(): LiveData<MutableList<PlanData>> = localSource.getPlannerData()
+    fun getLastIndex() : LiveData<Int> = localSource.getLastIndex()
+
 
     suspend fun deletePlannerDataById(id: String) {
         localSource.deletePlannerDataById(id)
@@ -29,5 +33,9 @@ class PlannerRepository(
 
     suspend fun updatePlannerData(data : PlanData){
         localSource.updatePlannerData(data)
+    }
+
+    suspend fun deleteAndUpdateAll(deleteTarget : PlanData, updateTarget : List<PlanData>){
+        localSource.deleteAndUpdateAll(deleteTarget, updateTarget)
     }
 }

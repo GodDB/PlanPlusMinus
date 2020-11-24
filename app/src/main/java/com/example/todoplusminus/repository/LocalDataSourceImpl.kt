@@ -8,13 +8,17 @@ import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.db.PlannerItemInfoEntity
 import com.example.todoplusminus.entities.PlanData
 
-class LocalDataSourceImpl(val db : PlannerDatabase) : ILocalDataSource{
+class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
 
     val mapper = PlannerMapper()
 
-    override fun getPlannerData(): LiveData<MutableList<PlanData>> {
-        return db.userPlanDao().getAllPlannerData()
-    }
+    override fun getPlannerData(): LiveData<MutableList<PlanData>> =
+        db.userPlanDao().getAllPlannerData()
+
+
+    override fun getLastIndex(): LiveData<Int> =
+        db.userPlanDao().getLastIndex()
+
 
     override suspend fun deletePlannerDataById(id: String) {
         db.userPlanDao().deletePlannerDataById(id)
@@ -43,14 +47,26 @@ class LocalDataSourceImpl(val db : PlannerDatabase) : ILocalDataSource{
     override suspend fun updatePlannerData(data: PlanData) {
         val itemAndInfo = mapper.planDataToRoomEntity(data)
 
-        Log.d("godgod", "db 입력 전  ${itemAndInfo.info.planId}")
-
-
         db.withTransaction {
             db.userPlanDao().updatePlanItem(itemAndInfo.item)
             db.userPlanDao().updatePlanInfo(itemAndInfo.info)
         }
     }
 
+    override suspend fun deleteAndUpdateAll(deleteTarget: PlanData, updateTarget: List<PlanData>) {
+        val deleteItemAndInfo = mapper.planDataToRoomEntity(deleteTarget)
+        val updateItemAndInfoList = mapper.planDataListToRoomEntityList(updateTarget)
+
+        db.withTransaction {
+
+            updateItemAndInfoList.forEach {
+                db.userPlanDao().updatePlanItem(it.item)
+                db.userPlanDao().updatePlanInfo(it.info)
+            }
+
+            db.userPlanDao().deletePlanInfo(deleteItemAndInfo.info)
+            db.userPlanDao().deletePlanItem(deleteItemAndInfo.item)
+        }
+    }
 
 }
