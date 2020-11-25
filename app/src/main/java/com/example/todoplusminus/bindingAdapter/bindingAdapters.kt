@@ -21,12 +21,27 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-@BindingAdapter("bind:items")
-fun items(rv: RecyclerView, dataList: LiveData<List<PlanData>>) {
+/**
+ * 리사이클러뷰에 데이터를 바인딩하기 위한 어댑터
+ *
+ * 앱 특성상 editMode일 때는 리사이클러뷰가 동적으로 변화되는 것이 많아 (추가, 삭제, 이동 등)
+ * 전체를 갱신하게끔 처리
+ *
+ * editMode가 아닐때는 리사이클러뷰의 변경이 count올리는 것 밖에 없으므로, diffutil을 사용하여 변경함.
+ * */
+@BindingAdapter("bind:items", "bind:isEdit")
+fun items(rv: RecyclerView, dataList: LiveData<List<PlanData>>, isEdit: Boolean) {
     if (rv.adapter == null) return
 
-    dataList.value?.let {
-        (rv.adapter as? PlanListAdapter)?.updateItems(it)
+    if(isEdit){
+        dataList.value?.let {
+            (rv.adapter as? PlanListAdapter)?.updateAllItems(it)
+        }
+    }
+    else{
+        dataList.value?.let {
+            (rv.adapter as? PlanListAdapter)?.updateDiffItems(it)
+        }
     }
 }
 

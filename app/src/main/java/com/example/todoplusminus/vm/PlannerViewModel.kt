@@ -86,7 +86,7 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
         }
     }
 
-    fun updateByIndex(index: Int) {
+    private fun updateByIndex(index: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             repository.updatePlannerData(planList.value!![index])
         }

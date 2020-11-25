@@ -75,18 +75,15 @@ class PlannerController : DBControllerBase {
         onSubscribe()
     }
 
-    private fun configureUi(){
+    private fun configureUi() {
         binder.createPlanView.setDelegate(creatPlanViewDelegate)
+
+
     }
 
     private fun configureRV() {
         binder.planList.adapter = PlanListAdapter(planVM)
         binder.planList.layoutManager = LinearLayoutManager(activity!!)
-
-        /*   val animator: ItemAnimator? = binder.planList.getItemAnimator()
-           if (animator is SimpleItemAnimator) {
-               (animator as SimpleItemAnimator).supportsChangeAnimations = false
-           }*/
 
         itemTouchHelperCallback =
             ItemTouchHelperCallback(binder.planList.adapter as PlanListAdapter)
@@ -110,8 +107,6 @@ class PlannerController : DBControllerBase {
             planVM.planList.value = items
         })*/
         planVM.isEditMode.observe(this, Observer { editMode ->
-            (binder.planList.adapter as? PlanListAdapter)?.invalidateItems()
-
             itemTouchHelperCallback.enabledLongPress = editMode
             itemSwipeEventHelper.isSwipeEnabled = !editMode
         })
@@ -218,7 +213,7 @@ class PlannerController : DBControllerBase {
         }
     }
 
-    private val creatPlanViewDelegate = object : CreatePlanView.Delegate{
+    private val creatPlanViewDelegate = object : CreatePlanView.Delegate {
         override fun onDone(title: String, bgColor: Int) {
             planVM.onItemInsert(title, bgColor)
         }
@@ -237,18 +232,31 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
 
 
     private val curDataList = mutableListOf<PlanData>()
+
     private lateinit var binder: PlanListItemBinding
 
-    fun updateItems(newDatalist: List<PlanData>) {
+    fun updateDiffItems(newDatalist: List<PlanData>) {
+        val callback = CommonDiffUtil(
+            curDataList,
+            newDatalist
+        )
+        val result = DiffUtil.calculateDiff(callback)
+
+        this.curDataList.clear()
+        this.curDataList.addAll(newDatalist)
+        result.dispatchUpdatesTo(this)
+    }
+
+    fun updateAllItems(newDatalist: List<PlanData>){
         this.curDataList.clear()
         this.curDataList.addAll(newDatalist)
 
         notifyDataSetChanged()
     }
 
-    fun invalidateItems() {
+/*    fun invalidateItems() {
         notifyDataSetChanged()
-    }
+    }*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlanListVH {
         binder = DataBindingUtil.inflate(
@@ -307,6 +315,7 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
             Log.d("godgod", "bind")
             binder.vm = planVM
             binder.index = adapterPosition
+            binder.executePendingBindings()
         }
     }
 }

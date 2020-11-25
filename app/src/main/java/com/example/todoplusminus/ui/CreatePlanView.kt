@@ -69,9 +69,12 @@ class CreatePlanView : LinearLayout  {
                     true
                 }
                 else -> {
-                    this.title = v.text.toString()
-                    mDelegate?.onDone(title, bgColor)
-                    clear()
+                    if(checkIsEmpty()) clear()
+                    else{
+                        this.title = v.text.toString()
+                        mDelegate?.onDone(title, bgColor)
+                        clear()
+                    }
                     true
                 }
             }
@@ -83,7 +86,11 @@ class CreatePlanView : LinearLayout  {
         binder.btnEdit.visibility = View.VISIBLE
         binder.editableTitle.clearComposingText()
         binder.editableTitle.visibility = View.GONE
+        binder.editableTitle.text = null
         keyboard.hideSoftInputFromWindow(binder.editableTitle.windowToken, 0)
     }
+
+    private fun checkIsEmpty() : Boolean = binder.editableTitle.text == null || binder.editableTitle.text.toString() == ""
+
 
 }
