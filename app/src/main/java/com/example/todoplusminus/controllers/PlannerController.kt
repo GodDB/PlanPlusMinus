@@ -1,16 +1,16 @@
 package com.example.todoplusminus.controllers
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.*
 import androidx.room.Room
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
+import com.example.todoplusminus.MyTransitionCH
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerPlannerBinding
@@ -19,8 +19,6 @@ import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.repository.LocalDataSourceImpl
 import com.example.todoplusminus.repository.PlannerRepository
-import com.example.todoplusminus.ui.ColorSelectorView
-import com.example.todoplusminus.ui.CreatePlanView
 import com.example.todoplusminus.util.*
 import com.example.todoplusminus.vm.PlannerViewModel
 import com.example.todoplusminus.vm.ViewModelFactory
@@ -37,17 +35,17 @@ class PlannerController : DBControllerBase {
     private lateinit var binder: ControllerPlannerBinding
     private lateinit var planVM: PlannerViewModel
 
-    //사용자가 editMode일 때 선택한 planList의 index
+/*    //사용자가 editMode일 때 선택한 planList의 index
     //이 index를 기반으로 bgColor와 title을 적용한다. (index가 -1이면 createView , 그외는 planListItem)
     var mSelectedIndex: Int = 0
 
     //사용자가 터치한 Y지점
     //이 지점을 바탕으로 키보드가 올라왔을 때
     // 이 지점과 키보드 높이를 비교하여 키보드 높이에 맞춰 recyclerView를 올릴지, 유지할지를 결정한다.
-    var mTouchedY : Int = 0
+    var mTouchedY : Int = 0*/
 
-    //softKeypad가 생성됬는지 확인하기 위한 디텍터
-    private lateinit var mKeyboardDetector: KeyboardDetector
+    /* //softKeypad가 생성됬는지 확인하기 위한 디텍터
+     private lateinit var mKeyboardDetector: KeyboardDetector*/
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
@@ -79,28 +77,31 @@ class PlannerController : DBControllerBase {
         binder.subWatch.startAnimation()
         binder.mainWatch.startAnimation()
 
-        mKeyboardDetector = KeyboardDetector(binder.rootView)
-
         addEvent()
         configureRV()
         onSubscribe()
     }
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-        mKeyboardDetector.start()
+    fun showPlanEditor() {
+        pushController(RouterTransaction.with(
+            PlanEditController().apply { setDelegate(planEditorDelegate) }
+        ).apply {
+            pushChangeHandler(MyTransitionCH(false))
+            popChangeHandler(MyTransitionCH())
+        })
     }
 
-    override fun onDetach(view: View) {
-        super.onDetach(view)
-        mKeyboardDetector.stop()
+    fun showPlanEditor(index: Int, bgColor: Int, title: String) {
+        pushController(RouterTransaction.with(
+            PlanEditController(index, bgColor, title).apply { setDelegate(planEditorDelegate) }
+        ).apply {
+            pushChangeHandler(MyTransitionCH(false))
+            popChangeHandler(MyTransitionCH())
+        })
     }
+
 
     private fun addEvent() {
-        binder.createPlanView.setDelegate(createPlanViewDelegate)
-        binder.colorSelectorView.setDelegate(colorSelectorListener)
-
-        mKeyboardDetector.setOnKeyboardChangedListener(keyboardChangeListener)
     }
 
     private fun configureRV() {
@@ -132,56 +133,39 @@ class PlannerController : DBControllerBase {
             itemTouchHelperCallback.enabledLongPress = editMode
             itemSwipeEventHelper.isSwipeEnabled = !editMode
 
-            if(editMode) binder.planList.addOnItemTouchListener(itemIndexDetectListener)
-            else binder.planList.removeOnItemTouchListener(itemIndexDetectListener)
+            if (editMode) (binder.planList.adapter as? PlanListAdapter)?.setDelegate(
+                planListDelegate
+            )
+            else (binder.planList.adapter as? PlanListAdapter)?.setDelegate(null)
         })
     }
-    
 
-    /**
-     * 키보드 변경을 감지하기 위한 listener
+    private fun planListScrollMoveTo(index: Int) {
+        binder.planList.scrollToPosition(index)
+    }
+
+    /** adapter에게 위임하기 위한 delegate object
+     *
+     *  현재는 item click시에 전달된다.
      * */
-    private val keyboardChangeListener = object : KeyboardDetector.OnKeyboardChangedListener {
-        override fun onKeyboardChanged(visible: Boolean, height: Int) {
-            if (visible) {
-                binder.colorSelectorView.y = height.toFloat()
-                binder.colorSelectorView.visibility = View.VISIBLE
-
-            } else {
-                binder.colorSelectorView.visibility = View.GONE
-            }
+    private val planListDelegate = object : PlanListAdapter.Delegate {
+        override fun showPlanEditor(index: Int, bgColor: Int, title: String) {
+            this@PlannerController.showPlanEditor(index, bgColor, title)
         }
     }
 
     /**
-     * colorSelectView로 부터 사용자가 선택한 color값을 전달받기 위한 listener
+     * plan editor에게 위임하기 위한 delegate object
      * */
-    private val colorSelectorListener = object : ColorSelectorView.Delegate {
-        override fun onSelect(bgColor: Int) {
-            if (mSelectedIndex == -1) binder.createPlanView.setBgColor(bgColor)
-            else planVM.updateBgColorByIndex(bgColor, mSelectedIndex)
+    private val planEditorDelegate = object : PlanEditController.Delegate {
+        override fun onComplete(index: Int, bgColor: Int, title: String) {
+            if (index == -1) planVM.onCreateItem(title, bgColor)
+            //todo vm에 업데이트 로직 만들자
         }
 
-        override fun onDone() {}
-
-    }
-
-
-    /**
-     * 리사이클러뷰 아이템 클릭 시 인덱스를 탐지하기 위한 리스너
-     * */
-    private val itemIndexDetectListener = object : RecyclerView.OnItemTouchListener {
-        override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
-
-        override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-            val targetView = rv.findChildViewUnder(e.x, e.y)
-            targetView?.let {
-                mSelectedIndex = rv.layoutManager?.getPosition(it) ?: 0
-            }
-            return false
+        override fun onCancel() {
+            popCurrentController()
         }
-
-        override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
 
     }
 
@@ -189,6 +173,7 @@ class PlannerController : DBControllerBase {
      * 리사이클러뷰의 swipe 이벤트를 담당하는 object
      *
      * 다른 곳에서 재활용 할 일이 없으므로, 익명객체로 생성한다.
+     * editMode에선 작동하지 않는다.
      * */
     private val itemSwipeEventHelper = object {
         var isSwipeEnabled = true
@@ -284,17 +269,6 @@ class PlannerController : DBControllerBase {
             v.x = originX
         }
     }
-
-    private val createPlanViewDelegate = object : CreatePlanView.Delegate {
-        override fun onClick() {
-            //createPlanView가 클릭됬음을 알린다.
-            mSelectedIndex = -1
-        }
-
-        override fun onDone(title: String, bgColor: Int) {
-            planVM.onCreateItem(title, bgColor)
-        }
-    }
 }
 
 
@@ -306,7 +280,12 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
     RecyclerView.Adapter<PlanListAdapter.PlanListVH>(),
     ItemTouchHelperCallback.ItemTouchHelperListener {
 
+    interface Delegate {
+        fun showPlanEditor(index: Int, bgColor: Int, title: String)
+    }
+
     private val curDataList = mutableListOf<PlanData>()
+    private var mDelegate: Delegate? = null
 
     private lateinit var binder: PlanListItemBinding
 
@@ -329,9 +308,9 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
         notifyDataSetChanged()
     }
 
-/*    fun invalidateItems() {
-        notifyDataSetChanged()
-    }*/
+    fun setDelegate(delegate: Delegate?) {
+        this.mDelegate = delegate
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlanListVH {
         binder = DataBindingUtil.inflate(
@@ -393,6 +372,14 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
             binder.vm = planVM
             binder.index = adapterPosition
             binder.executePendingBindings()
+
+            binder.root.setOnClickListener {
+                mDelegate?.showPlanEditor(
+                    adapterPosition,
+                    curDataList[adapterPosition].bgColor,
+                    curDataList[adapterPosition].title
+                )
+            }
         }
     }
 }

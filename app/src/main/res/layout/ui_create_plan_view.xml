@@ -8,32 +8,17 @@
         android:id="@+id/root_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardBackgroundColor="@color/right_gray"
         android:alpha="0.7"
+        app:cardBackgroundColor="@color/right_gray"
         app:cardCornerRadius="50dp">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/btn_edit"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:src="@drawable/plus1" />
 
-            <EditText
-                android:id="@+id/editable_title"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:hint="@string/please_write_here"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/btn_edit"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:src="@drawable/plus1" />
-
-        </FrameLayout>
 
     </androidx.cardview.widget.CardView>
 

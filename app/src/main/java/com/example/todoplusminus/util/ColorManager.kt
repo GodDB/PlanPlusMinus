@@ -15,6 +15,8 @@ object ColorManager {
         mContext = context
     }
 
+    fun getRandomColor() = colorList[(colorList.indices).random()]
+
     val colorList
         get() = if (mContext != null) listOf<Int>(
             ContextCompat.getColor(mContext!!, R.color.pastel_color1),

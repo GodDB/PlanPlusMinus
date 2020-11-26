@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TodoPlusMinus">
         <activity android:name=".MainActivity"
+            android:windowSoftInputMode="stateAlwaysVisible"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

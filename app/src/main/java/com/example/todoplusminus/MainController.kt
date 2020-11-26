@@ -1,6 +1,7 @@
 package com.example.todoplusminus
 
 import android.util.Log
+import android.view.KeyboardShortcutGroup
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.example.todoplusminus.controllers.PlannerController
 import com.example.todoplusminus.controllers.SettingController
 import com.example.todoplusminus.controllers.TrackerController
 import com.example.todoplusminus.databinding.ControllerMainBinding
+import com.example.todoplusminus.util.KeyboardDetector
 
 class MainController : VBControllerBase {
 
@@ -31,7 +33,6 @@ class MainController : VBControllerBase {
         configureUI()
     }
 
-
     private fun configureUI() {
         configureBottomMenu()
 
@@ -44,6 +45,7 @@ class MainController : VBControllerBase {
             },
             PlannerController.TAG
         )
+
     }
 
 
@@ -78,6 +80,7 @@ class MainController : VBControllerBase {
             true
         }
     }
+
 
 
 }

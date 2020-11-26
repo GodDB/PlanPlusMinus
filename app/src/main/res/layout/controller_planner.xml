@@ -4,9 +4,11 @@
     xmlns:bind="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.example.todoplusminus.vm.PlannerViewModel" />
+
         <variable
             name="vc"
             type="com.example.todoplusminus.controllers.PlannerController" />
@@ -104,20 +106,32 @@
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toBottomOf="@id/guide_top" />
 
-        <com.example.todoplusminus.ui.CreatePlanView
+        <androidx.cardview.widget.CardView
             android:id="@+id/create_plan_view"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
+            android:alpha="0.7"
             android:visibility="gone"
+            app:cardBackgroundColor="@color/right_gray"
+            app:cardCornerRadius="50dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
             bind:editMode="@{vm.isEditMode().booleanValue()}"
-            android:onClick="@{() -> vc.setMSelectedIndex(-1)}"
-            />
+            android:onClick="@{() -> vc.showPlanEditor()}"
+            android:transitionName="-1"
+            >
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/plus1" />
+        </androidx.cardview.widget.CardView>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/plan_list"
@@ -128,13 +142,12 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
             bind:editMode="@{vm.isEditMode().booleanValue()}"
-            bind:items="@{vm.planList}"
             bind:isEdit="@{vm.isEditMode().booleanValue()}"
-           />
+            bind:items="@{vm.planList}" />
 
 
         <!-- keypad 위에 얹혀질 color selector-->
-        <com.example.todoplusminus.ui.ColorSelectorView
+        <!--<com.example.todoplusminus.ui.ColorSelectorView
             android:id="@+id/color_selector_view"
             android:layout_width="0dp"
             android:layout_height="40dp"
@@ -143,7 +156,8 @@
             app:layout_constraintTop_toTopOf="parent"
             android:visibility="gone"
             android:background="@color/silver"
-            />
+            android:elevation="10dp"
+            />-->
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guide_planlist_top"

@@ -8,6 +8,9 @@ import android.view.ViewTreeObserver
 /**
  * 키보드가 올라왔는지 체크하기 위한 디텍터
  *
+ *  정확히 키보드만 탐지할 수 없다... 하지만 보이는 부분만을 탐지 할 수 있다.
+ *  보이는 부분 = 전체 화면 크기 - 보이지 않는 부분(statusBar + softNavigationBar + keyboard)
+ *
  * targetView를 전달받아 targetView가 키보드의 일정 높이가 생성된다면 감지해서
  * callback을 전달해준다.
  * */
@@ -29,7 +32,6 @@ class KeyboardDetector(private val mTargetView : View?) : ViewTreeObserver.OnGlo
 
     private var mIsVisibleSoftKeyboard = false
     private var mKeyboardHeight = 0
-    private var mStatusBarHeight = 0
 
     // detect pause
     private var mDetectPaused = false
@@ -82,9 +84,10 @@ class KeyboardDetector(private val mTargetView : View?) : ViewTreeObserver.OnGlo
 
         if(!isChangeOrientation && this.mVisibleHeight != visibleHeight){
             this.mVisibleHeight = visibleHeight
-            this.mStatusBarHeight = mVisibleRect.top
+            val statusBarHeight = mVisibleRect.top
+            val navigationHeight = mTargetView.resources.getDimensionPixelSize(mTargetView.resources.getIdentifier("navigation_bar_height", "dimen", "android"))
 
-            val softInputHeight = mTargetView.rootView.height - visibleHeight
+            val softInputHeight = mTargetView.rootView.height - visibleHeight + navigationHeight + statusBarHeight
 
             val softInputVisible = softInputHeight > SOFT_INPUT_MIN_HEIGHT
 
