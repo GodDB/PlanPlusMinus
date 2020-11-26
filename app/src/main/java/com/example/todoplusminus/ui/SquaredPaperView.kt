@@ -40,12 +40,12 @@ class SquaredPaperView : View{
 
                 focusX += interval
 
-                Log.d("godgod","가로 그리는 중")
+              /*  Log.d("godgod","가로 그리는 중")*/
             }
             focusY += interval
             focusX = 0f
 
-            Log.d("godgod","세로 그리는 중")
+        /*    Log.d("godgod","세로 그리는 중")*/
         }
 
     }

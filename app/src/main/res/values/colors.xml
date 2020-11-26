@@ -8,4 +8,68 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="dark_gray">#999999</color>
+    <color name="right_gray">#DAD4D5</color>
+    <color name="silver">#D8D8D8</color>
+
+
+    <!-- color manager -->
+    <color name="pastel_color1">#ABDEE6</color>
+    <color name="pastel_color2">#CBAACB</color>
+    <color name="pastel_color3">#FFFFB5</color>
+    <color name="pastel_color4">#FFCCB6</color>
+    <color name="pastel_color5">#F3B0C3</color>
+    <color name="pastel_color6">#C6DBDA</color>
+    <color name="pastel_color7">#FEE1E8</color>
+    <color name="pastel_color8">#FED7C3</color>
+    <color name="pastel_color9">#F6EAC2</color>
+    <color name="pastel_color10">#ECD5E3</color>
+    <color name="pastel_color11">#FF968A</color>
+    <color name="pastel_color12">#FFAEA5</color>
+    <color name="pastel_color13">#FFC5BF</color>
+    <color name="pastel_color14">#FFD8BE</color>
+    <color name="pastel_color15">#FFC8A2</color>
+    <color name="pastel_color16">#D4F0F0</color>
+    <color name="pastel_color17">#8FCACA</color>
+    <color name="pastel_color18">#CCE2CB</color>
+    <color name="pastel_color19">#B6CFB6</color>
+    <color name="pastel_color20">#97C1A9</color>
+    <color name="pastel_color21">#FCB9AA</color>
+    <color name="pastel_color22">#FFDBCC</color>
+    <color name="pastel_color23">#ECEAE4</color>
+    <color name="pastel_color24">#A2E1DB</color>
+    <color name="pastel_color25">#55CBCD</color>
+    <color name="pastel_color26">#AFDDD5</color>
+    <color name="pastel_color27">#FBFAF8</color>
+    <color name="pastel_color28">#C2D6E1</color>
+    <color name="pastel_color29">#ECE1DB</color>
+    <color name="pastel_color30">#DAD4D5</color>
+    <color name="pastel_color31">#62717E</color>
+    <color name="pastel_color32">#F7F9F8</color>
+    <color name="pastel_color33">#D58B21</color>
+    <color name="pastel_color34">#E7C98B</color>
+    <color name="pastel_color35">#898B55</color>
+    <color name="pastel_color36">#F0D5BB</color>
+    <color name="pastel_color37">#EFF0EA</color>
+    <color name="pastel_color38">#DEE9E7</color>
+    <color name="pastel_color39">#C5D0CC</color>
+    <color name="pastel_color40">#708B74</color>
+    <color name="pastel_color41">#68867B</color>
+    <color name="pastel_color42">#E3F2F7</color>
+    <color name="pastel_color43">#BECDDB</color>
+    <color name="pastel_color44">#F3DBBE</color>
+    <color name="pastel_color45">#DD677B</color>
+    <color name="pastel_color46">#85285D</color>
+    <color name="pastel_color47">#FEA1AA</color>
+    <color name="pastel_color48">#FFB0B4</color>
+    <color name="pastel_color49">#D1AFC7</color>
+    <color name="pastel_color50">#A7A3BF</color>
+    <color name="pastel_color51">#F7F7F5</color>
+    <color name="pastel_color52">#665957</color>
+    <color name="pastel_color53">#FAC3AC</color>
+    <color name="pastel_color54">#CDDEEF</color>
+    <color name="pastel_color55">#7BB3AD</color>
+
+
+
+
 </resources>

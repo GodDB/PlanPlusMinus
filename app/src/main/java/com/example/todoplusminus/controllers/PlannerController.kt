@@ -1,7 +1,6 @@
 package com.example.todoplusminus.controllers
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -11,7 +10,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.*
-import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.room.Room
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
@@ -21,11 +19,9 @@ import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.repository.LocalDataSourceImpl
 import com.example.todoplusminus.repository.PlannerRepository
+import com.example.todoplusminus.ui.ColorSelectorView
 import com.example.todoplusminus.ui.CreatePlanView
-import com.example.todoplusminus.util.CommonDiffUtil
-import com.example.todoplusminus.util.DeviceManager
-import com.example.todoplusminus.util.DpConverter
-import com.example.todoplusminus.util.VibrateHelper
+import com.example.todoplusminus.util.*
 import com.example.todoplusminus.vm.PlannerViewModel
 import com.example.todoplusminus.vm.ViewModelFactory
 import kotlin.math.max
@@ -40,6 +36,18 @@ class PlannerController : DBControllerBase {
 
     private lateinit var binder: ControllerPlannerBinding
     private lateinit var planVM: PlannerViewModel
+
+    //사용자가 editMode일 때 선택한 planList의 index
+    //이 index를 기반으로 bgColor와 title을 적용한다. (index가 -1이면 createView , 그외는 planListItem)
+    var mSelectedIndex: Int = 0
+
+    //사용자가 터치한 Y지점
+    //이 지점을 바탕으로 키보드가 올라왔을 때
+    // 이 지점과 키보드 높이를 비교하여 키보드 높이에 맞춰 recyclerView를 올릴지, 유지할지를 결정한다.
+    var mTouchedY : Int = 0
+
+    //softKeypad가 생성됬는지 확인하기 위한 디텍터
+    private lateinit var mKeyboardDetector: KeyboardDetector
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
@@ -62,6 +70,7 @@ class PlannerController : DBControllerBase {
             .get(PlannerViewModel::class.java)
 
         binder.vm = planVM
+        binder.vc = this@PlannerController
         binder.lifecycleOwner = this
         return binder.root
     }
@@ -70,15 +79,28 @@ class PlannerController : DBControllerBase {
         binder.subWatch.startAnimation()
         binder.mainWatch.startAnimation()
 
-        configureUi()
+        mKeyboardDetector = KeyboardDetector(binder.rootView)
+
+        addEvent()
         configureRV()
         onSubscribe()
     }
 
-    private fun configureUi() {
-        binder.createPlanView.setDelegate(creatPlanViewDelegate)
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        mKeyboardDetector.start()
+    }
 
+    override fun onDetach(view: View) {
+        super.onDetach(view)
+        mKeyboardDetector.stop()
+    }
 
+    private fun addEvent() {
+        binder.createPlanView.setDelegate(createPlanViewDelegate)
+        binder.colorSelectorView.setDelegate(colorSelectorListener)
+
+        mKeyboardDetector.setOnKeyboardChangedListener(keyboardChangeListener)
     }
 
     private fun configureRV() {
@@ -109,9 +131,59 @@ class PlannerController : DBControllerBase {
         planVM.isEditMode.observe(this, Observer { editMode ->
             itemTouchHelperCallback.enabledLongPress = editMode
             itemSwipeEventHelper.isSwipeEnabled = !editMode
+
+            if(editMode) binder.planList.addOnItemTouchListener(itemIndexDetectListener)
+            else binder.planList.removeOnItemTouchListener(itemIndexDetectListener)
         })
     }
+    
 
+    /**
+     * 키보드 변경을 감지하기 위한 listener
+     * */
+    private val keyboardChangeListener = object : KeyboardDetector.OnKeyboardChangedListener {
+        override fun onKeyboardChanged(visible: Boolean, height: Int) {
+            if (visible) {
+                binder.colorSelectorView.y = height.toFloat()
+                binder.colorSelectorView.visibility = View.VISIBLE
+
+            } else {
+                binder.colorSelectorView.visibility = View.GONE
+            }
+        }
+    }
+
+    /**
+     * colorSelectView로 부터 사용자가 선택한 color값을 전달받기 위한 listener
+     * */
+    private val colorSelectorListener = object : ColorSelectorView.Delegate {
+        override fun onSelect(bgColor: Int) {
+            if (mSelectedIndex == -1) binder.createPlanView.setBgColor(bgColor)
+            else planVM.updateBgColorByIndex(bgColor, mSelectedIndex)
+        }
+
+        override fun onDone() {}
+
+    }
+
+
+    /**
+     * 리사이클러뷰 아이템 클릭 시 인덱스를 탐지하기 위한 리스너
+     * */
+    private val itemIndexDetectListener = object : RecyclerView.OnItemTouchListener {
+        override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+
+        override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+            val targetView = rv.findChildViewUnder(e.x, e.y)
+            targetView?.let {
+                mSelectedIndex = rv.layoutManager?.getPosition(it) ?: 0
+            }
+            return false
+        }
+
+        override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+
+    }
 
     /**
      * 리사이클러뷰의 swipe 이벤트를 담당하는 object
@@ -213,11 +285,15 @@ class PlannerController : DBControllerBase {
         }
     }
 
-    private val creatPlanViewDelegate = object : CreatePlanView.Delegate {
-        override fun onDone(title: String, bgColor: Int) {
-            planVM.onItemInsert(title, bgColor)
+    private val createPlanViewDelegate = object : CreatePlanView.Delegate {
+        override fun onClick() {
+            //createPlanView가 클릭됬음을 알린다.
+            mSelectedIndex = -1
         }
 
+        override fun onDone(title: String, bgColor: Int) {
+            planVM.onCreateItem(title, bgColor)
+        }
     }
 }
 
@@ -229,7 +305,6 @@ class PlannerController : DBControllerBase {
 class PlanListAdapter(private val planVM: PlannerViewModel) :
     RecyclerView.Adapter<PlanListAdapter.PlanListVH>(),
     ItemTouchHelperCallback.ItemTouchHelperListener {
-
 
     private val curDataList = mutableListOf<PlanData>()
 
@@ -247,7 +322,7 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
         result.dispatchUpdatesTo(this)
     }
 
-    fun updateAllItems(newDatalist: List<PlanData>){
+    fun updateAllItems(newDatalist: List<PlanData>) {
         this.curDataList.clear()
         this.curDataList.addAll(newDatalist)
 
@@ -288,6 +363,9 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
         //변경이 완료 되었으므로 인덱스를 재 정렬 한다.
         rearrangeIndex()
 
+        //vibrator
+        VibrateHelper.start()
+
         return true
     }
 
@@ -312,7 +390,6 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
         RecyclerView.ViewHolder(binder.root) {
 
         fun bind(planVM: PlannerViewModel) {
-            Log.d("godgod", "bind")
             binder.vm = planVM
             binder.index = adapterPosition
             binder.executePendingBindings()

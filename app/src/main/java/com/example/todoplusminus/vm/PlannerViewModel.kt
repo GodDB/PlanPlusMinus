@@ -34,7 +34,7 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
             planList.value?.forEach {
                 max = max(it.index, max)
             }
-            return max+1
+            return max + 1
         }
 
     /**
@@ -57,7 +57,7 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
 
       }*/
 
-    fun onItemInsert(title : String, bgColor : Int) {
+    fun onCreateItem(title: String, bgColor: Int) {
         val newData = PlanData.create().apply {
             this.index = lastIndex
             this.title = title
@@ -77,6 +77,11 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
 
     fun updateCountByIndex(count: Int, index: Int) {
         planList.value!![index].updateCount(count)
+        updateByIndex(index)
+    }
+
+    fun updateBgColorByIndex(bgColor : Int, index : Int){
+        planList.value!![index].bgColor = bgColor
         updateByIndex(index)
     }
 

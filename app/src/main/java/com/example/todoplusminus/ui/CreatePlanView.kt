@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -15,12 +16,13 @@ import com.example.todoplusminus.databinding.UiCreatePlanViewBinding
 class CreatePlanView : LinearLayout  {
 
     interface Delegate{
+        fun onClick()
         fun onDone(title : String, bgColor : Int)
     }
 
 
     private var title : String = ""
-    private var bgColor : Int = Color.DKGRAY
+    private var bgColor : Int = Color.LTGRAY
 
     private var mDelegate : Delegate? = null
     private lateinit var binder : UiCreatePlanViewBinding
@@ -44,8 +46,14 @@ class CreatePlanView : LinearLayout  {
         this.mDelegate = delegate
     }
 
-    fun setBgColor(){
+    fun setBgColor(bgColor : Int){
+        this.bgColor = bgColor
+        binder.rootView.setCardBackgroundColor(bgColor)
+    }
 
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        mDelegate?.onClick()
+        return false
     }
 
     private fun customInit(context: Context?){
@@ -84,13 +92,20 @@ class CreatePlanView : LinearLayout  {
     private fun clear(){
         binder.btnEdit
         binder.btnEdit.visibility = View.VISIBLE
-        binder.editableTitle.clearComposingText()
         binder.editableTitle.visibility = View.GONE
         binder.editableTitle.text = null
+        resetBgColor()
+
         keyboard.hideSoftInputFromWindow(binder.editableTitle.windowToken, 0)
     }
 
     private fun checkIsEmpty() : Boolean = binder.editableTitle.text == null || binder.editableTitle.text.toString() == ""
+
+    private fun resetBgColor(){
+        this.bgColor = Color.LTGRAY
+        binder.rootView.setCardBackgroundColor(bgColor)
+    }
+
 
 
 }

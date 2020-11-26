@@ -49,11 +49,9 @@ abstract class ControllerBase : LifecycleController {
                 backstack.removeAt(index)
                 backstack.add(tempTransaction)
                 router.setBackstack(backstack, null)
-                Log.d("godgod", "a")
                 return
             }
         }
-        Log.d("godgod", "push")
         router.pushController(newTransaction)
 
     }

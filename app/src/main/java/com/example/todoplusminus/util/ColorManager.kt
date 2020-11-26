@@ -1,62 +1,77 @@
 package com.example.todoplusminus.util
 
+import android.content.Context
+import android.util.Log
+import androidx.core.content.ContextCompat
+import com.example.todoplusminus.R
+
 /**
  * 앱내에서 제공하는 컬러값들을 지닌 매니저 object
  * */
 object ColorManager {
+    private var mContext: Context? = null
 
-    const val BLUE : Int = 0xFF0000FF.toInt()
-    const val RED : Int = 0xFFFF0000.toInt()
-    const val PURPLE : Int = 0xFF800080.toInt()
-    const val YELLOW : Int = 0xFFFFFF00.toInt()
-    const val PINK : Int = 0xFFFFC0CB.toInt()
-    const val GREEN : Int = 0xFF008000.toInt()
-    const val ORANGE : Int = 0xFFFFA500.toInt()
-    const val LIME : Int = 0xFF00FF00.toInt()
-    const val AQUA : Int = 0xFF00FFFF.toInt()
-    const val NAVY : Int = 0xFF000080.toInt()
-    const val CORAL : Int = 0xFFFF7F50.toInt()
-    const val TEAL : Int = 0xFF008080.toInt()
-    const val MUSTARD : Int = 0xFFDAA520.toInt()
-    const val BLUE_VIOLET : Int = 0xFF8A2BE2.toInt()
-    const val BLACK : Int = 0xFF000000.toInt()
-    const val WHITE : Int = 0xFFFFFFFF.toInt()
-    const val GREY : Int = 0xFF808080.toInt()
-    const val BROWN : Int = 0xFFA52A2A.toInt()
-    const val DARK_GREEN : Int = 0xFF006400.toInt()
-    const val BEIGE : Int = 0xFFF5F5DC.toInt()
-    const val INDIGO : Int = 0xFF4B0082.toInt()
-    const val PALE_GREEN : Int = 0xFF98FB98.toInt()
-    const val AQUA_MARINE : Int = 0xFF7FFFD4.toInt()
-    const val PEACH : Int = 0xFFFFDAB9.toInt()
-    const val MAROON : Int = 0xFF800000.toInt()
+    fun setUp(context: Context) {
+        mContext = context
+    }
 
-    val colorList = listOf<Int>(
-        BLUE,
-        RED,
-        PURPLE,
-        YELLOW,
-        PINK,
-        GREEN,
-        ORANGE,
-        LIME,
-        AQUA,
-        NAVY,
-        CORAL,
-        TEAL,
-        MUSTARD,
-        BLUE_VIOLET,
-        BLACK,
-        WHITE,
-        GREY,
-        BROWN,
-        DARK_GREEN,
-        BEIGE,
-        INDIGO,
-        PALE_GREEN,
-        AQUA_MARINE,
-        PEACH,
-        MAROON
-    )
+    val colorList
+        get() = if (mContext != null) listOf<Int>(
+            ContextCompat.getColor(mContext!!, R.color.pastel_color1),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color2),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color3),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color4),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color5),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color6),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color7),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color8),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color9),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color10),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color11),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color12),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color13),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color14),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color15),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color16),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color17),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color18),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color19),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color20),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color21),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color22),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color23),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color24),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color25),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color26),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color27),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color28),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color29),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color30),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color31),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color32),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color33),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color34),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color35),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color36),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color37),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color38),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color39),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color40),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color41),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color42),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color43),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color44),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color45),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color46),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color47),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color48),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color49),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color50),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color51),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color52),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color53),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color54),
+            ContextCompat.getColor(mContext!!, R.color.pastel_color55)
+        ) else listOf()
 
 }

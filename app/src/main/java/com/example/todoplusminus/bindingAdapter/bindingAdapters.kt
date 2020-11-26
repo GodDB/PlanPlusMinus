@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
  *
  * editMode가 아닐때는 리사이클러뷰의 변경이 count올리는 것 밖에 없으므로, diffutil을 사용하여 변경함.
  * */
-@BindingAdapter("bind:items", "bind:isEdit")
+@BindingAdapter(value = ["bind:items", "bind:isEdit"], requireAll = true)
 fun items(rv: RecyclerView, dataList: LiveData<List<PlanData>>, isEdit: Boolean) {
     if (rv.adapter == null) return
 
@@ -70,10 +70,14 @@ fun setEditMode(rv: RecyclerView, isEdit: Boolean) {
 
 }
 
-@BindingAdapter("bind:backgroundColor")
-fun setBackgroundColor(view: CardView, data: PlanData) {
-    if (data.count >= 1) view.setCardBackgroundColor(data.bgColor)
-    else view.setCardBackgroundColor(Color.WHITE)
+@BindingAdapter(value = ["bind:backgroundColor", "bind:isEdit"], requireAll = true)
+fun setBackgroundColor(view: CardView, data: PlanData, isEdit : Boolean) {
+    if(isEdit)
+        view.setCardBackgroundColor(data.bgColor)
+    else {
+        if (data.count >= 1) view.setCardBackgroundColor(data.bgColor)
+        else view.setCardBackgroundColor(Color.WHITE)
+    }
 }
 
 

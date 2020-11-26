@@ -7,20 +7,15 @@
         <variable
             name="vm"
             type="com.example.todoplusminus.vm.PlannerViewModel" />
+        <variable
+            name="vc"
+            type="com.example.todoplusminus.controllers.PlannerController" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <com.example.todoplusminus.ui.ColorSelectorView
-            android:id="@+id/color_selector_view"
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
 
         <com.example.todoplusminus.ui.SquaredPaperView
             android:layout_width="0dp"
@@ -120,7 +115,9 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
-            bind:editMode="@{vm.isEditMode().booleanValue()}" />
+            bind:editMode="@{vm.isEditMode().booleanValue()}"
+            android:onClick="@{() -> vc.setMSelectedIndex(-1)}"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/plan_list"
@@ -135,6 +132,18 @@
             bind:isEdit="@{vm.isEditMode().booleanValue()}"
            />
 
+
+        <!-- keypad 위에 얹혀질 color selector-->
+        <com.example.todoplusminus.ui.ColorSelectorView
+            android:id="@+id/color_selector_view"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            android:background="@color/silver"
+            />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guide_planlist_top"
