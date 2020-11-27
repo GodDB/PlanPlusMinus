@@ -22,6 +22,8 @@ interface ILocalDataSource {
     suspend fun updatePlannerData(data : PlanData)
 
     suspend fun deleteAndUpdateAll(deleteTarget : PlanData, updateTarget : List<PlanData>)
+
+    suspend fun getPlannerDataById(id : String) : PlanData
 }
 
 class PlannerMapper() {

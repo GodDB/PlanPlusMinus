@@ -1,80 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Button
+    <data>
+        <variable
+            name="vm"
+            type="com.example.todoplusminus.vm.PlanEditVM" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:elevation="0dp"
-        />
+        android:layout_height="match_parent">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:alpha="0.85"
-        />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/root_view"
-        android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        app:cardBackgroundColor="@color/right_gray"
-        app:cardCornerRadius="50dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guide_editView_top">
-
-        <com.example.todoplusminus.ui.NoHideKeypadEditText
-            android:id="@+id/item_title"
+        <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
-            android:gravity="center"
-            android:hint="@string/please_write_here"
-            android:textColor="@color/black">
-            <requestFocus/>
-        </com.example.todoplusminus.ui.NoHideKeypadEditText>
+            android:elevation="0dp" />
 
-
-
-    </androidx.cardview.widget.CardView>
-
-    <LinearLayout
-        android:id="@+id/keyboard_overlay_view"
-        android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:elevation="10dp"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.example.todoplusminus.ui.TitleSelectorView
-            android:id="@+id/title_selector_view"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/white_smoke" />
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:alpha="0.85" />
 
-        <com.example.todoplusminus.ui.ColorSelectorView
-            android:id="@+id/color_selector_view"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/white" />
-    </LinearLayout>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/root_view"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            app:cardBackgroundColor="@{vm.MBgColor}"
+            app:cardCornerRadius="50dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guide_editView_top"
+            >
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guide_editView_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.2" />
+            <com.example.todoplusminus.ui.NoHideKeypadEditText
+                android:id="@+id/item_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:text="@{vm.MTitle}"
+                android:hint="@string/please_write_here"
+                android:textColor="@color/black">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <requestFocus />
+            </com.example.todoplusminus.ui.NoHideKeypadEditText>
+
+
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/keyboard_overlay_view"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:elevation="10dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.example.todoplusminus.ui.TitleSelectorView
+                android:id="@+id/title_selector_view"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/white_smoke" />
+
+            <com.example.todoplusminus.ui.ColorSelectorView
+                android:id="@+id/color_selector_view"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/white" />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_editView_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

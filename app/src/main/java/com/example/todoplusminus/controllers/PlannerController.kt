@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.*
 import androidx.room.Room
 import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.example.todoplusminus.MyTransitionCH
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
@@ -20,6 +19,7 @@ import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.repository.LocalDataSourceImpl
 import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.util.*
+import com.example.todoplusminus.vm.PlanEditVM
 import com.example.todoplusminus.vm.PlannerViewModel
 import com.example.todoplusminus.vm.ViewModelFactory
 import kotlin.math.max
@@ -68,7 +68,6 @@ class PlannerController : DBControllerBase {
             .get(PlannerViewModel::class.java)
 
         binder.vm = planVM
-        binder.vc = this@PlannerController
         binder.lifecycleOwner = this
         return binder.root
     }
@@ -82,18 +81,39 @@ class PlannerController : DBControllerBase {
         onSubscribe()
     }
 
-    fun showPlanEditor() {
+    private fun showPlanEditor() {
+        //todo test
+        val db = Room.databaseBuilder(
+            applicationContext!!,
+            PlannerDatabase::class.java,
+            "plannerDB.sqlite3"
+        ).build()
+        val dataSource = LocalDataSourceImpl(db)
+        val plannerRepo = PlannerRepository(dataSource)
+
         pushController(RouterTransaction.with(
-            PlanEditController().apply { setDelegate(planEditorDelegate) }
+            PlanEditController(PlanEditVM(plannerRepo))
         ).apply {
             pushChangeHandler(MyTransitionCH(false))
             popChangeHandler(MyTransitionCH())
         })
     }
 
-    fun showPlanEditor(index: Int, bgColor: Int, title: String) {
+    private fun showPlanEditor(id: String) {
+        //todo test
+        val db = Room.databaseBuilder(
+            applicationContext!!,
+            PlannerDatabase::class.java,
+            "plannerDB.sqlite3"
+        ).build()
+        val dataSource = LocalDataSourceImpl(db)
+        val plannerRepo = PlannerRepository(dataSource)
+
+
         pushController(RouterTransaction.with(
-            PlanEditController(index, bgColor, title).apply { setDelegate(planEditorDelegate) }
+            PlanEditController(PlanEditVM(plannerRepo).apply {
+                setData(id)
+            })
         ).apply {
             pushChangeHandler(MyTransitionCH(false))
             popChangeHandler(MyTransitionCH())
@@ -133,11 +153,18 @@ class PlannerController : DBControllerBase {
             itemTouchHelperCallback.enabledLongPress = editMode
             itemSwipeEventHelper.isSwipeEnabled = !editMode
 
-            if (editMode) (binder.planList.adapter as? PlanListAdapter)?.setDelegate(
+   /*         if (editMode) (binder.planList.adapter as? PlanListAdapter)?.setDelegate(
                 planListDelegate
             )
-            else (binder.planList.adapter as? PlanListAdapter)?.setDelegate(null)
+            else (binder.planList.adapter as? PlanListAdapter)?.setDelegate(null)*/
         })
+
+        planVM.editPlanDataID.observe(this, Observer { id ->
+            if(id == "") showPlanEditor()
+            else showPlanEditor(id)
+        })
+
+
     }
 
     private fun planListScrollMoveTo(index: Int) {
@@ -148,26 +175,12 @@ class PlannerController : DBControllerBase {
      *
      *  현재는 item click시에 전달된다.
      * */
-    private val planListDelegate = object : PlanListAdapter.Delegate {
+/*    private val planListDelegate = object : PlanListAdapter.Delegate {
         override fun showPlanEditor(index: Int, bgColor: Int, title: String) {
             this@PlannerController.showPlanEditor(index, bgColor, title)
         }
-    }
+    }*/
 
-    /**
-     * plan editor에게 위임하기 위한 delegate object
-     * */
-    private val planEditorDelegate = object : PlanEditController.Delegate {
-        override fun onComplete(index: Int, bgColor: Int, title: String) {
-            if (index == -1) planVM.onCreateItem(title, bgColor)
-            //todo vm에 업데이트 로직 만들자
-        }
-
-        override fun onCancel() {
-            popCurrentController()
-        }
-
-    }
 
     /**
      * 리사이클러뷰의 swipe 이벤트를 담당하는 object
@@ -280,12 +293,7 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
     RecyclerView.Adapter<PlanListAdapter.PlanListVH>(),
     ItemTouchHelperCallback.ItemTouchHelperListener {
 
-    interface Delegate {
-        fun showPlanEditor(index: Int, bgColor: Int, title: String)
-    }
-
     private val curDataList = mutableListOf<PlanData>()
-    private var mDelegate: Delegate? = null
 
     private lateinit var binder: PlanListItemBinding
 
@@ -308,9 +316,6 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
         notifyDataSetChanged()
     }
 
-    fun setDelegate(delegate: Delegate?) {
-        this.mDelegate = delegate
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlanListVH {
         binder = DataBindingUtil.inflate(
@@ -373,13 +378,6 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
             binder.index = adapterPosition
             binder.executePendingBindings()
 
-            binder.root.setOnClickListener {
-                mDelegate?.showPlanEditor(
-                    adapterPosition,
-                    curDataList[adapterPosition].bgColor,
-                    curDataList[adapterPosition].title
-                )
-            }
         }
     }
 }

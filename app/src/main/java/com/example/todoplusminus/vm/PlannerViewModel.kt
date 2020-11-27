@@ -28,6 +28,9 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
 
     var isEditMode: MutableLiveData<Boolean> = MutableLiveData(false)
 
+    var editPlanDataID: MutableLiveData<String> = MutableLiveData()
+
+
     private val lastIndex: Int
         get() {
             var max = 0
@@ -75,12 +78,16 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
         }
     }
 
+    fun setTargetEditDataId(id : String){
+        this.editPlanDataID.value = id
+    }
+
     fun updateCountByIndex(count: Int, index: Int) {
         planList.value!![index].updateCount(count)
         updateByIndex(index)
     }
 
-    fun updateBgColorByIndex(bgColor : Int, index : Int){
+    fun updateBgColorByIndex(bgColor: Int, index: Int) {
         planList.value!![index].bgColor = bgColor
         updateByIndex(index)
     }

@@ -31,7 +31,8 @@
             app:cardCornerRadius="50dp"
             bind:backgroundColor="@{vm.planList.get(index)}"
             bind:isEdit="@{vm.isEditMode().booleanValue()}"
-            android:transitionName="@{String.valueOf(index)}"
+            android:transitionName="@{vm.planList.get(index).id}"
+            android:onClick="@{() -> vm.setTargetEditDataId(vm.planList.get(index).id)}"
             >
 
             <androidx.constraintlayout.widget.ConstraintLayout

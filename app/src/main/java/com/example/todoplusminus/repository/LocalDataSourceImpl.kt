@@ -20,6 +20,8 @@ class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
         db.userPlanDao().getLastIndex()
 
 
+
+
     override suspend fun deletePlannerDataById(id: String) {
         db.userPlanDao().deletePlannerDataById(id)
     }
@@ -68,5 +70,9 @@ class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
             db.userPlanDao().deletePlanItem(deleteItemAndInfo.item)
         }
     }
+
+    override suspend fun getPlannerDataById(id: String): PlanData =
+        db.userPlanDao().getPlannerDataById(id)
+
 
 }

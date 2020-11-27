@@ -121,8 +121,8 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
             bind:editMode="@{vm.isEditMode().booleanValue()}"
-            android:onClick="@{() -> vc.showPlanEditor()}"
-            android:transitionName="-1"
+            android:onClick="@{() -> vm.setTargetEditDataId(``)}"
+            android:transitionName=""
             >
 
             <ImageView

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.base.VBControllerBase
 import com.example.todoplusminus.databinding.ControllerPlanEditBinding
 import com.example.todoplusminus.ui.ColorSelectorView
@@ -13,33 +14,27 @@ import com.example.todoplusminus.ui.NoHideKeypadEditText
 import com.example.todoplusminus.ui.TitleSelectorView
 import com.example.todoplusminus.util.ColorManager
 import com.example.todoplusminus.util.KeyboardDetector
+import com.example.todoplusminus.vm.PlanEditVM
 
-class PlanEditController : VBControllerBase {
-
-    interface Delegate {
-        fun onComplete(index: Int, bgColor: Int, title: String)
-        fun onCancel()
-    }
+class PlanEditController : DBControllerBase {
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    constructor(index: Int, bgColor: Int, title: String) {
-        this.mIndex = index
-        this.mBgColor = bgColor
-        this.mTitle = title
+    constructor(vm : PlanEditVM){
+        this.mVM = vm
     }
 
 
     private lateinit var binder: ControllerPlanEditBinding
     private lateinit var mKeyboardDetector: KeyboardDetector
-    private var mDelegate: Delegate? = null
-    private var mIndex = -1
-    private var mBgColor = ColorManager.getRandomColor()
-    private var mTitle = ""
+    private var mVM : PlanEditVM? = null
 
 
-    override fun connectViewBinding(inflater: LayoutInflater, container: ViewGroup): View {
+
+    override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
         binder = ControllerPlanEditBinding.inflate(inflater, container, false)
+        binder.lifecycleOwner = this
+        binder.vm = mVM
         return binder.root
     }
 
@@ -58,15 +53,7 @@ class PlanEditController : VBControllerBase {
         mKeyboardDetector.stop()
     }
 
-    fun setDelegate(delegate: Delegate) {
-        mDelegate = delegate
-    }
-
     private fun configureUI() {
-        setTitle(mTitle)
-        setBgColor(mBgColor)
-        binder.rootView.transitionName = mIndex.toString()
-
         showKeypad()
     }
 
@@ -79,16 +66,6 @@ class PlanEditController : VBControllerBase {
         binder.itemTitle.setDelegate(noHideKeypadDelegate)
     }
 
-    private fun setBgColor(bgColor: Int) {
-        mBgColor = bgColor
-        binder.rootView.setCardBackgroundColor(bgColor)
-    }
-
-    private fun setTitle(title: String) {
-        mTitle = title
-        binder.itemTitle.text = null
-        binder.itemTitle.setText(title)
-    }
 
     private fun showKeypad() {
         val inputManager =
@@ -125,7 +102,7 @@ class PlanEditController : VBControllerBase {
      * */
     private val colorSelectorListener = object : ColorSelectorView.Delegate {
         override fun onSelect(bgColor: Int) {
-            setBgColor(bgColor)
+            mVM?.setBgColor(bgColor)
         }
 
         override fun onDone() {}
@@ -136,14 +113,14 @@ class PlanEditController : VBControllerBase {
      * */
     private val titleSelectorListener = object : TitleSelectorView.Delegate {
         override fun onSelect(title: String) {
-            setTitle(title)
+            mVM?.setTitle(title)
         }
     }
 
     private val noHideKeypadDelegate = object : NoHideKeypadEditText.Delegate {
         override fun onBack() {
             hideKeypad()
-            mDelegate?.onCancel()
+            popCurrentController()
         }
     }
 
