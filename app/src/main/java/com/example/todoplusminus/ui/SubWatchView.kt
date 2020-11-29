@@ -38,7 +38,7 @@ class SubWatchView : LinearLayout {
     }
 
 
-    fun startAnimation() {
+    fun start() {
         (vb.clockIv.background as AnimationDrawable).start()
 
         CoroutineScope(Dispatchers.Main + mJob).launch {

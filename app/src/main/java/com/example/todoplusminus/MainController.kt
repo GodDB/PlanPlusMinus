@@ -5,14 +5,22 @@ import android.view.KeyboardShortcutGroup
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.room.Room
+import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
+import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.example.todoplusminus.base.VBControllerBase
+import com.example.todoplusminus.controllers.PlanMemoController
 import com.example.todoplusminus.controllers.PlannerController
 import com.example.todoplusminus.controllers.SettingController
 import com.example.todoplusminus.controllers.TrackerController
 import com.example.todoplusminus.databinding.ControllerMainBinding
+import com.example.todoplusminus.db.PlannerDatabase
+import com.example.todoplusminus.repository.LocalDataSourceImpl
+import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.util.KeyboardDetector
 
 class MainController : VBControllerBase {
@@ -20,7 +28,12 @@ class MainController : VBControllerBase {
     private lateinit var binder: ControllerMainBinding
 
     private val mainRouter = router
+    private lateinit var auxRouter : Router
+
     private lateinit var childRouter: Router
+
+    //todo test ... 추후에 dagger로 교체
+    private var plannerRepository : PlannerRepository? = null
 
     constructor() : super()
 
@@ -31,17 +44,31 @@ class MainController : VBControllerBase {
 
     override fun onViewBound(v: View) {
         configureUI()
+
+        auxRouter = getChildRouter(binder.subArea)
     }
 
     private fun configureUI() {
         configureBottomMenu()
 
+        //todo test
+        val db = Room.databaseBuilder(
+            applicationContext!!,
+            PlannerDatabase::class.java,
+            "plannerDB.sqlite3"
+        ).build()
+
+        val dataSource = LocalDataSourceImpl(db)
+        plannerRepository = PlannerRepository(dataSource)
+
+
         childRouter = getChildRouter(binder.mainArea)
         pushControllerByTag(
             childRouter,
-            RouterTransaction.with(PlannerController()).apply {
+            RouterTransaction.with(PlannerController(plannerRepository!!, plannerDelegate)).apply {
                 tag(PlannerController.TAG)
-                retainViewMode = RetainViewMode.RETAIN_DETACH
+                SimpleSwapChangeHandler()
+                SimpleSwapChangeHandler(false)
             },
             PlannerController.TAG
         )
@@ -54,9 +81,10 @@ class MainController : VBControllerBase {
             when (it.itemId) {
                 R.id.plannerItem -> pushControllerByTag(
                     childRouter,
-                    RouterTransaction.with(PlannerController()).apply {
+                    RouterTransaction.with(PlannerController(plannerRepository!!, plannerDelegate)).apply {
                         tag(PlannerController.TAG)
-                        retainViewMode = RetainViewMode.RETAIN_DETACH
+                        SimpleSwapChangeHandler()
+                        SimpleSwapChangeHandler(false)
                     },
                     PlannerController.TAG
                 )
@@ -64,7 +92,8 @@ class MainController : VBControllerBase {
                     childRouter,
                     RouterTransaction.with(TrackerController()).apply {
                         tag(TrackerController.TAG)
-                        retainViewMode = RetainViewMode.RETAIN_DETACH
+                        SimpleSwapChangeHandler()
+                        SimpleSwapChangeHandler(false)
                     },
                     TrackerController.TAG
                 )
@@ -72,7 +101,8 @@ class MainController : VBControllerBase {
                     childRouter,
                     RouterTransaction.with(SettingController()).apply {
                         tag(SettingController.TAG)
-                        retainViewMode = RetainViewMode.RETAIN_DETACH
+                        SimpleSwapChangeHandler()
+                        SimpleSwapChangeHandler(false)
                     },
                     SettingController.TAG
                 )
@@ -81,6 +111,20 @@ class MainController : VBControllerBase {
         }
     }
 
+
+    private val plannerDelegate = object : PlannerController.Delegate{
+        override fun showMemoEditor() {
+            router.pushController(RouterTransaction.with(PlanMemoController(plannerRepository!!)).apply {
+                pushChangeHandler(VerticalChangeHandler(false))
+                popChangeHandler(VerticalChangeHandler())
+            })
+        }
+
+        override fun showHistoryEditor() {
+
+        }
+
+    }
 
 
 }

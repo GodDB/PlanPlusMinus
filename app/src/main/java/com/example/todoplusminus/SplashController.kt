@@ -11,10 +11,7 @@ import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 
 import com.example.todoplusminus.base.VBControllerBase
 import com.example.todoplusminus.databinding.ControllerSplashBinding
-import com.example.todoplusminus.util.ColorManager
-import com.example.todoplusminus.util.DeviceManager
-import com.example.todoplusminus.util.DpConverter
-import com.example.todoplusminus.util.VibrateHelper
+import com.example.todoplusminus.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -38,6 +35,7 @@ class SplashController : VBControllerBase {
         DeviceManager.setUp(v.context)
         VibrateHelper.setUp(v.context)
         ColorManager.setUp(v.context)
+        TitleManager.setUp(v.context)
 
         //todo 완료했을때 적용하자... 지금 테스트 단계이니깐 0.5초 기다리기 좀 그래
 /*        CoroutineScope(Dispatchers.Main).launch {

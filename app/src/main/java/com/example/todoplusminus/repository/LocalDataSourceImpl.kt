@@ -7,6 +7,7 @@ import androidx.room.withTransaction
 import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.db.PlannerItemInfoEntity
 import com.example.todoplusminus.entities.PlanData
+import com.example.todoplusminus.entities.PlanMemo
 
 class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
 
@@ -16,10 +17,10 @@ class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
         db.userPlanDao().getAllPlannerData()
 
 
-    override fun getLastIndex(): LiveData<Int> =
+    override fun getLastIndex(): Int =
         db.userPlanDao().getLastIndex()
 
-
+    override fun getMemoByDate(date: String): LiveData<PlanMemo> = db.userPlanDao().getMemoByDate(date)
 
 
     override suspend fun deletePlannerDataById(id: String) {
@@ -73,6 +74,18 @@ class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
 
     override suspend fun getPlannerDataById(id: String): PlanData =
         db.userPlanDao().getPlannerDataById(id)
+
+    override suspend fun updateTitleBgById(id: String, title: String, bgColor: Int) {
+        db.userPlanDao().updateTitleBgById(id, title, bgColor)
+    }
+
+    override suspend fun updatePlanMemo(memo: PlanMemo) {
+        db.userPlanDao().updatePlanMemo(memo)
+    }
+
+    override suspend fun insertPlanMemo(memo: PlanMemo) {
+        db.userPlanDao().insertPlanMemo(memo)
+    }
 
 
 }

@@ -10,15 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todoplusminus.databinding.UiTitleSelectorBinding
 import com.example.todoplusminus.databinding.UiTitleSelectorItemBinding
 import com.example.todoplusminus.util.TitleManager
+import com.example.todoplusminus.vm.PlanEditVM
 
 class TitleSelectorView : LinearLayout {
 
     private lateinit var binder: UiTitleSelectorBinding
-    private var mDelegate: Delegate? = null
-
-    interface Delegate {
-        fun onSelect(title: String)
-    }
 
     constructor(context: Context?) : super(context) {
         customInit(context)
@@ -36,10 +32,8 @@ class TitleSelectorView : LinearLayout {
         customInit(context)
     }
 
-    fun setDelegate(delegate: Delegate) {
-        mDelegate = delegate
-
-        (binder.titleList.adapter as? TitleSelectorAdapter)?.setDelegate(delegate)
+    fun setVM(vm: PlanEditVM) {
+        (binder.titleList.adapter as? TitleSelectorAdapter)?.setVM(vm)
     }
 
     private fun customInit(context: Context?) {
@@ -54,10 +48,11 @@ class TitleSelectorView : LinearLayout {
 class TitleSelectorAdapter : RecyclerView.Adapter<TitleSelectorAdapter.TitleVH>() {
 
     private val titleList = TitleManager.titleList
-    private var mDelegate: TitleSelectorView.Delegate? = null
+    private var mVM: PlanEditVM? = null
 
-    fun setDelegate(delegate: TitleSelectorView.Delegate) {
-        mDelegate = delegate
+    fun setVM(vm: PlanEditVM) {
+        mVM = vm
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TitleVH {
@@ -76,13 +71,10 @@ class TitleSelectorAdapter : RecyclerView.Adapter<TitleSelectorAdapter.TitleVH>(
         RecyclerView.ViewHolder(vb.root) {
 
         fun bind() {
-            vb.titleItem.text = titleList[adapterPosition]
-            vb.root.setOnClickListener {
-                mDelegate?.onSelect(titleList[adapterPosition])
-            }
+            vb.title = titleList[adapterPosition]
+            vb.vm = mVM
         }
-
     }
 
-
 }
+

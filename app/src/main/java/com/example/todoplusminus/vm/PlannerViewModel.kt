@@ -2,7 +2,6 @@ package com.example.todoplusminus.vm
 
 
 import android.util.Log
-import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,17 +27,11 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
 
     var isEditMode: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    var editPlanDataID: MutableLiveData<String> = MutableLiveData()
+    var editPlanDataID: MutableLiveData<String?> = MutableLiveData(null)
 
+    var isShowMemoEditor : MutableLiveData<Boolean> = MutableLiveData(false)
+    var isShowHistoryEditor : MutableLiveData<Boolean> = MutableLiveData(false)
 
-    private val lastIndex: Int
-        get() {
-            var max = 0
-            planList.value?.forEach {
-                max = max(it.index, max)
-            }
-            return max + 1
-        }
 
     /**
      * delete가 불리는 순간은 사용자가 편집모드에서 해당 데이터를 삭제 했을 경우다
@@ -60,14 +53,6 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
 
       }*/
 
-    fun onCreateItem(title: String, bgColor: Int) {
-        val newData = PlanData.create().apply {
-            this.index = lastIndex
-            this.title = title
-            this.bgColor = bgColor
-        }
-        insertData(newData)
-    }
 
     fun switchEditMode() {
         if (checkWhetherEditMode()) {
@@ -78,18 +63,38 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
         }
     }
 
-    fun setTargetEditDataId(id : String){
+    fun setTargetEditDataId(id : String?){
+        //edit mode가 아니라면 실행하지 않는다.
+        if(!checkWhetherEditMode()) return
+
+
+        if(id == null || id == "") this.editPlanDataID.value = PlanData.EMPTY_ID
         this.editPlanDataID.value = id
     }
 
     fun updateCountByIndex(count: Int, index: Int) {
-        planList.value!![index].updateCount(count)
+        planList.value!![index].incrementCount(count)
         updateByIndex(index)
+
     }
 
     fun updateBgColorByIndex(bgColor: Int, index: Int) {
         planList.value!![index].bgColor = bgColor
         updateByIndex(index)
+    }
+
+    fun clearEditPlanId(){
+        editPlanDataID.value = null
+    }
+
+    fun showMemo(){
+        isShowMemoEditor.value = true
+        isShowMemoEditor.value = false
+    }
+
+    fun showHistory(){
+        isShowHistoryEditor.value = true
+        isShowHistoryEditor.value = false
     }
 
     private fun updateAll() {
@@ -114,16 +119,8 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
 
 
     private fun onDelete(planData: PlanData) {
-        if (planData == null) return
-
         CoroutineScope(Dispatchers.IO).launch {
             repository.deletePlannerDataById(planData.id)
-        }
-    }
-
-    private fun insertData(planData: PlanData) {
-        CoroutineScope(Dispatchers.IO).launch {
-            repository.insertPlannerData(planData)
         }
     }
 

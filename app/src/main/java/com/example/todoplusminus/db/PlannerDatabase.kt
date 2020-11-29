@@ -5,8 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import com.example.todoplusminus.entities.PlanData
+import com.example.todoplusminus.entities.PlanMemo
 
-@Database(entities = [PlannerItemEntity::class, PlannerInfoEntity::class], version = 1)
+@Database(entities = [PlannerItemEntity::class, PlannerInfoEntity::class, PlanMemo::class], version = 1)
 abstract class PlannerDatabase : RoomDatabase() {
     abstract fun userPlanDao() : UserPlanDao
 }
@@ -69,9 +70,22 @@ interface UserPlanDao{
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid and info.date == :date")
     suspend fun getPlannerDataByDate(date : String) : List<PlanData>
 
-    @Query("select MAX(`index`) as Int from PlannerItem")
-    fun getLastIndex() : LiveData<Int>
+    //가장 최신의 인덱스를 가져온다.
+    @Query("select `index` from PlannerItem order by `index` DESC LIMIT 1")
+    fun getLastIndex() : Int
 
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid and item.id == :id")
     fun getPlannerDataById(id : String) : PlanData
+
+    @Query("update PlannerItem set title = :title, bgColor = :bgColor where id = :id")
+    fun updateTitleBgById(id : String, title : String, bgColor: Int)
+
+    @Query("select * from PlannerMemo where date = :date")
+    fun getMemoByDate(date : String) : LiveData<PlanMemo>
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updatePlanMemo(memo : PlanMemo)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPlanMemo(memo : PlanMemo)
 }

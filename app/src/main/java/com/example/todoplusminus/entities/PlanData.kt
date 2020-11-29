@@ -17,7 +17,8 @@ class PlanData(
 ) {
 
     companion object {
-        private const val DEFAULT_BG_COLOR = Color.GRAY
+        const val DEFAULT_BG_COLOR = Color.GRAY
+        const val EMPTY_ID = "none"
 
         fun create(): PlanData {
             return PlanData(
@@ -33,8 +34,10 @@ class PlanData(
     }
 
 
-    fun updateCount(count: Int) {
+    fun incrementCount(count: Int) {
         if (this.count + count >= 0)
             this.count += count
     }
+
+
 }

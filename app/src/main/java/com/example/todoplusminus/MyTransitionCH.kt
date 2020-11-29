@@ -9,16 +9,6 @@ import com.bluelinelabs.conductor.changehandler.TransitionChangeHandler
 class MyTransitionCH : TransitionChangeHandler {
     constructor() : super()
 
-    constructor(removeViewOnPush : Boolean) : super(){
-        mRemoveViewOnPush = removeViewOnPush
-    }
-
-    private var mRemoveViewOnPush = false
-
-
-    override fun removesFromViewOnPush(): Boolean {
-        return mRemoveViewOnPush
-    }
     override fun getTransition(
         container: ViewGroup,
         from: View?,
@@ -26,7 +16,7 @@ class MyTransitionCH : TransitionChangeHandler {
         isPush: Boolean
     ): Transition {
         val changeTransform = ChangeTransform()
-        changeTransform.reparentWithOverlay = false
+        changeTransform.reparentWithOverlay = true
 
         val transitionSet = TransitionSet().apply {
             addTransition(ChangeBounds())

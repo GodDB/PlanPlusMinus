@@ -2,5 +2,48 @@
     <string name="app_name">TodoPlusMinus</string>
 
     <string name="please_write_here">please, write here</string>
-    <string name="edit_title">editing plan</string>
+    <string name="edit_title">editing plan✏️</string>
+    <string name="cancel">cancel</string>
+    <string name="done">done</string>
+    
+    <string name="travel">Travel✈️</string>
+    <string name="beer">Beer🍺</string>
+    <string name="date">Date💏</string>
+    <string name="scalp_massage">Scalp massage💆🏻‍♀️</string>
+    <string name="an_hour_of_game">an hour of game🎮</string>
+    <string name="newspaper_editorial">newspaper editorial📰</string>
+    <string name="walk">Walk🐕</string>
+    <string name="haircut">Haircut✂️</string>
+    <string name="nail_art">Nail Art😍</string>
+    <string name="sanitary_day">Sanitary Day🤦🏻</string>
+    <string name="cheating_day">Cheating Day🍖</string>
+    <string name="writing_a_diary">Writing a diary✏️</string>
+    <string name="pot_water">pot water🌻</string>
+    <string name="stretching">Stretching🤸</string>
+    <string name="riding_a_1km_bike">Riding a 1km bike🚴🏼</string>
+    <string name="a_general_house_cleaning">a general house cleaning🧹</string>
+    <string name="breakfast">breakfast🍌</string>
+    <string name="yoga">Yoga🧘🏻‍♀️</string>
+    <string name="an_hour_of_study">an hour of study📖</string>
+    <string name="a_3km_run">a 3km run🏃</string>
+    <string name="have_a_smoke">have a smoke🚬</string>
+    <string name="instant_intake">instant intake🍔</string>
+    <string name="multivitamin">multivitamin💊</string>
+    <string name="miracle_morning">Miracle Morning😄</string>
+    <string name="a_cup_of_water">a cup of water🥛</string>
+    <string name="say_hello_to_my_parents">Say hello to My parents📞</string>
+    <string name="blog_posting">Blog Posting💻</string>
+    <string name="car_wash">car wash🔭</string>
+    <string name="a_bowl_of_salad">a bowl of salad🥗</string>
+    <string name="protein_intake">protein intake🧃</string>
+    <string name="refueling">Refueling</string>
+    <string name="quilt_burning">quilt-burning👋🏻</string>
+    <string name="gas_bullet_checking">gas-bullet checking🔥</string>
+    <string name="washroom">Washroom🚽</string>
+    <string name="bible_reading">Bible reading📚</string>
+    <string name="window_closing">window closing🕞</string>
+    <string name="_20_squats">20 squats🏋🏻</string>
+    <string name="chapter_reading">chapter reading📖</string>
+
+
 </resources>

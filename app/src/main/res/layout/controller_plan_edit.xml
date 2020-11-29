@@ -11,19 +11,30 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        >
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:elevation="0dp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:alpha="0.85" />
+        <ImageView
+            android:id="@+id/btn_cancel"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:layout_constraintLeft_toLeftOf="@id/guide_menu_left"
+            app:layout_constraintTop_toTopOf="@id/guide_menu_top"
+            android:src="@drawable/close"
+            android:onClick="@{() -> vm.onEditEnd()}"
+            />
+
+        <ImageView
+            android:id="@+id/btn_done"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:layout_constraintRight_toRightOf="@id/guide_menu_right"
+            app:layout_constraintTop_toTopOf="@id/guide_menu_top"
+            android:src="@drawable/done"
+            android:onClick="@{() -> vm.onComplete()}"
+            />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/root_view"
@@ -32,6 +43,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
+            android:transitionName="@{vm.MId}"
             app:cardBackgroundColor="@{vm.MBgColor}"
             app:cardCornerRadius="50dp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -39,18 +51,18 @@
             app:layout_constraintTop_toTopOf="@id/guide_editView_top"
             >
 
-            <com.example.todoplusminus.ui.NoHideKeypadEditText
+            <com.example.todoplusminus.ui.CustomEditText
                 android:id="@+id/item_title"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:gravity="center"
-                android:text="@{vm.MTitle}"
+                android:text="@={vm.MTitle}"
                 android:hint="@string/please_write_here"
                 android:textColor="@color/black">
 
                 <requestFocus />
-            </com.example.todoplusminus.ui.NoHideKeypadEditText>
+            </com.example.todoplusminus.ui.CustomEditText>
 
 
         </androidx.cardview.widget.CardView>
@@ -84,7 +96,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.2" />
+            app:layout_constraintGuide_percent="0.3" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_menu_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.1"
+            />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_menu_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.1"
+            />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_menu_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9"
+            />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

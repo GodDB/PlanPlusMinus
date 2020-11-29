@@ -1,22 +1,20 @@
 package com.example.todoplusminus.controllers
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.*
-import androidx.room.Room
 import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.MyTransitionCH
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerPlannerBinding
 import com.example.todoplusminus.databinding.PlanListItemBinding
-import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.entities.PlanData
-import com.example.todoplusminus.repository.LocalDataSourceImpl
 import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.util.*
 import com.example.todoplusminus.vm.PlanEditVM
@@ -28,42 +26,32 @@ import kotlin.math.min
 
 class PlannerController : DBControllerBase {
 
+    interface Delegate{
+        fun showMemoEditor()
+        fun showHistoryEditor()
+    }
+
     companion object {
         const val TAG = "planner_controller"
     }
 
     private lateinit var binder: ControllerPlannerBinding
     private lateinit var planVM: PlannerViewModel
+    private var mDelegate : Delegate? = null
 
-/*    //사용자가 editMode일 때 선택한 planList의 index
-    //이 index를 기반으로 bgColor와 title을 적용한다. (index가 -1이면 createView , 그외는 planListItem)
-    var mSelectedIndex: Int = 0
-
-    //사용자가 터치한 Y지점
-    //이 지점을 바탕으로 키보드가 올라왔을 때
-    // 이 지점과 키보드 높이를 비교하여 키보드 높이에 맞춰 recyclerView를 올릴지, 유지할지를 결정한다.
-    var mTouchedY : Int = 0*/
-
-    /* //softKeypad가 생성됬는지 확인하기 위한 디텍터
-     private lateinit var mKeyboardDetector: KeyboardDetector*/
+    private var repository : PlannerRepository? = null
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
+    constructor(repository : PlannerRepository, delegate : Delegate?){
+        this.repository = repository
+        mDelegate = delegate
+    }
 
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
         binder = DataBindingUtil.inflate(inflater, R.layout.controller_planner, container, false)
 
-        //todo test
-        val db = Room.databaseBuilder(
-            applicationContext!!,
-            PlannerDatabase::class.java,
-            "plannerDB.sqlite3"
-        ).build()
-
-        val dataSource = LocalDataSourceImpl(db)
-        val plannerRepo = PlannerRepository(dataSource)
-
-        val factory = ViewModelFactory(plannerRepo) // aac viewModel은 factory를 이용해서 생성함.
+        val factory = ViewModelFactory(repository!!) // aac viewModel은 factory를 이용해서 생성함.
         planVM = ViewModelProviders.of(activity as AppCompatActivity, factory)
             .get(PlannerViewModel::class.java)
 
@@ -73,7 +61,8 @@ class PlannerController : DBControllerBase {
     }
 
     override fun onViewBound(v: View) {
-        binder.subWatch.startAnimation()
+        Log.d("godgod", "onCreate")
+        binder.subWatch.start()
         binder.mainWatch.startAnimation()
 
         addEvent()
@@ -81,41 +70,15 @@ class PlannerController : DBControllerBase {
         onSubscribe()
     }
 
-    private fun showPlanEditor() {
-        //todo test
-        val db = Room.databaseBuilder(
-            applicationContext!!,
-            PlannerDatabase::class.java,
-            "plannerDB.sqlite3"
-        ).build()
-        val dataSource = LocalDataSourceImpl(db)
-        val plannerRepo = PlannerRepository(dataSource)
-
-        pushController(RouterTransaction.with(
-            PlanEditController(PlanEditVM(plannerRepo))
-        ).apply {
-            pushChangeHandler(MyTransitionCH(false))
-            popChangeHandler(MyTransitionCH())
-        })
-    }
-
     private fun showPlanEditor(id: String) {
         //todo test
-        val db = Room.databaseBuilder(
-            applicationContext!!,
-            PlannerDatabase::class.java,
-            "plannerDB.sqlite3"
-        ).build()
-        val dataSource = LocalDataSourceImpl(db)
-        val plannerRepo = PlannerRepository(dataSource)
-
 
         pushController(RouterTransaction.with(
-            PlanEditController(PlanEditVM(plannerRepo).apply {
+            PlanEditController(PlanEditVM(repository!!).apply {
                 setData(id)
             })
         ).apply {
-            pushChangeHandler(MyTransitionCH(false))
+            pushChangeHandler(MyTransitionCH())
             popChangeHandler(MyTransitionCH())
         })
     }
@@ -152,16 +115,21 @@ class PlannerController : DBControllerBase {
         planVM.isEditMode.observe(this, Observer { editMode ->
             itemTouchHelperCallback.enabledLongPress = editMode
             itemSwipeEventHelper.isSwipeEnabled = !editMode
-
-   /*         if (editMode) (binder.planList.adapter as? PlanListAdapter)?.setDelegate(
-                planListDelegate
-            )
-            else (binder.planList.adapter as? PlanListAdapter)?.setDelegate(null)*/
         })
 
+        planVM.isShowMemoEditor.observe(this, Observer {isShow ->
+            if(isShow) {
+                Log.d("godgod", "memo show")
+                mDelegate?.showMemoEditor()
+            }
+        })
+
+
         planVM.editPlanDataID.observe(this, Observer { id ->
-            if(id == "") showPlanEditor()
-            else showPlanEditor(id)
+            if(id != null && id != ""){
+                showPlanEditor(id)
+                planVM.clearEditPlanId()
+            }
         })
 
 

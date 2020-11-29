@@ -1,4 +1,4 @@
-package com.example.todoplusminus.bindingAdapter
+ package com.example.todoplusminus.bindingAdapter
 
 
 import android.graphics.Color

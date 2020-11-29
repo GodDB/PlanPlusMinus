@@ -2,16 +2,23 @@ package com.example.todoplusminus.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.example.todoplusminus.db.PlannerInfoEntity
 import com.example.todoplusminus.db.PlannerItemEntity
 import com.example.todoplusminus.db.PlannerItemInfoEntity
 import com.example.todoplusminus.entities.PlanData
+import com.example.todoplusminus.entities.PlanMemo
 
 interface ILocalDataSource {
 
     fun getPlannerData() : LiveData<MutableList<PlanData>>
 
-    fun getLastIndex() : LiveData<Int>
+    fun getLastIndex() : Int
+
+    fun getMemoByDate(date : String) : LiveData<PlanMemo>
 
     suspend fun deletePlannerDataById(id : String)
 
@@ -24,6 +31,12 @@ interface ILocalDataSource {
     suspend fun deleteAndUpdateAll(deleteTarget : PlanData, updateTarget : List<PlanData>)
 
     suspend fun getPlannerDataById(id : String) : PlanData
+
+    suspend fun updateTitleBgById(id : String, title : String, bgColor : Int)
+
+    suspend fun updatePlanMemo(memo : PlanMemo)
+
+    suspend fun insertPlanMemo(memo : PlanMemo)
 }
 
 class PlannerMapper() {

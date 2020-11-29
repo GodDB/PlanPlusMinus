@@ -12,16 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todoplusminus.databinding.UiColorSelectorBinding
 import com.example.todoplusminus.databinding.UiColorSelectorItemBinding
 import com.example.todoplusminus.util.ColorManager
+import com.example.todoplusminus.vm.PlanEditVM
 
 class ColorSelectorView : LinearLayout {
 
     private lateinit var binder: UiColorSelectorBinding
-    private var mDelegate: Delegate? = null
-
-    interface Delegate {
-        fun onSelect(bgColor: Int)
-        fun onDone()
-    }
 
     constructor(context: Context?) : super(context) {
         customInit(context)
@@ -39,10 +34,8 @@ class ColorSelectorView : LinearLayout {
         customInit(context)
     }
 
-    fun setDelegate(delegate: Delegate) {
-        mDelegate = delegate
-
-        (binder.colorList.adapter as? ColorSelectorAdapter)?.setDelegate(delegate)
+    fun setVM(vm : PlanEditVM){
+        (binder.colorList.adapter as? ColorSelectorAdapter)?.setVM(vm)
     }
 
     private fun customInit(context: Context?) {
@@ -51,20 +44,17 @@ class ColorSelectorView : LinearLayout {
         binder.colorList.adapter = ColorSelectorAdapter()
         binder.colorList.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-        /* binder.btnDone.setOnClickListener {
-             mDelegate?.onDone()
-         }*/
     }
 }
 
 class ColorSelectorAdapter : RecyclerView.Adapter<ColorSelectorAdapter.ColorVH>() {
 
     private val colorList = ColorManager.colorList
-    private var mDelegate: ColorSelectorView.Delegate? = null
+    private var mVM : PlanEditVM? = null
 
-    fun setDelegate(delegate: ColorSelectorView.Delegate) {
-        mDelegate = delegate
+    fun setVM(vm : PlanEditVM){
+        mVM = vm
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorVH {
@@ -83,14 +73,8 @@ class ColorSelectorAdapter : RecyclerView.Adapter<ColorSelectorAdapter.ColorVH>(
         RecyclerView.ViewHolder(vb.root) {
 
         fun bind() {
-            vb.itmeSelectedView.visibility = View.GONE
-
-            vb.colorItem.setCardBackgroundColor(colorList[adapterPosition])
-            vb.colorItem.setOnClickListener {
-                mDelegate?.onSelect(colorList[adapterPosition])
-                vb.itmeSelectedView.visibility = View.VISIBLE
-                notifyDataSetChanged()
-            }
+            vb.bgColor = colorList[adapterPosition]
+            vb.vm = mVM
         }
 
     }
