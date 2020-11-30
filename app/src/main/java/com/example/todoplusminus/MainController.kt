@@ -27,9 +27,7 @@ class MainController : VBControllerBase {
 
     private lateinit var binder: ControllerMainBinding
 
-    private val mainRouter = router
     private lateinit var auxRouter : Router
-
     private lateinit var childRouter: Router
 
     //todo test ... 추후에 dagger로 교체
@@ -45,7 +43,7 @@ class MainController : VBControllerBase {
     override fun onViewBound(v: View) {
         configureUI()
 
-        auxRouter = getChildRouter(binder.subArea)
+        auxRouter = Conductor.attachRouter(activity!!, binder.subArea, null)
     }
 
     private fun configureUI() {
@@ -114,9 +112,9 @@ class MainController : VBControllerBase {
 
     private val plannerDelegate = object : PlannerController.Delegate{
         override fun showMemoEditor() {
-            router.pushController(RouterTransaction.with(PlanMemoController(plannerRepository!!)).apply {
-                pushChangeHandler(VerticalChangeHandler(false))
-                popChangeHandler(VerticalChangeHandler())
+            auxRouter.pushController(RouterTransaction.with(PlanMemoController(plannerRepository!!)).apply {
+                pushChangeHandler(VerticalChangeHandler())
+                popChangeHandler(VerticalChangeHandler(false))
             })
         }
 
@@ -125,6 +123,5 @@ class MainController : VBControllerBase {
         }
 
     }
-
 
 }

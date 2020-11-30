@@ -15,4 +15,10 @@ object DeviceManager {
 
         return mDisplay!!.widthPixels.toFloat()
     }
+
+    fun getDeviceHeight() : Float{
+        if(mDisplay == null) return 0f
+
+        return mDisplay!!.heightPixels.toFloat()
+    }
 }
