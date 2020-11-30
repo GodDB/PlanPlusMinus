@@ -12,6 +12,7 @@ import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
+import com.bluelinelabs.conductor.support.RouterPagerAdapter
 import com.example.todoplusminus.base.VBControllerBase
 import com.example.todoplusminus.controllers.PlanMemoController
 import com.example.todoplusminus.controllers.PlannerController
@@ -43,7 +44,9 @@ class MainController : VBControllerBase {
     override fun onViewBound(v: View) {
         configureUI()
 
-        auxRouter = Conductor.attachRouter(activity!!, binder.subArea, null)
+        auxRouter = getChildRouter(binder.subArea)
+        //popLastView를 true로 둠으로써, 마지막 컨트롤러 삭제시 뷰도 삭제된다. false이면 마지막컨트롤러 삭제시 뷰는 삭제 안됨.
+        auxRouter.setPopsLastView(true)
     }
 
     private fun configureUI() {
@@ -81,7 +84,7 @@ class MainController : VBControllerBase {
                     childRouter,
                     RouterTransaction.with(PlannerController(plannerRepository!!, plannerDelegate)).apply {
                         tag(PlannerController.TAG)
-                        SimpleSwapChangeHandler()
+                        SimpleSwapChangeHandler(false)
                         SimpleSwapChangeHandler(false)
                     },
                     PlannerController.TAG
@@ -90,7 +93,7 @@ class MainController : VBControllerBase {
                     childRouter,
                     RouterTransaction.with(TrackerController()).apply {
                         tag(TrackerController.TAG)
-                        SimpleSwapChangeHandler()
+                        SimpleSwapChangeHandler(false)
                         SimpleSwapChangeHandler(false)
                     },
                     TrackerController.TAG
@@ -99,8 +102,8 @@ class MainController : VBControllerBase {
                     childRouter,
                     RouterTransaction.with(SettingController()).apply {
                         tag(SettingController.TAG)
-                        SimpleSwapChangeHandler()
                         SimpleSwapChangeHandler(false)
+                        SimpleSwapChangeHandler()
                     },
                     SettingController.TAG
                 )
@@ -112,9 +115,10 @@ class MainController : VBControllerBase {
 
     private val plannerDelegate = object : PlannerController.Delegate{
         override fun showMemoEditor() {
-            auxRouter.pushController(RouterTransaction.with(PlanMemoController(plannerRepository!!)).apply {
+            Log.d("godgod", "showMemoEditor()")
+            auxRouter.setRoot(RouterTransaction.with(PlanMemoController(plannerRepository!!)).apply {
                 pushChangeHandler(VerticalChangeHandler())
-                popChangeHandler(VerticalChangeHandler(false))
+                popChangeHandler(VerticalChangeHandler())
             })
         }
 

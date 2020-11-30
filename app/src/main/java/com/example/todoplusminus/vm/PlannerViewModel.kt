@@ -88,6 +88,7 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
     }
 
     fun showMemo(){
+        Log.d("godgod", "showMemo()")
         isShowMemoEditor.value = true
         isShowMemoEditor.value = false
     }

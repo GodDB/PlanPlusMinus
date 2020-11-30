@@ -1,7 +1,10 @@
- package com.example.todoplusminus.bindingAdapter
+package com.example.todoplusminus.bindingAdapter
 
 
 import android.graphics.Color
+import android.os.Looper
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
@@ -11,7 +14,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todoplusminus.controllers.PlanListAdapter
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.util.CommonAnimationHelper
+import com.example.todoplusminus.util.DeviceManager
 import com.example.todoplusminus.util.DpConverter
+import com.example.todoplusminus.vm.OnDoneListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.logging.Handler
+import kotlin.math.max
 
 
 /**
@@ -26,12 +37,11 @@ import com.example.todoplusminus.util.DpConverter
 fun items(rv: RecyclerView, dataList: LiveData<List<PlanData>>, isEdit: Boolean) {
     if (rv.adapter == null) return
 
-    if(isEdit){
+    if (isEdit) {
         dataList.value?.let {
             (rv.adapter as? PlanListAdapter)?.updateAllItems(it)
         }
-    }
-    else{
+    } else {
         dataList.value?.let {
             (rv.adapter as? PlanListAdapter)?.updateDiffItems(it)
         }
@@ -50,12 +60,11 @@ fun setEditMode(view: View, isEdit: Boolean) {
  * */
 @BindingAdapter("bind:editMode")
 fun setEditMode(rv: RecyclerView, isEdit: Boolean) {
-    if (isEdit){
+    if (isEdit) {
         val marginParam = (rv.layoutParams as ViewGroup.MarginLayoutParams)
         marginParam.topMargin = DpConverter.dpToPx(100f).toInt()
         rv.layoutParams = marginParam
-    }
-    else{
+    } else {
         val marginParam = (rv.layoutParams as ViewGroup.MarginLayoutParams)
         marginParam.topMargin = 0
         rv.layoutParams = marginParam
@@ -64,8 +73,8 @@ fun setEditMode(rv: RecyclerView, isEdit: Boolean) {
 }
 
 @BindingAdapter(value = ["bind:backgroundColor", "bind:isEdit"], requireAll = true)
-fun setBackgroundColor(view: CardView, data: PlanData, isEdit : Boolean) {
-    if(isEdit)
+fun setBackgroundColor(view: CardView, data: PlanData, isEdit: Boolean) {
+    if (isEdit)
         view.setCardBackgroundColor(data.bgColor)
     else {
         if (data.count >= 1) view.setCardBackgroundColor(data.bgColor)
@@ -82,6 +91,68 @@ fun setAnimation(v: View, isEdit: Boolean) {
         CommonAnimationHelper.stop(v)
 }
 
+/**
+ * 세로 slide 이벤트를 통해
+ * 사용자가 편하게 메모 컨트롤러를 종료시킬 수 있게 해주는 리스너
+ * */
+@BindingAdapter("bind:setSlideEvent")
+fun setSlideEvent(v: View, onComplete: () -> Unit) {
+    val verticalSlideEventListener = object : View.OnTouchListener {
+        private var firstPressedY: Float = 0f
+        private var orgY: Float? = null
+        private var maxY: Int = (DeviceManager.getDeviceHeight() * 0.5).toInt()
+
+        override fun onTouch(v: View, event: MotionEvent): Boolean {
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    firstPressedY = event.y
+
+                    if (orgY == null) orgY = v.y
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val newY = max(orgY ?: 0f, v.y + event.y - firstPressedY.toInt())
+                    v.y = newY
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    if (v.y > maxY) onComplete()
+                    else resetLocation(v)
+                }
+            }
+            return true
+        }
+
+        private fun resetLocation(v: View) {
+            v.y = this.orgY ?: 0f
+        }
+    }
+    v.setOnTouchListener(verticalSlideEventListener)
+}
+
+/*@BindingAdapter(value = ["bind:clickEvent", "bind:dim"], requireAll = true)
+fun setClickEventAndDim(v : View, onClick : () -> Unit, content : String?){
+    if(content == "" || content == null){
+        v.alpha = 0.3f
+        v.setOnClickListener {}
+    }
+    else{
+        v.alpha = 1f
+        v.setOnClickListener { onClick() }
+    }
+}*/
+
+@BindingAdapter(value = ["bind:setClickEvent", "bind:dim"], requireAll = true)
+fun setClickEventAndDim(v: View, listener : OnDoneListener, content : String) {
+    if(content != ""){
+        v.setOnClickListener { listener.onDone() }
+        v.alpha = 1f
+    }
+    else{
+        v.setOnClickListener {}
+        v.alpha = 0.2f
+    }
+
+}
 
 
 

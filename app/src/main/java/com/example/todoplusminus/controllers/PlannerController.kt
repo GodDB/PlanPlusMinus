@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.*
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.example.todoplusminus.MyTransitionCH
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
@@ -72,13 +73,13 @@ class PlannerController : DBControllerBase {
 
     private fun showPlanEditor(id: String) {
         //todo test
-
         pushController(RouterTransaction.with(
             PlanEditController(PlanEditVM(repository!!).apply {
                 setData(id)
             })
         ).apply {
-            pushChangeHandler(MyTransitionCH())
+            //todo view 살리는 방법으로 transition 구현해보자 ...
+            pushChangeHandler(SimpleSwapChangeHandler(false))
             popChangeHandler(MyTransitionCH())
         })
     }
@@ -115,6 +116,8 @@ class PlannerController : DBControllerBase {
         planVM.isEditMode.observe(this, Observer { editMode ->
             itemTouchHelperCallback.enabledLongPress = editMode
             itemSwipeEventHelper.isSwipeEnabled = !editMode
+
+            Log.d("godgod", "${router.backstack.size}")
         })
 
         planVM.isShowMemoEditor.observe(this, Observer {isShow ->

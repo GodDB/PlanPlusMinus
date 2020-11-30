@@ -18,7 +18,7 @@ interface ILocalDataSource {
 
     fun getLastIndex() : Int
 
-    fun getMemoByDate(date : String) : LiveData<PlanMemo>
+    fun getMemoByDate(date : String) : PlanMemo?
 
     suspend fun deletePlannerDataById(id : String)
 

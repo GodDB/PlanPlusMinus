@@ -48,7 +48,7 @@ abstract class ControllerBase : LifecycleController {
                 val tempTransaction = backstack[index]
                 backstack.removeAt(index)
                 backstack.add(tempTransaction)
-                router.setBackstack(backstack, null)
+                router.setBackstack(backstack, SimpleSwapChangeHandler())
                 return
             }
         }

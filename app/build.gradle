@@ -54,6 +54,7 @@ dependencies {
 
     implementation 'com.bluelinelabs:conductor:3.0.0-rc3'
     implementation 'com.bluelinelabs:conductor-archlifecycle:3.0.0-rc3'
+    implementation 'com.bluelinelabs:conductor-viewpager:3.0.0-rc3'
 
     def room_version = "2.2.5"
 

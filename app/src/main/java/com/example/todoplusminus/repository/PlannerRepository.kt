@@ -16,7 +16,7 @@ class PlannerRepository(
 
     fun getLastIndex() : Int = localSource.getLastIndex()
 
-    fun getMemoByDate(date : String) : LiveData<PlanMemo> = localSource.getMemoByDate(date)
+    fun getMemoByDate(date : String) : PlanMemo? = localSource.getMemoByDate(date)
 
     suspend fun deletePlannerDataById(id: String) {
         localSource.deletePlannerDataById(id)
