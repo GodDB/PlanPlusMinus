@@ -81,7 +81,7 @@ interface UserPlanDao{
     fun updateTitleBgById(id : String, title : String, bgColor: Int)
 
     @Query("select * from PlannerMemo where date = :date")
-    fun getMemoByDate(date : String) : PlanMemo?
+    fun getMemoByDate(date : String) : LiveData<PlanMemo>
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updatePlanMemo(memo : PlanMemo)

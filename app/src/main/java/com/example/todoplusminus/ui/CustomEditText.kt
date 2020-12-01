@@ -28,6 +28,7 @@ class CustomEditText : androidx.appcompat.widget.AppCompatEditText {
     override fun onKeyPreIme(keyCode: Int, event: KeyEvent?): Boolean {
         if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
             mDelegate?.onBack()
+            return true
         }
         return super.onKeyPreIme(keyCode, event)
     }

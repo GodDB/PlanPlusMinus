@@ -3,6 +3,7 @@ package com.example.todoplusminus.vm
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.util.ColorManager
@@ -23,7 +24,7 @@ class PlanEditVM(private val repository: PlannerRepository) {
 
     /** edit 작업이 끝났는지(done or back or cancel)를 체크한다.
      * */
-    var isEditEnd: MutableLiveData<Boolean> = MutableLiveData(false)
+    var isEditEnd: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
     /**
      * create일땐 setData를 호출하지 않는다.
@@ -61,8 +62,7 @@ class PlanEditVM(private val repository: PlannerRepository) {
     }
 
     fun onEditEnd() {
-        isEditEnd.value = true
-        isEditEnd.value = false
+        isEditEnd.value = Event(true)
     }
 
     private fun onUpdatePlanData() {

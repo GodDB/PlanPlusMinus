@@ -5,12 +5,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanData
+import com.example.todoplusminus.entities.PlanMemo
 import com.example.todoplusminus.repository.PlannerRepository
+import com.example.todoplusminus.util.TimeProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.math.max
 
 /**
  * planner의 모든 비즈니스 로직을 담당하는 viewModel
@@ -21,23 +23,20 @@ import kotlin.math.max
  * */
 class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() {
 
-    //room에서 mutablelivedata를 지원하지 않으므로 이렇게 임시로 livedata를 전달받아 mutableLivedata로 변환해서 사용한다.
-    var planList: LiveData<MutableList<PlanData>> = repository.getAllPlannerData()
-    /* var planList : MutableLiveData<MutableList<PlanData>> = MutableLiveData()*/
 
-    var isEditMode: MutableLiveData<Boolean> = MutableLiveData(false)
+    val planList: LiveData<MutableList<PlanData>> = repository.getAllPlannerData()
 
-    var editPlanDataID: MutableLiveData<String?> = MutableLiveData(null)
+    val planMemo : LiveData<PlanMemo> = repository.getMemoByDate(TimeProvider.getCurDate())
 
-    var isShowMemoEditor : MutableLiveData<Boolean> = MutableLiveData(false)
-    var isShowHistoryEditor : MutableLiveData<Boolean> = MutableLiveData(false)
+    val isEditMode: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    val editPlanDataID: MutableLiveData<String?> = MutableLiveData(null)
+
+    val isShowMemoEditor: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
+
+    val isShowHistoryEditor: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
 
-    /**
-     * delete가 불리는 순간은 사용자가 편집모드에서 해당 데이터를 삭제 했을 경우다
-     *
-     * 그러므로 그런 상황이 발생하면 전체 인덱스가 변경되므로 재정렬 후에 삭제 작업에 들어간다.
-     * */
     fun onItemDelete(index: Int) {
         Log.d("godgod", "delete index   =  $index")
         val targetDeleteObj = planList.value!![index]
@@ -63,12 +62,12 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
         }
     }
 
-    fun setTargetEditDataId(id : String?){
+    fun setTargetEditDataId(id: String?) {
         //edit mode가 아니라면 실행하지 않는다.
-        if(!checkWhetherEditMode()) return
+        if (!checkWhetherEditMode()) return
 
 
-        if(id == null || id == "") this.editPlanDataID.value = PlanData.EMPTY_ID
+        if (id == null || id == "") this.editPlanDataID.value = PlanData.EMPTY_ID
         this.editPlanDataID.value = id
     }
 
@@ -83,19 +82,16 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
         updateByIndex(index)
     }
 
-    fun clearEditPlanId(){
+    fun clearEditPlanId() {
         editPlanDataID.value = null
     }
 
-    fun showMemo(){
-        Log.d("godgod", "showMemo()")
-        isShowMemoEditor.value = true
-        isShowMemoEditor.value = false
+    fun showMemo() {
+        isShowMemoEditor.value = Event(true)
     }
 
-    fun showHistory(){
-        isShowHistoryEditor.value = true
-        isShowHistoryEditor.value = false
+    fun showHistory() {
+        isShowHistoryEditor.value = Event(true)
     }
 
     private fun updateAll() {

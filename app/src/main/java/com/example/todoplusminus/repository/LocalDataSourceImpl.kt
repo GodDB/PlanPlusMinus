@@ -20,7 +20,7 @@ class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
     override fun getLastIndex(): Int =
         db.userPlanDao().getLastIndex()
 
-    override fun getMemoByDate(date: String): PlanMemo? = db.userPlanDao().getMemoByDate(date)
+    override fun getMemoByDate(date: String): LiveData<PlanMemo> = db.userPlanDao().getMemoByDate(date)
 
 
     override suspend fun deletePlannerDataById(id: String) {

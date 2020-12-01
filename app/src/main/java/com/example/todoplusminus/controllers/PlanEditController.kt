@@ -2,6 +2,7 @@ package com.example.todoplusminus.controllers
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,12 +66,16 @@ class PlanEditController : DBControllerBase {
     }
 
     private fun onSubscribe(){
-        mVM?.isEditEnd?.observe(this, Observer { isComplete ->
-            if(isComplete){
-                hideKeypad()
-                popCurrentController()
+        mVM?.isEditEnd?.observe(this, Observer { event ->
+            event.getContentIfNotHandled()?.let {isEnd ->
+                if(isEnd) closePlanEditor()
             }
         })
+    }
+
+    private fun closePlanEditor(){
+        hideKeypad()
+        popCurrentController()
     }
 
     private fun showKeypad() {
@@ -103,29 +108,10 @@ class PlanEditController : DBControllerBase {
         }
     }
 
-/*    *//**
-     * colorSelectView로 부터 사용자가 선택한 color값을 전달받기 위한 listener
-     * *//*
-    private val colorSelectorListener = object : ColorSelectorView.Delegate {
-        override fun onSelect(bgColor: Int) {
-            mVM?.setBgColor(bgColor)
-        }
-
-        override fun onDone() {}
-    }
-
-    *//**
-     * titleSelectView로 부터 사용자가 선택한 title값을 전달받기 위한 listener
-     * *//*
-    private val titleSelectorListener = object : TitleSelectorView.Delegate {
-        override fun onSelect(title: String) {
-            mVM?.setTitle(title)
-        }
-    }*/
 
     private val noHideKeypadDelegate = object : CustomEditText.Delegate {
         override fun onBack() {
-            popCurrentController()
+            closePlanEditor()
         }
     }
 

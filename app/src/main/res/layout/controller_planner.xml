@@ -110,13 +110,15 @@
         <TextView
             android:id="@+id/memo_view"
             android:layout_width="0dp"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
+            android:maxHeight="100dp"
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
             bind:editMode="@{!vm.isEditMode().booleanValue()}"
             android:background="@color/white"
-            android:text="dddddddddwdwdwdw"
+            android:text="@{vm.planMemo.contents}"
+            android:onClick="@{() -> vm.showMemo()}"
             android:layout_margin="1dp"
             />
 

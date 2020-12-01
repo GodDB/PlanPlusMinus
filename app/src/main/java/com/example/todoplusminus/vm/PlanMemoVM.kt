@@ -1,9 +1,10 @@
 package com.example.todoplusminus.vm
 
 import android.util.DisplayMetrics
+import android.util.EventLog
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
+import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanMemo
 import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.util.TimeProvider
@@ -11,14 +12,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.sql.Time
 
 class PlanMemoVM(private val repository: PlannerRepository) {
 
-    var memoData: MutableLiveData<PlanMemo> = MutableLiveData(
-        runBlocking(Dispatchers.IO) {
-            repository.getMemoByDate(TimeProvider.getCurDate()) ?: PlanMemo.create()
+    // convert livedata to MediatorLivedata
+    val memoData: MutableLiveData<PlanMemo> = MediatorLiveData<PlanMemo>().apply{
+        val data : LiveData<PlanMemo> = repository.getMemoByDate(TimeProvider.getCurDate()) // livedata는 비동기처리로 데이터가 전달됨
+        this.value = PlanMemo.create() //repository에 요청한 값이 도착할 때 까지 일단 기본값을 넣어둔다.
+        this.addSource(data) { data ->
+            this.value = data ?: return@addSource //만약 오늘 메모를 등록하지 않았다 (즉, data == null)이면 종료한다.
         }
-    )
+    }
         get() {
             //todo databinding object가 editText 변경시에 memoData.value.contents에 값을 채우기 때문에 이 곳에 임시적으로 notify를 할 수 있게끔 만들었다.
             //code readability 측면에선 inversebinding adapter를 구현해서 textChange event마다 notify를 날려주는게 코드 가독성 측면에선 훨씬 좋다
@@ -27,7 +32,8 @@ class PlanMemoVM(private val repository: PlannerRepository) {
             return field
         }
 
-    var wantEditorClose: MutableLiveData<Boolean> = MutableLiveData(false)
+    var wantEditorClose
+            : MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
 
     fun onDone() {
@@ -42,8 +48,7 @@ class PlanMemoVM(private val repository: PlannerRepository) {
     }
 
     private fun onCloseEditor() {
-        wantEditorClose.value = true
-        wantEditorClose.value = false
+        wantEditorClose.value = Event(true)
     }
 
     /**
@@ -61,6 +66,7 @@ class PlanMemoVM(private val repository: PlannerRepository) {
 
     }
 }
+
 
 interface OnDoneListener {
     fun onDone()

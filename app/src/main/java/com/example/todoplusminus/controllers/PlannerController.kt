@@ -79,7 +79,7 @@ class PlannerController : DBControllerBase {
             })
         ).apply {
             //todo view 살리는 방법으로 transition 구현해보자 ...
-            pushChangeHandler(SimpleSwapChangeHandler(false))
+            pushChangeHandler(MyTransitionCH())
             popChangeHandler(MyTransitionCH())
         })
     }
@@ -116,14 +116,19 @@ class PlannerController : DBControllerBase {
         planVM.isEditMode.observe(this, Observer { editMode ->
             itemTouchHelperCallback.enabledLongPress = editMode
             itemSwipeEventHelper.isSwipeEnabled = !editMode
-
-            Log.d("godgod", "${router.backstack.size}")
         })
 
-        planVM.isShowMemoEditor.observe(this, Observer {isShow ->
-            if(isShow) {
-                Log.d("godgod", "memo show")
-                mDelegate?.showMemoEditor()
+        planVM.isShowMemoEditor.observe(this, Observer { event ->
+            //livedata 변경 후에 이벤트가 처리된 적 있다면 null, 아니면 변경된 값을 전달받는다.
+            event.getContentIfNotHandled()?.let { isShow ->
+                if(isShow) mDelegate?.showMemoEditor()
+            }
+        })
+
+        planVM.isShowHistoryEditor.observe(this, Observer { event->
+            //livedata 변경 후에 이벤트가 처리된 적 있다면 null, 아니면 변경된 값을 전달받는다.
+            event.getContentIfNotHandled()?.let {isShow ->
+                if(isShow) mDelegate?.showHistoryEditor()
             }
         })
 

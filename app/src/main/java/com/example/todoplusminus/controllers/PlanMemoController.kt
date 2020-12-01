@@ -27,7 +27,6 @@ class PlanMemoController : DBControllerBase {
     private lateinit var binder: ControllerPlanMemoBinding
 
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
-        Log.d("godgod", "a")
         binder = ControllerPlanMemoBinding.inflate(inflater, container, false)
         mVM = PlanMemoVM(mRepository!!)
         binder.vm = mVM
@@ -46,10 +45,11 @@ class PlanMemoController : DBControllerBase {
     }
 
     private fun onSubscribe() {
-        mVM?.wantEditorClose?.observe(this, Observer {wantEditorClose ->
-            if(wantEditorClose)
-                popCurrentController()
+        mVM?.wantEditorClose?.observe(this, Observer { event ->
+            event.getContentIfNotHandled()?.let { wantEditorClose ->
+                if (wantEditorClose) popCurrentController()
+            }
         })
-    }
 
+    }
 }
