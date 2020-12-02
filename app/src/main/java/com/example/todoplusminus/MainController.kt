@@ -14,10 +14,7 @@ import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.bluelinelabs.conductor.support.RouterPagerAdapter
 import com.example.todoplusminus.base.VBControllerBase
-import com.example.todoplusminus.controllers.PlanMemoController
-import com.example.todoplusminus.controllers.PlannerController
-import com.example.todoplusminus.controllers.SettingController
-import com.example.todoplusminus.controllers.TrackerController
+import com.example.todoplusminus.controllers.*
 import com.example.todoplusminus.databinding.ControllerMainBinding
 import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.repository.LocalDataSourceImpl
@@ -123,7 +120,11 @@ class MainController : VBControllerBase {
         }
 
         override fun showHistoryEditor() {
-
+            Log.d("godgod", "showHistoryEditor()")
+            auxRouter.setRoot(RouterTransaction.with(PlanHistoryController(plannerRepository!!)).apply {
+                pushChangeHandler(VerticalChangeHandler())
+                popChangeHandler(VerticalChangeHandler())
+            })
         }
 
     }

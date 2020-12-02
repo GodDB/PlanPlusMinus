@@ -73,7 +73,7 @@ fun setEditMode(rv: RecyclerView, isEdit: Boolean) {
 }
 
 @BindingAdapter(value = ["bind:backgroundColor", "bind:isEdit"], requireAll = true)
-fun setBackgroundColor(view: CardView, data: PlanData, isEdit: Boolean) {
+fun setBackgroundColorWhenEditMode(view: CardView, data: PlanData, isEdit: Boolean) {
     if (isEdit)
         view.setCardBackgroundColor(data.bgColor)
     else {
@@ -129,25 +129,13 @@ fun setSlideEvent(v: View, onComplete: () -> Unit) {
     v.setOnTouchListener(verticalSlideEventListener)
 }
 
-/*@BindingAdapter(value = ["bind:clickEvent", "bind:dim"], requireAll = true)
-fun setClickEventAndDim(v : View, onClick : () -> Unit, content : String?){
-    if(content == "" || content == null){
-        v.alpha = 0.3f
-        v.setOnClickListener {}
-    }
-    else{
-        v.alpha = 1f
-        v.setOnClickListener { onClick() }
-    }
-}*/
 
 @BindingAdapter(value = ["bind:setClickEvent", "bind:dim"], requireAll = true)
-fun setClickEventAndDim(v: View, listener : OnDoneListener, content : String) {
-    if(content != ""){
+fun setClickEventAndDim(v: View, listener: OnDoneListener, content: String) {
+    if (content != "") {
         v.setOnClickListener { listener.onDone() }
         v.alpha = 1f
-    }
-    else{
+    } else {
         v.setOnClickListener {}
         v.alpha = 0.2f
     }

@@ -43,16 +43,6 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
         onDelete(targetDeleteObj)
     }
 
-    /*  fun onDelete(index: Int) {
-          planList.value?.get(index)?.let {
-              CoroutineScope(Dispatchers.IO).launch {
-                  repository.deletePlannerDataById(it.id)
-              }
-          }
-
-      }*/
-
-
     fun switchEditMode() {
         if (checkWhetherEditMode()) {
             isEditMode.value = false
@@ -62,7 +52,14 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
         }
     }
 
-    fun setTargetEditDataId(id: String?) {
+    fun onItemClick(id : String?){
+        //editmode면 item클릭 시에 수정화면이 등장한다.
+        if(checkWhetherEditMode()) showEditEditor(id)
+        //editmode가 아니라면 history화면이 등장한다.
+        else showHistory()
+    }
+
+    fun showEditEditor(id: String?) {
         //edit mode가 아니라면 실행하지 않는다.
         if (!checkWhetherEditMode()) return
 

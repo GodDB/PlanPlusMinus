@@ -104,15 +104,6 @@ class PlannerController : DBControllerBase {
 
     private fun onSubscribe() {
 
-        //room에선 mutableLivedata를 지원하지 않는다.
-        //그런 상황에서 livedata를 mutablelivedata로 변환이 필요하고
-        //room이 livedata를 리턴할 때 비동기적으로 데이터를 반환하기 때문에 데이터를 반환하는 시점을 알기 위해선
-        //observing을 통할 수 밖에 없다.
-        //하지만 livedata를 observing 하기 위해선 lifecycleowner가 필요하고 그 소유자는 이 controller 클래스이기 때문에
-        //어쩔 수 없이 이곳에서 room db값을 전달받으면 vm의 planList에 데이터를 전달한다...
-        /*planVM._planList.observe(this, Observer { items ->
-            planVM.planList.value = items
-        })*/
         planVM.isEditMode.observe(this, Observer { editMode ->
             itemTouchHelperCallback.enabledLongPress = editMode
             itemSwipeEventHelper.isSwipeEnabled = !editMode

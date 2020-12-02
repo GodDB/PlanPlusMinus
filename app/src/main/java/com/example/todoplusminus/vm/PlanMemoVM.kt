@@ -16,7 +16,7 @@ import java.sql.Time
 
 class PlanMemoVM(private val repository: PlannerRepository) {
 
-    // convert livedata to MediatorLivedata
+    // convert livedata to MutableLivedata
     val memoData: MutableLiveData<PlanMemo> = MediatorLiveData<PlanMemo>().apply{
         val data : LiveData<PlanMemo> = repository.getMemoByDate(TimeProvider.getCurDate()) // livedata는 비동기처리로 데이터가 전달됨
         this.value = PlanMemo.create() //repository에 요청한 값이 도착할 때 까지 일단 기본값을 넣어둔다.
