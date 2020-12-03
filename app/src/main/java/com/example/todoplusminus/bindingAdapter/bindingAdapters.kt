@@ -34,15 +34,15 @@ import kotlin.math.max
  * editMode가 아닐때는 리사이클러뷰의 변경이 count올리는 것 밖에 없으므로, diffutil을 사용하여 변경함.
  * */
 @BindingAdapter(value = ["bind:items", "bind:isEdit"], requireAll = true)
-fun items(rv: RecyclerView, dataList: LiveData<List<PlanData>>, isEdit: Boolean) {
+fun items(rv: RecyclerView, dataList: List<PlanData>, isEdit: Boolean) {
     if (rv.adapter == null) return
 
     if (isEdit) {
-        dataList.value?.let {
+        dataList.let {
             (rv.adapter as? PlanListAdapter)?.updateAllItems(it)
         }
     } else {
-        dataList.value?.let {
+        dataList.let {
             (rv.adapter as? PlanListAdapter)?.updateDiffItems(it)
         }
     }

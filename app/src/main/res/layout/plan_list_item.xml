@@ -29,10 +29,10 @@
             android:layout_height="match_parent"
             android:alpha="0.7"
             app:cardCornerRadius="50dp"
-            bind:backgroundColor="@{vm.planList.get(index)}"
+            bind:backgroundColor="@{vm.planProject.getPlanDataByIndex(index)}"
             bind:isEdit="@{vm.isEditMode().booleanValue()}"
-            android:transitionName="@{vm.planList.get(index).id}"
-            android:onClick="@{() -> vm.onItemClick(vm.planList.get(index).id)}"
+            android:transitionName="@{vm.planProject.getPlanDataIdByIndex(index)}"
+            android:onClick="@{() -> vm.onItemClick(vm.planProject.getPlanDataIdByIndex(index))}"
             >
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:gravity="center"
-                    android:text="@{vm.planList.get(index).title}"
+                    android:text="@{vm.planProject.getPlanDataTitleByIndex(index)}"
                     android:textColor="@color/black"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_chainStyle="packed"
@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:gravity="center"
-                    android:text="@{String.valueOf(vm.planList.get(index).count)}"
+                    android:text="@{String.valueOf(vm.planProject.getPlanDataCountByIndex(index))}"
                     android:visibility="@{vm.isEditMode().booleanValue() ? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/item_title"

@@ -159,7 +159,7 @@
             app:layout_constraintTop_toBottomOf="@id/memo_view"
             bind:editMode="@{vm.isEditMode().booleanValue()}"
             bind:isEdit="@{vm.isEditMode().booleanValue()}"
-            bind:items="@{vm.planList}" />
+            bind:items="@{vm.planProject.planDataList}" />
 
 
         <androidx.constraintlayout.widget.Guideline

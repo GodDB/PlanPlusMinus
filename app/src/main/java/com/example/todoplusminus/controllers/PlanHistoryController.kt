@@ -1,6 +1,7 @@
 package com.example.todoplusminus.controllers
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,16 +15,15 @@ class PlanHistoryController : DBControllerBase {
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    constructor(repository: PlannerRepository){
-        this.repository = repository
+    constructor(vm : PlanHistoryVM){
+        this.mVM = vm
     }
 
-    private var repository : PlannerRepository? = null
     private lateinit var binder : ControllerPlanHistoryBinding
     private var mVM : PlanHistoryVM? = null
 
+
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
-        mVM = PlanHistoryVM(repository!!)
         binder = ControllerPlanHistoryBinding.inflate(inflater, container, false)
         binder.lifecycleOwner = this
         binder.vm = mVM
@@ -46,6 +46,12 @@ class PlanHistoryController : DBControllerBase {
                 if(isEnd) popCurrentController()
             }
 
+        })
+
+        mVM?.planProject?.observe(this , Observer {
+            it.getPlanDataList().forEach{
+                Log.d("godgod", "${it.title}")
+            }
         })
     }
 

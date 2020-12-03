@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.*
 import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.example.todoplusminus.MyTransitionCH
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
@@ -29,7 +28,7 @@ class PlannerController : DBControllerBase {
 
     interface Delegate{
         fun showMemoEditor()
-        fun showHistoryEditor()
+        fun showHistoryEditor(id : String)
     }
 
     companion object {
@@ -116,10 +115,10 @@ class PlannerController : DBControllerBase {
             }
         })
 
-        planVM.isShowHistoryEditor.observe(this, Observer { event->
+        planVM.showHistoryId.observe(this, Observer { event->
             //livedata 변경 후에 이벤트가 처리된 적 있다면 null, 아니면 변경된 값을 전달받는다.
-            event.getContentIfNotHandled()?.let {isShow ->
-                if(isShow) mDelegate?.showHistoryEditor()
+            event.getContentIfNotHandled()?.let { id ->
+                mDelegate?.showHistoryEditor(id)
             }
         })
 
@@ -137,17 +136,6 @@ class PlannerController : DBControllerBase {
     private fun planListScrollMoveTo(index: Int) {
         binder.planList.scrollToPosition(index)
     }
-
-    /** adapter에게 위임하기 위한 delegate object
-     *
-     *  현재는 item click시에 전달된다.
-     * */
-/*    private val planListDelegate = object : PlanListAdapter.Delegate {
-        override fun showPlanEditor(index: Int, bgColor: Int, title: String) {
-            this@PlannerController.showPlanEditor(index, bgColor, title)
-        }
-    }*/
-
 
     /**
      * 리사이클러뷰의 swipe 이벤트를 담당하는 object

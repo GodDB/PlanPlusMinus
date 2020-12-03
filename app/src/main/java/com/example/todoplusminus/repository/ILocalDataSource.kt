@@ -14,7 +14,11 @@ import com.example.todoplusminus.entities.PlanMemo
 
 interface ILocalDataSource {
 
-    fun getPlannerData() : LiveData<MutableList<PlanData>>
+    fun getAllPlannerData() : LiveData<MutableList<PlanData>>
+
+    fun getAllPlannerDataByDate(date : String) : LiveData<MutableList<PlanData>>
+
+    fun getAllPlannerDataById(id : String) : LiveData<MutableList<PlanData>>
 
     fun getLastIndex() : Int
 
@@ -32,11 +36,17 @@ interface ILocalDataSource {
 
     suspend fun getPlannerDataById(id : String) : PlanData
 
+    suspend fun getAllPlanItem() : List<PlannerItemEntity>
+
+    suspend fun getAllPlanInfoByDate(date : String) : List<PlannerInfoEntity>
+
     suspend fun updateTitleBgById(id : String, title : String, bgColor : Int)
 
     suspend fun updatePlanMemo(memo : PlanMemo)
 
     suspend fun insertPlanMemo(memo : PlanMemo)
+
+    suspend fun insertPlanInfo(info : PlannerInfoEntity)
 }
 
 class PlannerMapper() {

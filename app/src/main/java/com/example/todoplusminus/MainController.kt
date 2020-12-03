@@ -20,12 +20,13 @@ import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.repository.LocalDataSourceImpl
 import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.util.KeyboardDetector
+import com.example.todoplusminus.vm.PlanHistoryVM
 
 class MainController : VBControllerBase {
 
     private lateinit var binder: ControllerMainBinding
 
-    private lateinit var auxRouter : Router
+    private var auxRouter : Router? = null
     private lateinit var childRouter: Router
 
     //todo test ... 추후에 dagger로 교체
@@ -43,7 +44,7 @@ class MainController : VBControllerBase {
 
         auxRouter = getChildRouter(binder.subArea)
         //popLastView를 true로 둠으로써, 마지막 컨트롤러 삭제시 뷰도 삭제된다. false이면 마지막컨트롤러 삭제시 뷰는 삭제 안됨.
-        auxRouter.setPopsLastView(true)
+        auxRouter?.setPopsLastView(true)
     }
 
     private fun configureUI() {
@@ -113,15 +114,16 @@ class MainController : VBControllerBase {
     private val plannerDelegate = object : PlannerController.Delegate{
         override fun showMemoEditor() {
             Log.d("godgod", "showMemoEditor()")
-            auxRouter.setRoot(RouterTransaction.with(PlanMemoController(plannerRepository!!)).apply {
+            auxRouter?.setRoot(RouterTransaction.with(PlanMemoController(plannerRepository!!)).apply {
                 pushChangeHandler(VerticalChangeHandler())
                 popChangeHandler(VerticalChangeHandler())
             })
         }
 
-        override fun showHistoryEditor() {
+        override fun showHistoryEditor(id : String) {
             Log.d("godgod", "showHistoryEditor()")
-            auxRouter.setRoot(RouterTransaction.with(PlanHistoryController(plannerRepository!!)).apply {
+            val vm = PlanHistoryVM(id, plannerRepository!!)
+            auxRouter?.setRoot(RouterTransaction.with(PlanHistoryController(vm)).apply {
                 pushChangeHandler(VerticalChangeHandler())
                 popChangeHandler(VerticalChangeHandler())
             })

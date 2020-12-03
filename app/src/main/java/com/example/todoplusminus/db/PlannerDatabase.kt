@@ -66,9 +66,17 @@ interface UserPlanDao{
 
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid order by item.`index` desc")
     fun getAllPlannerData() : LiveData<MutableList<PlanData>>
+/*
 
-    @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid and info.date == :date")
-    suspend fun getPlannerDataByDate(date : String) : List<PlanData>
+    @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid and info.date == :date order by item.`index` desc")
+    fun getAllPlannerDataByDate(date : String) : LiveData<MutableList<PlanData>>
+*/
+    @Query("select * from PlannerItem item left outer join PlannerInfo info on item.id = info.planId where date = :date order by item.`index` desc")
+    fun getAllPlannerDataByDate(date : String) : LiveData<MutableList<PlanData>>
+
+
+    @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planId and info.planId == :id")
+    fun getAllPlannerDataById(id : String) : LiveData<MutableList<PlanData>>
 
     //가장 최신의 인덱스를 가져온다.
     @Query("select `index` from PlannerItem order by `index` DESC LIMIT 1")
@@ -76,6 +84,12 @@ interface UserPlanDao{
 
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid and item.id == :id")
     fun getPlannerDataById(id : String) : PlanData
+
+    @Query("select * from PlannerItem")
+    fun getAllPlanItem() : List<PlannerItemEntity>
+
+    @Query("select * from PlannerInfo where date == :date")
+    fun getAllPlanInfoByDate(date : String) : List<PlannerInfoEntity>
 
     @Query("update PlannerItem set title = :title, bgColor = :bgColor where id = :id")
     fun updateTitleBgById(id : String, title : String, bgColor: Int)
@@ -88,4 +102,5 @@ interface UserPlanDao{
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlanMemo(memo : PlanMemo)
+
 }
