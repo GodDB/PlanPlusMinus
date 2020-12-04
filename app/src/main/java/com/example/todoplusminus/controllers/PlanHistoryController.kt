@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerPlanHistoryBinding
@@ -37,7 +38,7 @@ class PlanHistoryController : DBControllerBase {
     }
 
     private fun configureUi(){
-
+        binder.graphView.setData(listOf("월","화","수","목","금","토","일"), listOf(3,7,5,5,66,78,53))
     }
 
     private fun onSubscribe(){

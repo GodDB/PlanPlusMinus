@@ -349,6 +349,8 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) :
         fun onSwipe(position: Int, direction: Int)
     }
 
+    
+
     var enabledLongPress = false
 
     override fun getMovementFlags(
