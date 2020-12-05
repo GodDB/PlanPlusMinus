@@ -1,9 +1,8 @@
 package com.example.todoplusminus.entities
 
 import android.graphics.Color
-import android.util.Log
-import androidx.room.Ignore
-import com.example.todoplusminus.util.TimeProvider
+import com.example.todoplusminus.util.TimeHelper
+import java.time.LocalDate
 import java.util.*
 
 class PlanData(
@@ -11,7 +10,7 @@ class PlanData(
     var index: Int,
     var title: String,
     var bgColor: Int,
-    var date: String,
+    var date: LocalDate,
     var count: Int,
     var infoId: Int
 ) {
@@ -26,7 +25,7 @@ class PlanData(
                 0,
                 "",
                 DEFAULT_BG_COLOR,
-                TimeProvider.getCurDate(),
+                TimeHelper.getCurDate(),
                 0,
                 0
             )

@@ -1,7 +1,10 @@
 package com.example.todoplusminus.ui
 
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
+import android.renderscript.Sampler
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,12 +14,13 @@ import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.todoplusminus.databinding.UiGraphViewBinding
+import com.example.todoplusminus.util.CommonAnimationHelper
 import com.example.todoplusminus.util.DpConverter
 import kotlin.math.floor
 import kotlin.math.max
 
 
-class GraphView : LinearLayout {
+class GraphChartView : LinearLayout {
 
     companion object {
         //현재는 y축에 보여지는 텍스트뷰의 갯수가 6개이다. 그러므로 y축 데이터는 6개를 넘어서는 안된다.
@@ -90,10 +94,15 @@ class GraphView : LinearLayout {
         }
     }
 
+    /**
+     * 그래프바를 그려낸다.
+     * */
     private fun generateGraphBars(xDatas: List<String>, yDatas: List<Int>) {
 
+        //그래프의 최대 높이값을 기준으로 전달받은 yValue값을 나눠서 비율만큼 그래프의 높이를 정한다.
         val graphMaxHeight = binder.guideBottom.y - binder.guideTop.y
 
+        //그래프의 간격은 차트의 넓이를 기준으로 갯수만큼 나눠서 그린다.
         val size = xDatas.size-1
         val width =
             binder.guideRight.x - binder.guideLeft.x - DpConverter.dpToPx(17f) //뷰는 좌상단을 기준으로 그려지기 때문에 item의 크기 한개만큼을 빼줘서 width로 산정한다.
@@ -102,19 +111,22 @@ class GraphView : LinearLayout {
 
         var i = 0
         while (i <= size) {
-            val graphHeight = (yDatas[i] / maxYValue.toFloat()) * graphMaxHeight
-            val y = (binder.guideTop.y + graphMaxHeight-graphHeight)
 
-            Log.d("godgod", "${yDatas[i]}   ${maxYValue}    ${graphMaxHeight}")
-
+            //그래프뷰 생성
             val graphView = View(binder.root.context).apply {
                 this.x = x
-                this.y = y
-                this.layoutParams = ViewGroup.LayoutParams(GRAPH_BAR_WIDTH, graphHeight.toInt())
                 this.setBackgroundColor(Color.BLUE)
+                //나머지 y나 height값들은 애니메이션을 통해서 값을 채워준다.
             }
-
             binder.root.addView(graphView)
+
+            //그래프의 높이
+            val graphHeight = (yDatas[i] / maxYValue.toFloat()) * graphMaxHeight
+            //그래프가 그려질 y값 (차트의 y값을 기준으로 (그래프의 최대 높이 - 계산된 그래프의 높이값)만큼을 더해 구해준다.)
+            val y = (binder.guideTop.y + graphMaxHeight-graphHeight)
+
+            //run graph animation
+            startGraphAnimation(graphView, y, graphHeight)
 
             i++
             x += itemInterval
@@ -122,6 +134,8 @@ class GraphView : LinearLayout {
     }
 
     private fun setDataYTVs(list: List<Int>) {
+        //y축의 value값은 전달받은 값 중 가장 큰값을 기준으로 0까지 값이 지정된다 (등차수열)
+
         val yTvs = listOf<TextView>(
             binder.valueY5,
             binder.valueY4,
@@ -139,11 +153,11 @@ class GraphView : LinearLayout {
         //등차수열 공비
         var commonRatio = 0f
         while (true) {
+            //현재 등차수열의 공비값을 구한다.
             commonRatio = getArithmeticalSequence(maxValue, MAX_Y_AXIS_NUMBER)
-            //등차수열의 공비가 정수라면
+            //등차수열의 공비가 정수일때까지 반복한다.
             if (commonRatio == floor(commonRatio)) break
 
-            //등차수열의 공비가 정수일때까지 반복한다.
             maxValue++
         }
 
@@ -167,4 +181,39 @@ class GraphView : LinearLayout {
         return (max - 0) / (n - 1).toFloat()
     }
 
+    /**
+     * graphBar의 height와 y값을 이용해서 애니메이션을 실행한다.
+     *
+     * 결과물로는 사용자 눈에 그래프가 점점 길어져서 전달받은 y, height에 맞춰지는 애니메이션이다.
+    * */
+    private fun startGraphAnimation(v : View, y : Float, height : Float){
+        //y값은 점점 줄어들며 상단에 위치한다. (뷰는 좌측 상단을 기준으로 그려지기 때문에)
+        val yAnim = ValueAnimator.ofFloat(binder.guideBottom.y, y).apply {
+            this.duration = 1000
+            this.addUpdateListener {
+                val animatedValue = it.animatedValue as Float
+                v.y = animatedValue
+            }
+        }
+
+        //height 값은 점점 커진다.
+        val heightAnim = ValueAnimator.ofInt(0, height.toInt()).apply {
+            this.duration = 1000
+            this.addUpdateListener {
+                val animatedValue = it.animatedValue as Int
+                val params = v.layoutParams.apply {
+                    this.width = GRAPH_BAR_WIDTH
+                    this.height = animatedValue
+                }
+                v.layoutParams = params
+            }
+        }
+
+        //동시에 애니메이션 실행
+        AnimatorSet().apply {
+            this.playTogether(yAnim, heightAnim)
+            start()
+        }
+
+    }
 }

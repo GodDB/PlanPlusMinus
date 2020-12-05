@@ -42,4 +42,15 @@
     <string name="_20_squats">스쿼트 20회🏋🏻</string>
     <string name="chapter_reading">한 챕터 독서📖</string>
     <string name="today_memo">오늘의 메모</string>
+    <string name="year">년</string>
+    <string name="month">월</string>
+    <string name="week">주</string>
+    <string name="lastday_of_execution">마지막 실행일</string>
+    <string name="week_average">주 평균</string>
+    <string name="week_accumulation">주 누적</string>
+    <string name="total_accumulation">전체 누적</string>
+    <string name="month_average">월 평균</string>
+    <string name="month_accumulation">월 누적</string>
+    <string name="year_average">연 평균</string>
+    <string name="year_accumulation">연 누적</string>
 </resources>

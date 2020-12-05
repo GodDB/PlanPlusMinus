@@ -7,6 +7,7 @@ import com.example.todoplusminus.db.PlannerInfoEntity
 import com.example.todoplusminus.db.PlannerItemEntity
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
+import java.time.LocalDate
 
 class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
 
@@ -15,7 +16,7 @@ class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
     override fun getAllPlannerData(): LiveData<MutableList<PlanData>> =
         db.userPlanDao().getAllPlannerData()
 
-    override fun getAllPlannerDataByDate(date : String): LiveData<MutableList<PlanData>> =
+    override fun getAllPlannerDataByDate(date : LocalDate): LiveData<MutableList<PlanData>> =
         db.userPlanDao().getAllPlannerDataByDate(date)
 
     override fun getAllPlannerDataById(id: String): LiveData<MutableList<PlanData>> =
@@ -24,7 +25,7 @@ class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
     override fun getLastIndex(): Int =
         db.userPlanDao().getLastIndex()
 
-    override fun getMemoByDate(date: String): LiveData<PlanMemo> = db.userPlanDao().getMemoByDate(date)
+    override fun getMemoByDate(date: LocalDate): LiveData<PlanMemo> = db.userPlanDao().getMemoByDate(date)
 
 
     override suspend fun deletePlannerDataById(id: String) {
@@ -82,7 +83,7 @@ class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
     override suspend fun getAllPlanItem(): List<PlannerItemEntity> =
         db.userPlanDao().getAllPlanItem()
 
-    override suspend fun getAllPlanInfoByDate(date: String): List<PlannerInfoEntity> =
+    override suspend fun getAllPlanInfoByDate(date: LocalDate): List<PlannerInfoEntity> =
         db.userPlanDao().getAllPlanInfoByDate(date)
 
     override suspend fun updateTitleBgById(id: String, title: String, bgColor: Int) {

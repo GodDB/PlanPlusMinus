@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.example.todoplusminus.databinding.UiSubwathviewBinding
-import com.example.todoplusminus.util.TimeProvider
+import com.example.todoplusminus.util.TimeHelper
 import kotlinx.coroutines.*
 
 class SubWatchView : LinearLayout {
@@ -43,7 +43,7 @@ class SubWatchView : LinearLayout {
 
         CoroutineScope(Dispatchers.Main + mJob).launch {
             while (true) {
-                vb.clockTime.text = TimeProvider.getCurTime()
+                vb.clockTime.text = TimeHelper.getCurTime()
                 delay(500)
             }
         }

@@ -11,18 +11,19 @@ import com.example.todoplusminus.db.PlannerItemEntity
 import com.example.todoplusminus.db.PlannerItemInfoEntity
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
+import java.time.LocalDate
 
 interface ILocalDataSource {
 
     fun getAllPlannerData() : LiveData<MutableList<PlanData>>
 
-    fun getAllPlannerDataByDate(date : String) : LiveData<MutableList<PlanData>>
+    fun getAllPlannerDataByDate(date : LocalDate) : LiveData<MutableList<PlanData>>
 
     fun getAllPlannerDataById(id : String) : LiveData<MutableList<PlanData>>
 
     fun getLastIndex() : Int
 
-    fun getMemoByDate(date : String) : LiveData<PlanMemo>
+    fun getMemoByDate(date : LocalDate) : LiveData<PlanMemo>
 
     suspend fun deletePlannerDataById(id : String)
 
@@ -38,7 +39,7 @@ interface ILocalDataSource {
 
     suspend fun getAllPlanItem() : List<PlannerItemEntity>
 
-    suspend fun getAllPlanInfoByDate(date : String) : List<PlannerInfoEntity>
+    suspend fun getAllPlanInfoByDate(date : LocalDate) : List<PlannerInfoEntity>
 
     suspend fun updateTitleBgById(id : String, title : String, bgColor : Int)
 

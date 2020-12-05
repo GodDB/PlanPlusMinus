@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="vm"
+            type="com.example.todoplusminus.vm.PlanHistoryContentVM" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/prev_date"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guide_menu_top"
+            app:layout_constraintBottom_toBottomOf="@id/guide_menu_bottom"
+            android:src="@drawable/ic_baseline_arrow_back_ios_24" />
+
+        <TextView
+            android:id="@+id/date_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guide_menu_top"
+            app:layout_constraintBottom_toBottomOf="@id/guide_menu_bottom"
+            android:text="test 11/30 - 12/5" />
+
+        <ImageView
+            android:id="@+id/next_date"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guide_menu_top"
+            app:layout_constraintBottom_toBottomOf="@id/guide_menu_bottom"
+            android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/chart_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guide_menu_bottom"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            />
+
+
+        <!-- summary_1-->
+        <View
+            android:id="@+id/devide_line_1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chart_view_pager"
+            android:background="@color/right_gray"
+            android:layout_marginTop="20dp"
+            />
+        <TextView
+            android:id="@+id/last_day_execution_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/devide_line_1"
+            android:text="@string/lastday_of_execution"
+            android:layout_marginTop="10dp"
+            />
+        <TextView
+            android:id="@+id/last_day_execution_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/devide_line_1"
+            android:text="+6"
+            android:layout_marginTop="10dp"
+            />
+
+
+        <!-- summary_2-->
+        <View
+            android:id="@+id/devide_line_2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/last_day_execution_title"
+            android:background="@color/right_gray"
+            android:layout_marginTop="10dp"
+            />
+        <TextView
+            android:id="@+id/average_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/devide_line_2"
+            android:text="@string/week_average"
+            android:layout_marginTop="10dp"
+            />
+        <TextView
+            android:id="@+id/average_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/devide_line_2"
+            android:text="+6"
+            android:layout_marginTop="10dp"
+            />
+
+        <!-- summary_3-->
+        <View
+            android:id="@+id/devide_line_3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/average_title"
+            android:background="@color/right_gray"
+            android:layout_marginTop="10dp"
+            />
+        <TextView
+            android:id="@+id/accumulate_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/devide_line_3"
+            android:text="@string/week_accumulation"
+            android:layout_marginTop="10dp"
+            />
+        <TextView
+            android:id="@+id/accumulate_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/devide_line_3"
+            android:text="+6"
+            android:layout_marginTop="10dp"
+            />
+
+        <!-- summary_4-->
+        <View
+            android:id="@+id/devide_line_4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/accumulate_title"
+            android:background="@color/right_gray"
+            android:layout_marginTop="10dp"
+            />
+        <TextView
+            android:id="@+id/total_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/devide_line_4"
+            android:text="@string/total_accumulation"
+            android:layout_marginTop="10dp"
+            />
+        <TextView
+            android:id="@+id/total_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/devide_line_4"
+            android:text="+6"
+            android:layout_marginTop="10dp"
+            />
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_menu_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.02"
+            />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_menu_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.1" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

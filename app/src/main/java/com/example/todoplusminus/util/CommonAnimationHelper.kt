@@ -1,9 +1,7 @@
 package com.example.todoplusminus.util
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
+import android.animation.*
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 
@@ -24,6 +22,7 @@ object CommonAnimationHelper {
         v.tag = animator
         animator.start()
     }
+
 
     fun startFadeAnimation(v : View, isShowing : Boolean){
         if(isShowing)

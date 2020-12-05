@@ -11,7 +11,7 @@ import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
 import com.example.todoplusminus.entities.PlanProject
 import com.example.todoplusminus.repository.PlannerRepository
-import com.example.todoplusminus.util.TimeProvider
+import com.example.todoplusminus.util.TimeHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,14 +28,14 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
 
 
     val planProject: LiveData<PlanProject> = MediatorLiveData<PlanProject>().apply {
-        val data : LiveData<MutableList<PlanData>> = runBlocking(Dispatchers.IO) { repository.getAllPlanDataByDate(TimeProvider.getCurDate()) }
+        val data : LiveData<MutableList<PlanData>> = runBlocking(Dispatchers.IO) { repository.getAllPlanDataByDate(TimeHelper.getCurDate()) }
         this.value = PlanProject.create(null)
         addSource(data){ data ->
             this.value = PlanProject.create(data ?: return@addSource)
         }
     }
 
-    val planMemo: LiveData<PlanMemo> = repository.getMemoByDate(TimeProvider.getCurDate())
+    val planMemo: LiveData<PlanMemo> = repository.getMemoByDate(TimeHelper.getCurDate())
 
     val isEditMode: MutableLiveData<Boolean> = MutableLiveData(false)
 

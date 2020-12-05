@@ -5,7 +5,20 @@
     <string name="edit_title">editing plan✏️</string>
     <string name="cancel">cancel</string>
     <string name="done">done</string>
+    <string name="year">Year</string>
+    <string name="month">Month</string>
+    <string name="week">Week</string>
     <string name="today_memo">Today\'s Memo</string>
+    <string name="lastday_of_execution">Last day of execution</string>
+    <string name="week_average">Week average</string>
+    <string name="week_accumulation">Week accumulation</string>
+    <string name="total_accumulation">Total accumulation</string>
+    <string name="month_average">Month average</string>
+    <string name="month_accumulation">Month accumulation</string>
+    <string name="year_average">Year average</string>
+    <string name="year_accumulation">Year accumulation</string>
+
+
     
     <string name="travel">Travel✈️</string>
     <string name="beer">Beer🍺</string>

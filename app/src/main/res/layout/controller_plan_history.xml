@@ -4,6 +4,7 @@
     xmlns:bind="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.example.todoplusminus.vm.PlanHistoryVM" />
@@ -12,8 +13,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <com.example.todoplusminus.ui.BackgroundView
             android:layout_width="match_parent"
@@ -25,92 +25,94 @@
             android:id="@+id/root_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:background="@drawable/card_view_border"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@drawable/card_view_border"
-            bind:setSlideEvent="@{() -> vm.onCancel()}"
-            >
+            bind:setSlideEvent="@{() -> vm.onCancel()}">
 
             <View
                 android:layout_width="40dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="3dp"
+                android:background="@color/right_gray"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/root_view"
-                android:background="@color/right_gray"
-                />
+                app:layout_constraintTop_toTopOf="@id/root_view" />
+
             <View
                 android:layout_width="40dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="6dp"
+                android:background="@color/right_gray"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/root_view"
-                android:background="@color/right_gray"
-                />
+                app:layout_constraintTop_toTopOf="@id/root_view" />
+
             <View
                 android:layout_width="40dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="9dp"
+                android:background="@color/right_gray"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/root_view"
-                android:background="@color/right_gray"
-                />
+                app:layout_constraintTop_toTopOf="@id/root_view" />
 
             <TextView
                 android:id="@+id/history_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="@id/guide_content_left"
-                app:layout_constraintTop_toTopOf="@id/guide_content_top"
-                android:textSize="20sp"
                 android:text="타이틀 자리입니다..."
-                />
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="@id/guide_content_left"
+                app:layout_constraintTop_toTopOf="@id/guide_content_top" />
 
             <ImageView
                 android:id="@+id/btn_close"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                app:layout_constraintTop_toTopOf="@id/guide_content_top"
-                app:layout_constraintRight_toRightOf="@id/guide_content_right"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:src="@drawable/close"
-                />
+                app:layout_constraintRight_toRightOf="@id/guide_content_right"
+                app:layout_constraintTop_toTopOf="@id/guide_content_top" />
 
-            <ScrollView
+            <androidx.core.widget.NestedScrollView
                 android:id="@+id/sroll_container"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="@id/guide_content_left"
-                app:layout_constraintTop_toTopOf="@id/guide_scroll_area"
                 app:layout_constraintRight_toRightOf="@id/guide_content_right"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintTop_toTopOf="@id/guide_scroll_area">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    <com.example.todoplusminus.ui.GraphView
-                        android:id="@+id/graph_view"
-                        android:layout_width="0dp"
-                        android:layout_height="200dp"
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/history_tab"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@drawable/border_rounded"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        />
+                        app:tabGravity="fill"
+                        app:tabIndicator="@drawable/border_rounded"
+                        app:tabIndicatorColor="@color/pastel_color1"
+                        app:tabIndicatorGravity="center"
+                        app:tabIndicatorHeight="25dp"
+                        app:tabMode="fixed"
+                        app:tabTextColor="@color/black" />
+
+                    <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
+                        android:id="@+id/container_history_contents"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
 
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            </ScrollView>
-
-
-
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
 
 
             <androidx.constraintlayout.widget.Guideline
@@ -139,8 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.25"
-                />
+                app:layout_constraintGuide_percent="0.2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -5,7 +5,7 @@ import com.example.todoplusminus.db.PlannerInfoEntity
 import com.example.todoplusminus.db.PlannerItemEntity
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
-import com.example.todoplusminus.util.TimeProvider
+import java.time.LocalDate
 
 class PlannerRepository(
     private val localSource: ILocalDataSource
@@ -16,7 +16,7 @@ class PlannerRepository(
      * */
     fun getAllPlannerData(): LiveData<MutableList<PlanData>> = localSource.getAllPlannerData()
 
-    suspend fun getAllPlanDataByDate(date: String): LiveData<MutableList<PlanData>> {
+    suspend fun getAllPlanDataByDate(date: LocalDate): LiveData<MutableList<PlanData>> {
 
         //전달 받은 날짜에 해당하는 info데이터가 있는지 확인한다.
         //즉 전달받은 낧짜에 info 데이터가 없다는 것은 2가지를 의미한다.
@@ -43,7 +43,7 @@ class PlannerRepository(
 
     fun getLastIndex(): Int = localSource.getLastIndex()
 
-    fun getMemoByDate(date: String): LiveData<PlanMemo> = localSource.getMemoByDate(date)
+    fun getMemoByDate(date: LocalDate): LiveData<PlanMemo> = localSource.getMemoByDate(date)
 
     suspend fun deletePlannerDataById(id: String) {
         localSource.deletePlannerDataById(id)
@@ -88,7 +88,7 @@ class PlannerRepository(
      *
      * true면 데이터가 있는 것, false면 데이터가 없는 것이다.
      * */
-    private suspend fun checkWhetherExistInfoDataByDate(date: String): Boolean =
+    private suspend fun checkWhetherExistInfoDataByDate(date: LocalDate): Boolean =
         localSource.getAllPlanInfoByDate(date).isNotEmpty()
 
 
@@ -104,6 +104,6 @@ class PlannerRepository(
         localSource.getAllPlanItem()
 
 
-    private fun generateInfoData(id : String, date : String) =
+    private fun generateInfoData(id : String, date : LocalDate) =
         PlannerInfoEntity(0, date, 0, id)
 }

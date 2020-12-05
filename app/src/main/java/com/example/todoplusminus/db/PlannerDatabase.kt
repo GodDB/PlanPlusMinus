@@ -6,8 +6,11 @@ import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
+import java.time.LocalDate
+import java.util.*
 
 @Database(entities = [PlannerItemEntity::class, PlannerInfoEntity::class, PlanMemo::class], version = 1)
+@TypeConverters(Converters::class)
 abstract class PlannerDatabase : RoomDatabase() {
     abstract fun userPlanDao() : UserPlanDao
 }
@@ -30,7 +33,7 @@ data class PlannerItemEntity(
 )
 data class PlannerInfoEntity(
     @PrimaryKey(autoGenerate = true)var infoId : Int,
-    var date : String,
+    var date : LocalDate,
     var count : Int,
     var planId : String
 )
@@ -72,7 +75,7 @@ interface UserPlanDao{
     fun getAllPlannerDataByDate(date : String) : LiveData<MutableList<PlanData>>
 */
     @Query("select * from PlannerItem item left outer join PlannerInfo info on item.id = info.planId where date = :date order by item.`index` desc")
-    fun getAllPlannerDataByDate(date : String) : LiveData<MutableList<PlanData>>
+    fun getAllPlannerDataByDate(date : LocalDate) : LiveData<MutableList<PlanData>>
 
 
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planId and info.planId == :id")
@@ -89,13 +92,13 @@ interface UserPlanDao{
     fun getAllPlanItem() : List<PlannerItemEntity>
 
     @Query("select * from PlannerInfo where date == :date")
-    fun getAllPlanInfoByDate(date : String) : List<PlannerInfoEntity>
+    fun getAllPlanInfoByDate(date : LocalDate) : List<PlannerInfoEntity>
 
     @Query("update PlannerItem set title = :title, bgColor = :bgColor where id = :id")
     fun updateTitleBgById(id : String, title : String, bgColor: Int)
 
     @Query("select * from PlannerMemo where date = :date")
-    fun getMemoByDate(date : String) : LiveData<PlanMemo>
+    fun getMemoByDate(date : LocalDate) : LiveData<PlanMemo>
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updatePlanMemo(memo : PlanMemo)
@@ -103,4 +106,16 @@ interface UserPlanDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlanMemo(memo : PlanMemo)
 
+}
+
+class Converters{
+    @TypeConverter
+    fun stringToCalendar(value : String) : LocalDate{
+        return LocalDate.parse(value)
+    }
+
+    @TypeConverter
+    fun calendarToString(value : LocalDate) : String{
+        return value.toString()
+    }
 }
