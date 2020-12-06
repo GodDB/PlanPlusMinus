@@ -38,7 +38,7 @@ class PlannerRepository(
         return localSource.getAllPlannerDataByDate(date)
     }
 
-    fun getAllPlanDataById(id: String): LiveData<MutableList<PlanData>> =
+    fun getAllPlanDataById(id: String): List<PlanData> =
         localSource.getAllPlannerDataById(id)
 
     fun getLastIndex(): Int = localSource.getLastIndex()

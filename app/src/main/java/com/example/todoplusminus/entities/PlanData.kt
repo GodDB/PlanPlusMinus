@@ -33,10 +33,12 @@ class PlanData(
     }
 
 
-    fun incrementCount(count: Int) {
+    fun increaseCount(count: Int) {
         if (this.count + count >= 0)
             this.count += count
     }
+
+    fun copy(): PlanData = PlanData(id, index, title, bgColor, date, count, infoId)
 
 
 }

@@ -79,7 +79,7 @@ interface UserPlanDao{
 
 
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planId and info.planId == :id")
-    fun getAllPlannerDataById(id : String) : LiveData<MutableList<PlanData>>
+    fun getAllPlannerDataById(id : String) : List<PlanData>
 
     //가장 최신의 인덱스를 가져온다.
     @Query("select `index` from PlannerItem order by `index` DESC LIMIT 1")

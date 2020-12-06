@@ -113,20 +113,23 @@ class GraphChartView : LinearLayout {
         while (i <= size) {
 
             //그래프뷰 생성
-            val graphView = View(binder.root.context).apply {
-                this.x = x
-                this.setBackgroundColor(Color.BLUE)
-                //나머지 y나 height값들은 애니메이션을 통해서 값을 채워준다.
+            //count가 0인 것은 작업을 수행하지 않는다.
+            if(yDatas[i] > 0){
+                val graphView = View(binder.root.context).apply {
+                    this.x = x
+                    this.setBackgroundColor(Color.BLUE)
+                    //나머지 y나 height값들은 애니메이션을 통해서 값을 채워준다.
+                }
+                binder.root.addView(graphView)
+
+                //그래프의 높이
+                val graphHeight = (yDatas[i] / maxYValue.toFloat()) * graphMaxHeight
+                //그래프가 그려질 y값 (차트의 y값을 기준으로 (그래프의 최대 높이 - 계산된 그래프의 높이값)만큼을 더해 구해준다.)
+                val y = (binder.guideTop.y + graphMaxHeight-graphHeight)
+
+                //run graph animation
+                startGraphAnimation(graphView, y, graphHeight)
             }
-            binder.root.addView(graphView)
-
-            //그래프의 높이
-            val graphHeight = (yDatas[i] / maxYValue.toFloat()) * graphMaxHeight
-            //그래프가 그려질 y값 (차트의 y값을 기준으로 (그래프의 최대 높이 - 계산된 그래프의 높이값)만큼을 더해 구해준다.)
-            val y = (binder.guideTop.y + graphMaxHeight-graphHeight)
-
-            //run graph animation
-            startGraphAnimation(graphView, y, graphHeight)
 
             i++
             x += itemInterval

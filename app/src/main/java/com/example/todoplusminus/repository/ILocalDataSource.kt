@@ -19,7 +19,7 @@ interface ILocalDataSource {
 
     fun getAllPlannerDataByDate(date : LocalDate) : LiveData<MutableList<PlanData>>
 
-    fun getAllPlannerDataById(id : String) : LiveData<MutableList<PlanData>>
+    fun getAllPlannerDataById(id : String) : List<PlanData>
 
     fun getLastIndex() : Int
 

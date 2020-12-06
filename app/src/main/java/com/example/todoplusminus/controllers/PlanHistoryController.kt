@@ -5,16 +5,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerPlanHistoryBinding
+import com.example.todoplusminus.databinding.ControllerPlanHistoryContentsItemBinding
 import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.repository.LocalDataSourceImpl
 import com.example.todoplusminus.repository.PlannerRepository
+import com.example.todoplusminus.util.TimeHelper
 import com.example.todoplusminus.vm.PlanHistoryContentVM
 import com.example.todoplusminus.vm.PlanHistoryVM
 import com.google.android.material.tabs.TabLayout
@@ -55,12 +57,6 @@ class PlanHistoryController : DBControllerBase {
             }
 
         })
-
-        mVM?.planProject?.observe(this, Observer {
-            it.getPlanDataList().forEach {
-                Log.d("godgod", "${it.title}")
-            }
-        })
     }
 
     private fun configureTabLayout() {
@@ -76,7 +72,7 @@ class PlanHistoryController : DBControllerBase {
         val plannerRepository = PlannerRepository(dataSource)
 
         val mode = PlanHistoryContentVM.MODE_WEEK
-        val vm = PlanHistoryContentVM(mode, plannerRepository)
+        val vm = PlanHistoryContentVM(mode,mVM?.targetId ?:return, plannerRepository)
         childRouter.setRoot(RouterTransaction.with(PlanHistoryContentsController(vm)))
 
 
@@ -101,21 +97,21 @@ class PlanHistoryController : DBControllerBase {
                         0 -> {
                             Log.d("godgod", "주별")
                             val mode = PlanHistoryContentVM.MODE_WEEK
-                            val vm = PlanHistoryContentVM(mode, plannerRepository)
+                            val vm = PlanHistoryContentVM(mode, mVM?.targetId ?: return, plannerRepository)
                             childRouter.setRoot(RouterTransaction.with(PlanHistoryContentsController(vm)))
                         }
                         //월별
                         1 -> {
                             Log.d("godgod", "별")
                             val mode = PlanHistoryContentVM.MODE_MONTH
-                            val vm = PlanHistoryContentVM(mode, plannerRepository)
+                            val vm = PlanHistoryContentVM(mode, mVM?.targetId ?: return, plannerRepository)
                             childRouter.setRoot(RouterTransaction.with(PlanHistoryContentsController(vm)))
                         }
                         //년별
                         2 -> {
                             Log.d("godgod", "연별")
                             val mode = PlanHistoryContentVM.MODE_YEAR
-                            val vm = PlanHistoryContentVM(mode, plannerRepository)
+                            val vm = PlanHistoryContentVM(mode, mVM?.targetId ?: return, plannerRepository)
                             childRouter.setRoot(RouterTransaction.with(PlanHistoryContentsController(vm)))
                         }
                     }

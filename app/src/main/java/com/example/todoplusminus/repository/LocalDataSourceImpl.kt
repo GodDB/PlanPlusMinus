@@ -19,7 +19,7 @@ class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
     override fun getAllPlannerDataByDate(date : LocalDate): LiveData<MutableList<PlanData>> =
         db.userPlanDao().getAllPlannerDataByDate(date)
 
-    override fun getAllPlannerDataById(id: String): LiveData<MutableList<PlanData>> =
+    override fun getAllPlannerDataById(id: String): List<PlanData> =
         db.userPlanDao().getAllPlannerDataById(id)
 
     override fun getLastIndex(): Int =

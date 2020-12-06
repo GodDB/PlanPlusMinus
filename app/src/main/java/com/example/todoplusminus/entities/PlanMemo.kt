@@ -11,7 +11,9 @@ data class PlanMemo(
     var contents: String
 ) {
     companion object {
-        fun create() = PlanMemo(TimeHelper.getCurDate(),
-            "")
+        fun create() = PlanMemo(
+            TimeHelper.getCurDate(),
+            ""
+        )
     }
 }

@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
+import com.example.todoplusminus.controllers.PlanHistoryChartAdapter
 import com.example.todoplusminus.controllers.PlanListAdapter
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.util.CommonAnimationHelper
@@ -139,7 +140,13 @@ fun setClickEventAndDim(v: View, listener: OnDoneListener, content: String) {
         v.setOnClickListener {}
         v.alpha = 0.2f
     }
+}
 
+@BindingAdapter(value = ["bind:setGraphViewXData", "bind:setGraphViewYData"])
+fun setGraphViewListData (rv : RecyclerView, xData : List<String>, yData : List<List<Int>>){
+    if(rv.adapter == null) return
+
+    (rv.adapter as PlanHistoryChartAdapter).setData(xData, yData)
 }
 
 

@@ -78,7 +78,7 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
     }
 
     fun updateCountByIndex(count: Int, index: Int) {
-        planProject.value!!.incrementPlanDataCountByIndex(count, index)
+        planProject.value!!.increasePlanDataCountByIndex(count, index)
         updateByIndex(index)
 
     }
