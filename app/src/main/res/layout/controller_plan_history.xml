@@ -59,14 +59,26 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/root_view" />
 
+            <com.example.todoplusminus.ui.SquaredPaperView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintLeft_toLeftOf="@id/guide_content_left"
+                app:layout_constraintTop_toTopOf="@id/guide_content_top"
+                app:layout_constraintRight_toRightOf="@id/guide_content_right"
+                app:layout_constraintBottom_toBottomOf="@id/guide_scroll_area"
+                />
+
             <TextView
                 android:id="@+id/history_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="타이틀 자리입니다..."
-                android:textSize="20sp"
+                android:text="@{vm.MHistoryTitle}"
+                android:textSize="22sp"
+                android:layout_marginStart="10dp"
                 app:layout_constraintLeft_toLeftOf="@id/guide_content_left"
-                app:layout_constraintTop_toTopOf="@id/guide_content_top" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/guide_scroll_area"
+                />
 
             <ImageView
                 android:id="@+id/btn_close"
@@ -99,11 +111,12 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:tabGravity="fill"
                         app:tabIndicator="@drawable/border_rounded"
-                        app:tabIndicatorColor="@color/pastel_color1"
                         app:tabIndicatorGravity="center"
                         app:tabIndicatorHeight="25dp"
                         app:tabMode="fixed"
-                        app:tabTextColor="@color/black" />
+                        app:tabTextColor="@color/black"
+                        bind:tabIndicatorColor="@{vm.MTabColor}"
+                        />
 
                     <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
                         android:id="@+id/container_history_contents"

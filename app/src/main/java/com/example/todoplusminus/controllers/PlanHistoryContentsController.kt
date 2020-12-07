@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.support.RouterPagerAdapter
@@ -16,6 +18,7 @@ import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerPlanHistoryContentsBinding
 import com.example.todoplusminus.databinding.ControllerPlanHistoryContentsItemBinding
+import com.example.todoplusminus.util.ColorManager
 import com.example.todoplusminus.vm.PlanHistoryContentVM
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -52,7 +55,8 @@ class PlanHistoryContentsController : DBControllerBase {
     private fun configureUI() {
 
         binder.chartViewList.adapter = PlanHistoryChartAdapter()
-        binder.chartViewList.layoutManager = LinearLayoutManager(binder.root.context, LinearLayoutManager.HORIZONTAL, false)
+        binder.chartViewList.layoutManager = LinearLayoutManager(binder.root.context, LinearLayoutManager.HORIZONTAL, true)
+        PagerSnapHelper().attachToRecyclerView(binder.chartViewList)
     }
 
     private fun onSubscribe() {
@@ -93,15 +97,24 @@ class PlanHistoryContentsController : DBControllerBase {
 
 class PlanHistoryChartAdapter() : RecyclerView.Adapter<PlanHistoryChartAdapter.PlanHistoryVH>() {
 
-    private var mXDataList : List<String> = mutableListOf()
+    private var mXDataList : List<List<String>> = mutableListOf()
     private var mYDataList : List<List<Int>> = mutableListOf()
+    private var mTitleList : List<String> = mutableListOf()
+    private var mGraphBarColor : Int = ColorManager.getRandomColor()
 
-
-    fun setData(xDataList : List<String> ,yDataList : List<List<Int>>){
-        this.mXDataList = xDataList
-        this.mYDataList = yDataList
+    /**
+     * recyclerView에 데이터를 삽입한다.
+     *
+     * 최신순으로 보여주기 위해 전달된 데이터에 reverse를 실행한다.
+     * */
+    fun setData(xDataList : List<List<String>> ,yDataList : List<List<Int>>, titleList : List<String>, graphBarColor : Int){
+        this.mXDataList = xDataList.reversed()
+        this.mYDataList = yDataList.reversed()
+        this.mTitleList = titleList.reversed()
+        this.mGraphBarColor = graphBarColor
         notifyDataSetChanged()
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlanHistoryVH {
         val binder = ControllerPlanHistoryContentsItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -111,6 +124,7 @@ class PlanHistoryChartAdapter() : RecyclerView.Adapter<PlanHistoryChartAdapter.P
     override fun getItemCount(): Int = mYDataList.size
 
     override fun onBindViewHolder(holder: PlanHistoryVH, position: Int) {
+        holder.setIsRecyclable(false) //view holder를 재활용하지 않는다.
         holder.bind()
     }
 
@@ -119,7 +133,8 @@ class PlanHistoryChartAdapter() : RecyclerView.Adapter<PlanHistoryChartAdapter.P
 
         fun bind(){
             val position = adapterPosition
-            binder.graphView.setData(mXDataList, mYDataList[position])
+            binder.graphView.setData(mXDataList[position], mYDataList[position], mGraphBarColor)
+            binder.graphTitle.text = mTitleList[position]
         }
     }
 }

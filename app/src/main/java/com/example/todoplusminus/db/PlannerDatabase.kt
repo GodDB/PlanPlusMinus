@@ -1,5 +1,6 @@
 package com.example.todoplusminus.db
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.*
@@ -111,6 +112,8 @@ interface UserPlanDao{
 class Converters{
     @TypeConverter
     fun stringToCalendar(value : String) : LocalDate{
+        if(value == "2020/12/03") return LocalDate.parse("2020-12-03")
+        Log.d("godgod", "${value}")
         return LocalDate.parse(value)
     }
 

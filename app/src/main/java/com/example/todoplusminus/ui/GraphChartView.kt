@@ -13,7 +13,10 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import com.example.todoplusminus.R
 import com.example.todoplusminus.databinding.UiGraphViewBinding
+import com.example.todoplusminus.util.ColorManager
 import com.example.todoplusminus.util.CommonAnimationHelper
 import com.example.todoplusminus.util.DpConverter
 import kotlin.math.floor
@@ -31,6 +34,7 @@ class GraphChartView : LinearLayout {
 
     private lateinit var binder: UiGraphViewBinding
     private var maxYValue : Int = 0
+    private var mGraphViewColor = ColorManager.getRandomColor()
 
 
     constructor(context: Context?) : super(context) {
@@ -49,19 +53,20 @@ class GraphChartView : LinearLayout {
         customInit(context)
     }
 
-    fun setData(xDatas: List<String>, yDatas: List<Int>) {
-
-        setDataYTVs(yDatas)
+    fun setData(xDatas: List<String>, yDatas: List<Int>, bgColor : Int) {
 
         binder.root.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 binder.root.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                mGraphViewColor = bgColor
+                setDataYTVs(yDatas)
                 generateXTVs(xDatas)
-                generateGraphBars(xDatas, yDatas)
+                generateGraphBars(yDatas)
             }
         })
     }
+
 
 
     private fun customInit(context: Context?) {
@@ -86,6 +91,7 @@ class GraphChartView : LinearLayout {
                 this.x = x
                 this.y = y
                 text = list[i]
+                textSize = 12f
             }
 
             binder.root.addView(tv)
@@ -97,13 +103,13 @@ class GraphChartView : LinearLayout {
     /**
      * 그래프바를 그려낸다.
      * */
-    private fun generateGraphBars(xDatas: List<String>, yDatas: List<Int>) {
+    private fun generateGraphBars(yDatas: List<Int>) {
 
         //그래프의 최대 높이값을 기준으로 전달받은 yValue값을 나눠서 비율만큼 그래프의 높이를 정한다.
         val graphMaxHeight = binder.guideBottom.y - binder.guideTop.y
 
         //그래프의 간격은 차트의 넓이를 기준으로 갯수만큼 나눠서 그린다.
-        val size = xDatas.size-1
+        val size = yDatas.size-1
         val width =
             binder.guideRight.x - binder.guideLeft.x - DpConverter.dpToPx(17f) //뷰는 좌상단을 기준으로 그려지기 때문에 item의 크기 한개만큼을 빼줘서 width로 산정한다.
         val itemInterval = (width / size)
@@ -115,9 +121,10 @@ class GraphChartView : LinearLayout {
             //그래프뷰 생성
             //count가 0인 것은 작업을 수행하지 않는다.
             if(yDatas[i] > 0){
-                val graphView = View(binder.root.context).apply {
-                    this.x = x
-                    this.setBackgroundColor(Color.BLUE)
+                val graphView = CardView(binder.root.context).apply {
+                    this.x = x + DpConverter.dpToPx(1.2f)
+                    this.setCardBackgroundColor(mGraphViewColor)
+                    this.radius = 10f
                     //나머지 y나 height값들은 애니메이션을 통해서 값을 채워준다.
                 }
                 binder.root.addView(graphView)
@@ -217,6 +224,7 @@ class GraphChartView : LinearLayout {
             this.playTogether(yAnim, heightAnim)
             start()
         }
-
     }
+
+
 }

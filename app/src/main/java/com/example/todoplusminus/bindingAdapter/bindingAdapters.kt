@@ -14,10 +14,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todoplusminus.controllers.PlanHistoryChartAdapter
 import com.example.todoplusminus.controllers.PlanListAdapter
 import com.example.todoplusminus.entities.PlanData
+import com.example.todoplusminus.ui.GraphChartView
 import com.example.todoplusminus.util.CommonAnimationHelper
 import com.example.todoplusminus.util.DeviceManager
 import com.example.todoplusminus.util.DpConverter
+import com.example.todoplusminus.util.LocalDateRange
 import com.example.todoplusminus.vm.OnDoneListener
+import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -142,11 +145,18 @@ fun setClickEventAndDim(v: View, listener: OnDoneListener, content: String) {
     }
 }
 
-@BindingAdapter(value = ["bind:setGraphViewXData", "bind:setGraphViewYData"])
-fun setGraphViewListData (rv : RecyclerView, xData : List<String>, yData : List<List<Int>>){
+@BindingAdapter(value = ["bind:setGraphViewXData", "bind:setGraphViewYData", "bind:setGraphViewTitle", "bind:setGraphBarColor"], requireAll = true)
+fun setGraphViewListData (rv : RecyclerView, xData : List<List<String>>, yData : List<List<Int>>, titleList : List<LocalDateRange>, graphBarColor : Int){
     if(rv.adapter == null) return
 
-    (rv.adapter as PlanHistoryChartAdapter).setData(xData, yData)
+    val mTitleList : List<String> = titleList.map { (it.startDate.toString() + " ~ " + it.endDate.toString()) }
+
+    (rv.adapter as PlanHistoryChartAdapter).setData(xData, yData, mTitleList, graphBarColor)
+}
+
+@BindingAdapter("bind:tabIndicatorColor")
+fun setTabIndicatorColor(tabLayout : TabLayout, bgColor : Int){
+    tabLayout.setSelectedTabIndicatorColor(bgColor)
 }
 
 

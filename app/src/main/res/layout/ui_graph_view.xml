@@ -15,6 +15,7 @@
         app:layout_constraintBottom_toBottomOf="@id/bg_view1"
         android:text="0"
         android:layout_marginStart="5dp"
+        android:textSize="12sp"
         />
 
     <TextView
@@ -26,6 +27,7 @@
         app:layout_constraintBottom_toBottomOf="@id/bg_view2"
         android:text="0"
         android:layout_marginStart="5dp"
+        android:textSize="12sp"
         />
 
     <TextView
@@ -37,6 +39,7 @@
         app:layout_constraintBottom_toBottomOf="@id/bg_view3"
         android:text="0"
         android:layout_marginStart="5dp"
+        android:textSize="12sp"
         />
 
     <TextView
@@ -48,6 +51,7 @@
         app:layout_constraintBottom_toBottomOf="@id/bg_view4"
         android:text="0"
         android:layout_marginStart="5dp"
+        android:textSize="12sp"
         />
 
     <TextView
@@ -59,6 +63,7 @@
         app:layout_constraintBottom_toBottomOf="@id/bg_view5"
         android:text="0"
         android:layout_marginStart="5dp"
+        android:textSize="12sp"
         />
 
     <TextView
@@ -70,6 +75,7 @@
         app:layout_constraintBottom_toTopOf="@id/bg_view5"
         android:text="0"
         android:layout_marginStart="5dp"
+        android:textSize="12sp"
         />
 
     <View

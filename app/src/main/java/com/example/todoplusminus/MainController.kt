@@ -1,25 +1,20 @@
 package com.example.todoplusminus
 
 import android.util.Log
-import android.view.KeyboardShortcutGroup
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.room.Room
-import com.bluelinelabs.conductor.Conductor
-import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
-import com.bluelinelabs.conductor.support.RouterPagerAdapter
 import com.example.todoplusminus.base.VBControllerBase
 import com.example.todoplusminus.controllers.*
 import com.example.todoplusminus.databinding.ControllerMainBinding
 import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.repository.LocalDataSourceImpl
 import com.example.todoplusminus.repository.PlannerRepository
-import com.example.todoplusminus.util.KeyboardDetector
 import com.example.todoplusminus.vm.PlanHistoryVM
 
 class MainController : VBControllerBase {
@@ -55,7 +50,7 @@ class MainController : VBControllerBase {
             applicationContext!!,
             PlannerDatabase::class.java,
             "plannerDB.sqlite3"
-        ).build()
+        ).createFromAsset("pre_planDB").build()
 
         val dataSource = LocalDataSourceImpl(db)
         plannerRepository = PlannerRepository(dataSource)

@@ -6,17 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerPlanHistoryBinding
-import com.example.todoplusminus.databinding.ControllerPlanHistoryContentsItemBinding
 import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.repository.LocalDataSourceImpl
 import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.util.TimeHelper
+import com.example.todoplusminus.util.compareUntilMonth
+import com.example.todoplusminus.util.compareUntilWeek
+import com.example.todoplusminus.util.compareUntilYear
 import com.example.todoplusminus.vm.PlanHistoryContentVM
 import com.example.todoplusminus.vm.PlanHistoryVM
 import com.google.android.material.tabs.TabLayout
@@ -67,7 +68,7 @@ class PlanHistoryController : DBControllerBase {
             applicationContext!!,
             PlannerDatabase::class.java,
             "plannerDB.sqlite3"
-        ).build()
+        ).createFromAsset("pre_planDB").build()
         val dataSource = LocalDataSourceImpl(db)
         val plannerRepository = PlannerRepository(dataSource)
 

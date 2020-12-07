@@ -8,10 +8,12 @@ import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanProject
 import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.util.TimeHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
-class PlanHistoryVM(val targetId : String, private val repository : PlannerRepository) {
+class PlanHistoryVM(val targetId: String, private val repository: PlannerRepository) {
 
-  /*  val planProject: LiveData<PlanProject> = MediatorLiveData<PlanProject>().apply {
+    /*val planProject: LiveData<PlanProject> = MediatorLiveData<PlanProject>().apply {
         val data : LiveData<MutableList<PlanData>> = repository.getAllPlanDataById(targetId)
         this.value = PlanProject.create(null)
         addSource(data){ data ->
@@ -19,12 +21,20 @@ class PlanHistoryVM(val targetId : String, private val repository : PlannerRepos
         }
     }*/
 
+    private val _mPlanProject: PlanProject =
+        PlanProject.create(runBlocking(Dispatchers.IO) { repository.getAllPlanDataById(targetId) })
+
+    val mHistoryTitle: LiveData<String>
+        get() = MutableLiveData(_mPlanProject.getPlanDataById(targetId).title)
+
+    val mTabColor: LiveData<Int>
+        get() = MutableLiveData(_mPlanProject.getPlanDataBgColorByIndex(0))
 
     var wantEditorClose
             : MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
 
-    fun onCancel(){
+    fun onCancel() {
         wantEditorClose.value = Event(true)
     }
 }
