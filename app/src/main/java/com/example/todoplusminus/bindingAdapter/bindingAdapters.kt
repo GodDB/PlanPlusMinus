@@ -4,9 +4,11 @@ package com.example.todoplusminus.bindingAdapter
 import android.graphics.Color
 import android.os.Looper
 import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
@@ -159,5 +161,25 @@ fun setTabIndicatorColor(tabLayout : TabLayout, bgColor : Int){
     tabLayout.setSelectedTabIndicatorColor(bgColor)
 }
 
+@BindingAdapter("bind:setCardViewColorById")
+fun setCardViewColorById(view : CardView, colorId : Int){
+    view.setCardBackgroundColor(view.context.getColor(colorId))
+}
 
+@BindingAdapter("bind:setItemClickListener")
+fun setOnClickEvent(view : CardView, onClick : () -> Unit){
 
+    val clickGestureDetector = GestureDetector(view.context, object : GestureDetector.SimpleOnGestureListener(){
+        //todo swipe이벤트와 겹치면 안된다.
+        override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+            return super.onSingleTapConfirmed(e)
+        }
+
+        override fun onSingleTapUp(e: MotionEvent?): Boolean = true
+    })
+
+    view.setOnTouchListener { _, event ->
+        if(clickGestureDetector.onTouchEvent(event)) onClick()
+        true
+    }
+}

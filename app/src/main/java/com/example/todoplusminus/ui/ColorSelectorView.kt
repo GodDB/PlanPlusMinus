@@ -73,7 +73,7 @@ class ColorSelectorAdapter : RecyclerView.Adapter<ColorSelectorAdapter.ColorVH>(
         RecyclerView.ViewHolder(vb.root) {
 
         fun bind() {
-            vb.bgColor = colorList[adapterPosition]
+            vb.bgColorId = colorList[adapterPosition]
             vb.vm = mVM
         }
 

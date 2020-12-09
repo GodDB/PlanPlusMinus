@@ -3,13 +3,14 @@ package com.example.todoplusminus.vm
 import androidx.lifecycle.*
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanMemo
+import com.example.todoplusminus.repository.IPlannerRepository
 import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.util.TimeHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class PlanMemoVM(private val repository: PlannerRepository) {
+class PlanMemoVM(private val repository: IPlannerRepository) {
 
     // convert livedata to MutableLivedata
     val memoData: MutableLiveData<PlanMemo> = MediatorLiveData<PlanMemo>().apply{
@@ -61,7 +62,6 @@ class PlanMemoVM(private val repository: PlannerRepository) {
 
     }
 }
-
 
 interface OnDoneListener {
     fun onDone()

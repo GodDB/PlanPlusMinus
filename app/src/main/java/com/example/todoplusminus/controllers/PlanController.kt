@@ -6,7 +6,7 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
 import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.MyTransitionCH
@@ -19,16 +19,16 @@ import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.util.*
 import com.example.todoplusminus.vm.PlanEditVM
 import com.example.todoplusminus.vm.PlannerViewModel
-import com.example.todoplusminus.vm.ViewModelFactory
+import com.example.todoplusminus.vm.PlannerVMFactory
 import kotlin.math.max
 import kotlin.math.min
 
 
 class PlannerController : DBControllerBase {
 
-    interface Delegate{
+    interface Delegate {
         fun showMemoEditor()
-        fun showHistoryEditor(id : String)
+        fun showHistoryEditor(id: String)
     }
 
     companion object {
@@ -37,13 +37,13 @@ class PlannerController : DBControllerBase {
 
     private lateinit var binder: ControllerPlannerBinding
     private lateinit var planVM: PlannerViewModel
-    private var mDelegate : Delegate? = null
+    private var mDelegate: Delegate? = null
 
-    private var repository : PlannerRepository? = null
+    private var repository: PlannerRepository? = null
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    constructor(repository : PlannerRepository, delegate : Delegate?){
+    constructor(repository: PlannerRepository, delegate: Delegate?) {
         this.repository = repository
         mDelegate = delegate
     }
@@ -51,9 +51,11 @@ class PlannerController : DBControllerBase {
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
         binder = DataBindingUtil.inflate(inflater, R.layout.controller_planner, container, false)
 
-        val factory = ViewModelFactory(repository!!) // aac viewModel은 factory를 이용해서 생성함.
-        planVM = ViewModelProviders.of(activity as AppCompatActivity, factory)
-            .get(PlannerViewModel::class.java)
+        val factory = PlannerVMFactory(repository!!)
+        planVM = ViewModelProvider(
+            activity as AppCompatActivity,
+            factory
+        ).get(PlannerViewModel::class.java)
 
         binder.vm = planVM
         binder.lifecycleOwner = this
@@ -72,8 +74,12 @@ class PlannerController : DBControllerBase {
 
     private fun showPlanEditor(id: String) {
         //todo test
+        val factory = PlannerVMFactory(repository!!)
+        val vm =
+            ViewModelProvider(activity as AppCompatActivity, factory).get(PlanEditVM::class.java)
+
         pushController(RouterTransaction.with(
-            PlanEditController(PlanEditVM(repository!!).apply {
+            PlanEditController(vm.apply {
                 setData(id)
             })
         ).apply {
@@ -111,11 +117,11 @@ class PlannerController : DBControllerBase {
         planVM.isShowMemoEditor.observe(this, Observer { event ->
             //livedata 변경 후에 이벤트가 처리된 적 있다면 null, 아니면 변경된 값을 전달받는다.
             event.getContentIfNotHandled()?.let { isShow ->
-                if(isShow) mDelegate?.showMemoEditor()
+                if (isShow) mDelegate?.showMemoEditor()
             }
         })
 
-        planVM.showHistoryId.observe(this, Observer { event->
+        planVM.showHistoryId.observe(this, Observer { event ->
             //livedata 변경 후에 이벤트가 처리된 적 있다면 null, 아니면 변경된 값을 전달받는다.
             event.getContentIfNotHandled()?.let { id ->
                 mDelegate?.showHistoryEditor(id)
@@ -124,7 +130,7 @@ class PlannerController : DBControllerBase {
 
 
         planVM.editPlanDataID.observe(this, Observer { id ->
-            if(id != null && id != ""){
+            if (id != null && id != "") {
                 showPlanEditor(id)
                 planVM.clearEditPlanId()
             }
@@ -349,7 +355,6 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) :
         fun onSwipe(position: Int, direction: Int)
     }
 
-    
 
     var enabledLongPress = false
 

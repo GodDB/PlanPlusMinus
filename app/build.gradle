@@ -8,12 +8,10 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
-    dataBinding {
-        enabled = true
-    }
+    buildFeatures {
+        dataBinding = true
 
-    viewBinding {
-        enabled = true
+        viewBinding = true
     }
 
     defaultConfig {
@@ -39,6 +37,10 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -48,14 +50,15 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+    //conductor
     implementation 'com.bluelinelabs:conductor:3.0.0-rc3'
     implementation 'com.bluelinelabs:conductor-archlifecycle:3.0.0-rc3'
     implementation 'com.bluelinelabs:conductor-viewpager:3.0.0-rc3'
 
+    //room
     def room_version = "2.2.5"
 
     implementation "androidx.room:room-runtime:$room_version"
@@ -67,7 +70,25 @@ dependencies {
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
 
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    //viewmodel / livedata / viewmodelscope
+    def lifecycle_version = "2.2.0"
+    def arch_version = "2.1.0"
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    // Lifecycles only (without ViewModel or LiveData)
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    // optional - Test helpers for LiveData
+    testImplementation "androidx.arch.core:core-testing:$arch_version"
+
+
+    //test api
+    testImplementation 'junit:junit:4.12'
+    testImplementation "org.mockito:mockito-core:3.3.3"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2"
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
 
 
 }

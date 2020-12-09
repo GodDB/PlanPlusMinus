@@ -47,7 +47,7 @@ class TitleSelectorView : LinearLayout {
 
 class TitleSelectorAdapter : RecyclerView.Adapter<TitleSelectorAdapter.TitleVH>() {
 
-    private val titleList = TitleManager.titleList
+    private val titleList = TitleManager.titleIdList
     private var mVM: PlanEditVM? = null
 
     fun setVM(vm: PlanEditVM) {
@@ -71,7 +71,7 @@ class TitleSelectorAdapter : RecyclerView.Adapter<TitleSelectorAdapter.TitleVH>(
         RecyclerView.ViewHolder(vb.root) {
 
         fun bind() {
-            vb.title = titleList[adapterPosition]
+            vb.title = vb.root.context.getString(titleList[adapterPosition])
             vb.vm = mVM
         }
     }

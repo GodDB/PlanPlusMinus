@@ -1,5 +1,11 @@
 package com.example.todoplusminus.util
 
+import androidx.cardview.widget.CardView
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
@@ -44,4 +50,8 @@ fun LocalDate.compareUntilYear(target: LocalDate): Int {
         this.year == target.year -> 0
         else -> -1
     }
+}
+
+fun CardView.setColorById(id : Int){
+    this.setCardBackgroundColor(this.context.getColor(id))
 }

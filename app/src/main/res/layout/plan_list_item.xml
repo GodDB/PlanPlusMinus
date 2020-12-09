@@ -32,7 +32,7 @@
             bind:backgroundColor="@{vm.planProject.getPlanDataByIndex(index)}"
             bind:isEdit="@{vm.isEditMode().booleanValue()}"
             android:transitionName="@{vm.planProject.getPlanDataIdByIndex(index)}"
-            android:onClick="@{() -> vm.onItemClick(vm.planProject.getPlanDataIdByIndex(index))}"
+            bind:setItemClickListener="@{() -> vm.onItemClick(vm.planProject.getPlanDataIdByIndex(index))}"
             >
 
             <androidx.constraintlayout.widget.ConstraintLayout

@@ -53,10 +53,12 @@ class PlanProject private constructor() {
 
     //todo calculate logic
 
-    fun getTotalCount(): Int {
+    fun getTotalCount(): Int = sum(mPlanDataList)
+
+    private fun sum(list : List<PlanData>) : Int{
         var result = 0
-        mPlanDataList.forEach {
-            result += it.count
+        list.forEach {
+            result+= it.count
         }
         return result
     }
@@ -219,10 +221,10 @@ class PlanProject private constructor() {
     /**
      * PlanData들 중 가장 최신 date를 구한다.
      * */
-    fun getNewDate(): LocalDate {
-        var diffDate = LocalDate.now()
+    fun getLatestDate(): LocalDate {
+        var diffDate = LocalDate.MIN
         var diffDay = Long.MAX_VALUE
-        var result: LocalDate = LocalDate.now()
+        var result: LocalDate = LocalDate.MIN
 
         mPlanDataList.forEach {
             if (diffDay > ChronoUnit.DAYS.between(it.date, diffDate)) {

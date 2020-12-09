@@ -34,8 +34,6 @@ class SplashController : VBControllerBase {
         DpConverter.setUp(v.context)
         DeviceManager.setUp(v.context)
         VibrateHelper.setUp(v.context)
-        ColorManager.setUp(v.context)
-        TitleManager.setUp(v.context)
 
         //todo 완료했을때 적용하자... 지금 테스트 단계이니깐 0.5초 기다리기 좀 그래
 /*        CoroutineScope(Dispatchers.Main).launch {

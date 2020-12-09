@@ -9,14 +9,14 @@ import java.time.LocalDate
 
 class PlannerRepository(
     private val localSource: ILocalDataSource
-) {
+) : IPlannerRepository {
 
     /**
      * initialize function
      * */
-    fun getAllPlannerData(): LiveData<MutableList<PlanData>> = localSource.getAllPlannerData()
+    override fun getAllPlannerData(): LiveData<MutableList<PlanData>> = localSource.getAllPlannerData()
 
-    suspend fun getAllPlanDataByDate(date: LocalDate): LiveData<MutableList<PlanData>> {
+    override suspend fun getAllPlanDataByDate(date: LocalDate): LiveData<MutableList<PlanData>> {
 
         //전달 받은 날짜에 해당하는 info데이터가 있는지 확인한다.
         //즉 전달받은 낧짜에 info 데이터가 없다는 것은 2가지를 의미한다.
@@ -38,44 +38,44 @@ class PlannerRepository(
         return localSource.getAllPlannerDataByDate(date)
     }
 
-    fun getAllPlanDataById(id: String): List<PlanData> =
+    override fun getAllPlanDataById(id: String): List<PlanData> =
         localSource.getAllPlannerDataById(id)
 
-    fun getLastIndex(): Int = localSource.getLastIndex()
+    override fun getLastIndex(): Int = localSource.getLastIndex()
 
-    fun getMemoByDate(date: LocalDate): LiveData<PlanMemo> = localSource.getMemoByDate(date)
+    override fun getMemoByDate(date: LocalDate): LiveData<PlanMemo> = localSource.getMemoByDate(date)
 
-    suspend fun deletePlannerDataById(id: String) {
+    override suspend fun deletePlannerDataById(id: String) {
         localSource.deletePlannerDataById(id)
     }
 
-    suspend fun insertPlannerData(planData: PlanData) {
+    override suspend fun insertPlannerData(planData: PlanData) {
         localSource.insertPlannerData(planData)
     }
 
-    suspend fun updatePlannerDataList(dataList: List<PlanData>) {
+    override suspend fun updatePlannerDataList(dataList: List<PlanData>) {
         localSource.updatePlannerDataList(dataList)
     }
 
-    suspend fun updatePlannerData(data: PlanData) {
+    override suspend fun updatePlannerData(data: PlanData) {
         localSource.updatePlannerData(data)
     }
 
-    suspend fun getPlannerDataById(id: String) = localSource.getPlannerDataById(id)
+    override suspend fun getPlannerDataById(id: String) : PlanData = localSource.getPlannerDataById(id)
 
-    suspend fun deleteAndUpdateAll(deleteTarget: PlanData, updateTarget: List<PlanData>) {
+    override suspend fun deleteAndUpdateAll(deleteTarget: PlanData, updateTarget: List<PlanData>) {
         localSource.deleteAndUpdateAll(deleteTarget, updateTarget)
     }
 
-    suspend fun updateTitleBgById(id: String, title: String, bgColor: Int) {
+    override suspend fun updateTitleBgById(id: String, title: String, bgColor: Int) {
         localSource.updateTitleBgById(id, title, bgColor)
     }
 
-    suspend fun updatePlanMemo(memo: PlanMemo) {
+    override suspend fun updatePlanMemo(memo: PlanMemo) {
         localSource.updatePlanMemo(memo)
     }
 
-    suspend fun insertPlanMemo(memo: PlanMemo) {
+    override suspend fun insertPlanMemo(memo: PlanMemo) {
         localSource.insertPlanMemo(memo)
     }
 
