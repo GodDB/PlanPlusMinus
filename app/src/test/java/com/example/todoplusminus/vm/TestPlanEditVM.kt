@@ -31,6 +31,7 @@ import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.*
 
+
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class TestPlanEditVM {
@@ -54,7 +55,6 @@ class TestPlanEditVM {
 
         planEditVM = PlanEditVM(repository, PMCoroutineSpecification.MAIN_DISPATCHER)
     }
-
     @Test
     fun test_setData_notEmptyId() {
         var targetData = PlanData.create().apply {

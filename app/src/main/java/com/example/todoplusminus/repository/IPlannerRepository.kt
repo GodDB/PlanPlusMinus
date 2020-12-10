@@ -6,9 +6,12 @@ import com.example.todoplusminus.entities.PlanMemo
 import java.time.LocalDate
 
 interface IPlannerRepository {
+
+    suspend fun refreshPlannerData(date : LocalDate)
+
     fun getAllPlannerData(): LiveData<MutableList<PlanData>>
 
-    suspend fun getAllPlanDataByDate(date: LocalDate): LiveData<MutableList<PlanData>>
+    fun getAllPlanDataByDate(date: LocalDate): LiveData<MutableList<PlanData>>
 
     fun getAllPlanDataById(id: String): List<PlanData>
 

@@ -3,13 +3,16 @@ package com.example.todoplusminus.vm
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.todoplusminus.PMCoroutineSpecification
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
 import com.example.todoplusminus.entities.PlanProject
+import com.example.todoplusminus.repository.IPlannerRepository
 import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.util.TimeHelper
 import kotlinx.coroutines.*
+import java.time.LocalDate
 
 /**
  * planner의 모든 비즈니스 로직을 담당하는 viewModel
@@ -18,24 +21,30 @@ import kotlinx.coroutines.*
  * 이번 프로젝트에서는 livedata를 사용했기 때문에 참조 대상인 controller가 deActive 상황일 때 livedata에 의해 controller가가 향받게 된다.
  *  그래서 viewModel()을 사용한다.
  * */
-class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() {
+class PlannerViewModel(
+    private val repository: IPlannerRepository,
+    private val dispatcher: CoroutineDispatcher = PMCoroutineSpecification.IO_DISPATCHER
+) : ViewModel() {
 
-
-    //https://developer.android.com/topic/libraries/architecture/coroutines?hl=ko
-    val planProject: LiveData<PlanProject> = MediatorLiveData<PlanProject>().apply {
-        val data : LiveData<MutableList<PlanData>> = runBlocking(Dispatchers.IO) { repository.getAllPlanDataByDate(TimeHelper.getCurDate()) }
-        this.value = PlanProject.create(null)
-        addSource(data){ data ->
-            this.value = PlanProject.create(data ?: return@addSource)
+    init {
+        viewModelScope.launch (dispatcher) {
+            repository.refreshPlannerData(LocalDate.now())
         }
     }
 
+    //https://developer.android.com/topic/libraries/architecture/coroutines?hl=ko
+    val planProject: LiveData<PlanProject> = MediatorLiveData<PlanProject>().apply {
+        val data: LiveData<MutableList<PlanData>> = repository.getAllPlanDataByDate(TimeHelper.getCurDate())
+        addSource(data) {
+            this.value = PlanProject.create(it)
+        }
+    }
 
     val planMemo: LiveData<PlanMemo> = repository.getMemoByDate(TimeHelper.getCurDate())
 
     val isEditMode: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val editPlanDataID: MutableLiveData<String?> = MutableLiveData(null)
+    val editPlanDataID: MutableLiveData<Event<String>?> = MutableLiveData()
 
     val isShowMemoEditor: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
@@ -69,18 +78,18 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
         //edit mode가 아니라면 실행하지 않는다.
         if (!checkWhetherEditMode()) return
 
-        if (checkIdEmpty(id)) this.editPlanDataID.value = PlanData.EMPTY_ID
-        this.editPlanDataID.value = id
+        if (checkIdEmpty(id)) {
+            this.editPlanDataID.value = Event(PlanData.EMPTY_ID)
+            return
+        }
+
+        this.editPlanDataID.value = Event(id!!)
     }
 
     fun updateCountByIndex(count: Int, index: Int) {
-        planProject.value!!.increasePlanDataCountByIndex(count, index)
+        planProject.value?.increasePlanDataCountByIndex(count, index)
         updateByIndex(index)
 
-    }
-
-    fun clearEditPlanId() {
-        editPlanDataID.value = null
     }
 
     fun showMemo() {
@@ -93,33 +102,27 @@ class PlannerViewModel(private val repository: PlannerRepository) : ViewModel() 
     }
 
     private fun updateAll() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                repository.updatePlannerDataList(planProject.value!!.getPlanDataList())
-            }
+        viewModelScope.launch(dispatcher) {
+            repository.updatePlannerDataList(planProject.value!!.getPlanDataList())
         }
     }
 
     private fun updateByIndex(index: Int) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                repository.updatePlannerData(planProject.value!!.getPlanDataByIndex(index))
-            }
+        viewModelScope.launch(dispatcher) {
+            repository.updatePlannerData(planProject.value!!.getPlanDataByIndex(index))
         }
     }
 
 
     private fun onDelete(planData: PlanData) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                repository.deletePlannerDataById(planData.id)
-            }
+        viewModelScope.launch(dispatcher) {
+            repository.deletePlannerDataById(planData.id)
         }
     }
 
     private fun checkWhetherEditMode(): Boolean = isEditMode.value!!
 
-    private fun checkIdEmpty(id : String?) : Boolean = (id == "" || id == null)
+    private fun checkIdEmpty(id: String?): Boolean = (id == "" || id == null)
 
 }
 

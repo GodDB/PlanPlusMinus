@@ -129,10 +129,9 @@ class PlannerController : DBControllerBase {
         })
 
 
-        planVM.editPlanDataID.observe(this, Observer { id ->
-            if (id != null && id != "") {
+        planVM.editPlanDataID.observe(this, Observer { event ->
+            event?.getContentIfNotHandled()?.let { id ->
                 showPlanEditor(id)
-                planVM.clearEditPlanId()
             }
         })
 
@@ -258,7 +257,9 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
 
     private lateinit var binder: PlanListItemBinding
 
-    fun updateDiffItems(newDatalist: List<PlanData>) {
+    fun updateDiffItems(newDatalist: List<PlanData>?) {
+        if (newDatalist == null) return
+
         val callback = CommonDiffUtil(
             curDataList,
             newDatalist
@@ -270,7 +271,9 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
         result.dispatchUpdatesTo(this)
     }
 
-    fun updateAllItems(newDatalist: List<PlanData>) {
+    fun updateAllItems(newDatalist: List<PlanData>?) {
+        if (newDatalist == null) return
+
         this.curDataList.clear()
         this.curDataList.addAll(newDatalist)
 

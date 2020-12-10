@@ -14,27 +14,30 @@ class PlannerRepository(
     /**
      * initialize function
      * */
-    override fun getAllPlannerData(): LiveData<MutableList<PlanData>> = localSource.getAllPlannerData()
 
-    override suspend fun getAllPlanDataByDate(date: LocalDate): LiveData<MutableList<PlanData>> {
-
+    override suspend fun refreshPlannerData(date: LocalDate) {
         //전달 받은 날짜에 해당하는 info데이터가 있는지 확인한다.
         //즉 전달받은 낧짜에 info 데이터가 없다는 것은 2가지를 의미한다.
 
         //1. 사용자가 첫 설치해서, 등록한 데이터가 없는 경우
         //2. 새로운 날짜가 되어, 그에 대응되는 info 테이블이 없는 경우
-        if(!checkWhetherExistInfoDataByDate(date)){
+        if (!checkWhetherExistInfoDataByDate(date)) {
 
             //2번째 케이스에 대응된다.
             val itemList = getAllPlanItem()
-            if(itemList.isNotEmpty()){
+            if (itemList.isNotEmpty()) {
                 itemList.forEach {
-                   val info = generateInfoData(it.id, date)
+                    val info = generateInfoData(it.id, date)
                     localSource.insertPlanInfo(info)
                 }
             }
         }
+    }
 
+    override fun getAllPlannerData(): LiveData<MutableList<PlanData>> =
+        localSource.getAllPlannerData()
+
+    override fun getAllPlanDataByDate(date: LocalDate): LiveData<MutableList<PlanData>> {
         return localSource.getAllPlannerDataByDate(date)
     }
 
@@ -43,7 +46,8 @@ class PlannerRepository(
 
     override fun getLastIndex(): Int = localSource.getLastIndex()
 
-    override fun getMemoByDate(date: LocalDate): LiveData<PlanMemo> = localSource.getMemoByDate(date)
+    override fun getMemoByDate(date: LocalDate): LiveData<PlanMemo> =
+        localSource.getMemoByDate(date)
 
     override suspend fun deletePlannerDataById(id: String) {
         localSource.deletePlannerDataById(id)
@@ -61,7 +65,8 @@ class PlannerRepository(
         localSource.updatePlannerData(data)
     }
 
-    override suspend fun getPlannerDataById(id: String) : PlanData = localSource.getPlannerDataById(id)
+    override suspend fun getPlannerDataById(id: String): PlanData =
+        localSource.getPlannerDataById(id)
 
     override suspend fun deleteAndUpdateAll(deleteTarget: PlanData, updateTarget: List<PlanData>) {
         localSource.deleteAndUpdateAll(deleteTarget, updateTarget)
@@ -104,6 +109,6 @@ class PlannerRepository(
         localSource.getAllPlanItem()
 
 
-    private fun generateInfoData(id : String, date : LocalDate) =
+    private fun generateInfoData(id: String, date: LocalDate) =
         PlannerInfoEntity(0, date, 0, id)
 }
