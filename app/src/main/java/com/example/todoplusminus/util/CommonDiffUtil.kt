@@ -11,7 +11,6 @@ class CommonDiffUtil(private val oldItems: List<Any>, private val newItems: List
         val oldItem = oldItems[oldItemPosition]
         val newItem = newItems[newItemPosition]
 
-        Log.d("godgod", "$oldItemPosition  ${(oldItem as PlanData).index}    |    $newItemPosition ${(newItem as PlanData).index}")
         //todo olditem == newitem으로 처리하면 안되는 이유에 대해서 알아보기
 
         return if (oldItem is PlanData && newItem is PlanData) oldItem.count == newItem.count

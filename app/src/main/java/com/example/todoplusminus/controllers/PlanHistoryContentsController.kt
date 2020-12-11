@@ -6,10 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
+import androidx.recyclerview.widget.*
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.support.RouterPagerAdapter
@@ -24,7 +21,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 /**
- * plan history 화면에서 차트화면을 담당하는 Controller
+ * plan history 화면에서 실제 contents(차트화면, summary) 담당하는 Controller
  * */
 class PlanHistoryContentsController : DBControllerBase {
 
@@ -56,7 +53,7 @@ class PlanHistoryContentsController : DBControllerBase {
 
         binder.chartViewList.adapter = PlanHistoryChartAdapter()
         binder.chartViewList.layoutManager = LinearLayoutManager(binder.root.context, LinearLayoutManager.HORIZONTAL, true)
-        PagerSnapHelper().attachToRecyclerView(binder.chartViewList)
+        snapHelper.attachToRecyclerView(binder.chartViewList)
     }
 
     private fun onSubscribe() {
@@ -93,7 +90,23 @@ class PlanHistoryContentsController : DBControllerBase {
     private fun setTextAccumalationTv(text: String) {
         binder.accumulateTitle.text = text
     }
+
+
+    private val snapHelper = object : PagerSnapHelper() {
+        override fun findTargetSnapPosition(
+            layoutManager: RecyclerView.LayoutManager?,
+            velocityX: Int,
+            velocityY: Int
+        ): Int {
+            mVm?.summaryTargetIndex?.value = super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
+
+            return super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
+        }
+    }
 }
+
+
+
 
 class PlanHistoryChartAdapter() : RecyclerView.Adapter<PlanHistoryChartAdapter.PlanHistoryVH>() {
 
@@ -104,13 +117,11 @@ class PlanHistoryChartAdapter() : RecyclerView.Adapter<PlanHistoryChartAdapter.P
 
     /**
      * recyclerView에 데이터를 삽입한다.
-     *
-     * 최신순으로 보여주기 위해 전달된 데이터에 reverse를 실행한다.
      * */
     fun setData(xDataList : List<List<String>> ,yDataList : List<List<Int>>, titleList : List<String>, graphBarColor : Int){
-        this.mXDataList = xDataList.reversed()
-        this.mYDataList = yDataList.reversed()
-        this.mTitleList = titleList.reversed()
+        this.mXDataList = xDataList
+        this.mYDataList = yDataList
+        this.mTitleList = titleList
         this.mGraphBarColor = graphBarColor
         notifyDataSetChanged()
     }

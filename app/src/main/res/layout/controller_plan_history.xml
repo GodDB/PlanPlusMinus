@@ -62,34 +62,34 @@
             <com.example.todoplusminus.ui.SquaredPaperView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:layout_constraintLeft_toLeftOf="@id/guide_content_left"
-                app:layout_constraintTop_toTopOf="@id/guide_content_top"
-                app:layout_constraintRight_toRightOf="@id/guide_content_right"
                 app:layout_constraintBottom_toBottomOf="@id/guide_scroll_area"
-                />
+                app:layout_constraintLeft_toLeftOf="@id/guide_content_left"
+                app:layout_constraintRight_toRightOf="@id/guide_content_right"
+                app:layout_constraintTop_toTopOf="@id/guide_content_top" />
 
             <TextView
                 android:id="@+id/history_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:text="@{vm.MHistoryTitle}"
                 android:textSize="22sp"
-                android:layout_marginStart="10dp"
-                app:layout_constraintLeft_toLeftOf="@id/guide_content_left"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="@id/guide_scroll_area"
-                />
+                app:layout_constraintLeft_toLeftOf="@id/guide_content_left"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/btn_close"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/close"
+                android:layout_marginEnd="10dp"
+                android:onClick="@{() -> vm.onCancel()}"
+                android:src="@drawable/sub_close"
                 app:layout_constraintRight_toRightOf="@id/guide_content_right"
                 app:layout_constraintTop_toTopOf="@id/guide_content_top" />
 
             <androidx.core.widget.NestedScrollView
-                android:id="@+id/sroll_container"
+                android:id="@+id/scroll_container"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -115,8 +115,7 @@
                         app:tabIndicatorHeight="25dp"
                         app:tabMode="fixed"
                         app:tabTextColor="@color/black"
-                        bind:tabIndicatorColor="@{vm.MTabColor}"
-                        />
+                        bind:tabIndicatorColor="@{vm.MTabColor}" />
 
                     <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
                         android:id="@+id/container_history_contents"

@@ -2,32 +2,21 @@ package com.example.todoplusminus.bindingAdapter
 
 
 import android.graphics.Color
-import android.os.Looper
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoplusminus.controllers.PlanHistoryChartAdapter
 import com.example.todoplusminus.controllers.PlanListAdapter
 import com.example.todoplusminus.entities.PlanData
-import com.example.todoplusminus.ui.GraphChartView
 import com.example.todoplusminus.util.CommonAnimationHelper
 import com.example.todoplusminus.util.DeviceManager
 import com.example.todoplusminus.util.DpConverter
 import com.example.todoplusminus.util.LocalDateRange
 import com.example.todoplusminus.vm.OnDoneListener
 import com.google.android.material.tabs.TabLayout
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.util.logging.Handler
 import kotlin.math.max
 
 
@@ -56,27 +45,52 @@ fun items(rv: RecyclerView, dataList: List<PlanData>?, isEdit: Boolean) {
 
 @BindingAdapter("bind:editMode")
 fun setEditMode(view: View, isEdit: Boolean) {
-    CommonAnimationHelper.startFadeAnimation(view, isEdit)
+    if(isEdit) return CommonAnimationHelper.startFadeInAnimation(view)
+
+    CommonAnimationHelper.startFadeOutAnimation(view)
 }
 
+@BindingAdapter("bind:showCalendar")
+fun setShowCalendar(v : View, isShowCalendar: Boolean){
+    if(isShowCalendar) return CommonAnimationHelper.startFadeInAnimation(v)
+
+    CommonAnimationHelper.startFadeOutAnimation(v)
+}
+
+@BindingAdapter("bind:yMoveWhenshowCalendar")
+fun setYMoveWhenShowCalendar(v : View, isShowCalendar: Boolean){
+    if(isShowCalendar) return CommonAnimationHelper.startYMoveUpAnimation(v, DpConverter.dpToPx(30f).toInt())
+
+    CommonAnimationHelper.startYMoveUpAnimation(v, 0)
+}
+
+
+@BindingAdapter(value = ["bind:editMode1", "bind:showCalendar"], requireAll = true)
+fun setShowCalendar(v: View, isEdit: Boolean, isShowCalendar: Boolean) {
+    when{
+        isEdit and isShowCalendar -> CommonAnimationHelper.startFadeOutAnimation(v)
+        !isEdit and isShowCalendar -> CommonAnimationHelper.startFadeInAnimation(v)
+        isEdit and !isShowCalendar -> CommonAnimationHelper.startFadeOutAnimation(v)
+        else -> CommonAnimationHelper.startFadeOutAnimation(v)
+    }
+}
 /**
  * 리사이클러뷰만의 editMode
  *
  * editMode시에 createPlanView의 height만큼 내린다
  * */
-@BindingAdapter("bind:editMode")
-fun setEditMode(rv: RecyclerView, isEdit: Boolean) {
-    if (isEdit) {
-        val marginParam = (rv.layoutParams as ViewGroup.MarginLayoutParams)
-        marginParam.topMargin = DpConverter.dpToPx(100f).toInt()
-        rv.layoutParams = marginParam
-    } else {
-        val marginParam = (rv.layoutParams as ViewGroup.MarginLayoutParams)
-        marginParam.topMargin = 0
-        rv.layoutParams = marginParam
+@BindingAdapter(value = ["bind:editMode", "bind:showCalendar"], requireAll = true)
+fun setShowCalendar(rv: RecyclerView, isEdit: Boolean, isShowCalendar: Boolean) {
+    when {
+        isEdit ->
+            CommonAnimationHelper.startYMoveDownAnimation(rv, DpConverter.dpToPx(100f).toInt())
+        isShowCalendar ->
+            CommonAnimationHelper.startYMoveDownAnimation(rv, DpConverter.dpToPx(250f).toInt())
+        else ->
+            CommonAnimationHelper.startYMoveDownAnimation(rv, DpConverter.dpToPx(0f).toInt())
     }
-
 }
+
 
 @BindingAdapter(value = ["bind:backgroundColor", "bind:isEdit"], requireAll = true)
 fun setBackgroundColorWhenEditMode(view: CardView, data: PlanData, isEdit: Boolean) {
@@ -147,39 +161,50 @@ fun setClickEventAndDim(v: View, listener: OnDoneListener, content: String) {
     }
 }
 
-@BindingAdapter(value = ["bind:setGraphViewXData", "bind:setGraphViewYData", "bind:setGraphViewTitle", "bind:setGraphBarColor"], requireAll = true)
-fun setGraphViewListData (rv : RecyclerView, xData : List<List<String>>, yData : List<List<Int>>, titleList : List<LocalDateRange>, graphBarColor : Int){
-    if(rv.adapter == null) return
+@BindingAdapter(
+    value = ["bind:setGraphViewXData", "bind:setGraphViewYData", "bind:setGraphViewTitle", "bind:setGraphBarColor"],
+    requireAll = true
+)
+fun setGraphViewListData(
+    rv: RecyclerView,
+    xData: List<List<String>>,
+    yData: List<List<Int>>,
+    titleList: List<LocalDateRange>,
+    graphBarColor: Int
+) {
+    if (rv.adapter == null) return
 
-    val mTitleList : List<String> = titleList.map { (it.startDate.toString() + " ~ " + it.endDate.toString()) }
+    val mTitleList: List<String> =
+        titleList.map { (it.startDate.toString() + " ~ " + it.endDate.toString()) }
 
     (rv.adapter as PlanHistoryChartAdapter).setData(xData, yData, mTitleList, graphBarColor)
 }
 
 @BindingAdapter("bind:tabIndicatorColor")
-fun setTabIndicatorColor(tabLayout : TabLayout, bgColor : Int){
+fun setTabIndicatorColor(tabLayout: TabLayout, bgColor: Int) {
     tabLayout.setSelectedTabIndicatorColor(bgColor)
 }
 
 @BindingAdapter("bind:setCardViewColorById")
-fun setCardViewColorById(view : CardView, colorId : Int){
+fun setCardViewColorById(view: CardView, colorId: Int) {
     view.setCardBackgroundColor(view.context.getColor(colorId))
 }
 
 @BindingAdapter("bind:setItemClickListener")
-fun setOnClickEvent(view : CardView, onClick : () -> Unit){
+fun setOnClickEvent(view: CardView, onClick: () -> Unit) {
 
-    val clickGestureDetector = GestureDetector(view.context, object : GestureDetector.SimpleOnGestureListener(){
-        //todo swipe이벤트와 겹치면 안된다.
-        override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-            return super.onSingleTapConfirmed(e)
-        }
+    val clickGestureDetector =
+        GestureDetector(view.context, object : GestureDetector.SimpleOnGestureListener() {
+            //todo swipe이벤트와 겹치면 안된다.
+            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                return super.onSingleTapConfirmed(e)
+            }
 
-        override fun onSingleTapUp(e: MotionEvent?): Boolean = true
-    })
+            override fun onSingleTapUp(e: MotionEvent?): Boolean = true
+        })
 
     view.setOnTouchListener { _, event ->
-        if(clickGestureDetector.onTouchEvent(event)) onClick()
+        if (clickGestureDetector.onTouchEvent(event)) onClick()
         true
     }
 }

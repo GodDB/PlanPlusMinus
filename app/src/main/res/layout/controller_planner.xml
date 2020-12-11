@@ -4,6 +4,8 @@
     xmlns:bind="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
+
         <variable
             name="vm"
             type="com.example.todoplusminus.vm.PlannerViewModel" />
@@ -34,7 +36,20 @@
             android:textSize="25sp"
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            bind:editMode="@{!vm.isEditMode().booleanValue()}" />
+            bind:editMode1="@{vm.isEditMode().booleanValue()}"
+            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}"
+            />
+
+        <CalendarView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@id/guide_left"
+            app:layout_constraintRight_toRightOf="@id/guide_right"
+            app:layout_constraintTop_toTopOf="@id/guide_top"
+            android:background="@color/white"
+            bind:editMode1="@{vm.isEditMode().booleanValue()}"
+            bind:showCalendar="@{vm.showCalendar.contentIfNotHandled}"
+            />
 
         <TextView
             android:id="@+id/edit_title"
@@ -59,7 +74,9 @@
             android:src="@drawable/calendar"
             app:layout_constraintRight_toLeftOf="@id/btn_memo"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            bind:editMode="@{!vm.isEditMode().booleanValue()}" />
+            bind:editMode="@{!vm.isEditMode().booleanValue()}"
+            android:onClick="@{()-> vm.showCalendar()}"
+            />
 
         <ImageView
             android:id="@+id/btn_memo"
@@ -84,7 +101,8 @@
             android:src="@drawable/playlist"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            bind:editMode="@{!vm.isEditMode().booleanValue()}" />
+            bind:editMode="@{!vm.isEditMode().booleanValue()}"
+            />
 
         <ImageView
             android:id="@+id/btn_done"
@@ -105,7 +123,9 @@
             android:layout_height="50dp"
             android:layout_marginTop="50dp"
             app:layout_constraintRight_toRightOf="@id/guide_right"
-            app:layout_constraintTop_toBottomOf="@id/guide_top" />
+            app:layout_constraintTop_toBottomOf="@id/guide_top"
+            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}"
+            />
 
         <TextView
             android:id="@+id/memo_view"
@@ -115,6 +135,7 @@
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
+            android:visibility="@{vm.planMemo.contents != null ? View.VISIBLE : View.GONE }"
             bind:editMode="@{!vm.isEditMode().booleanValue()}"
             android:background="@color/white"
             android:text="@{vm.planMemo.contents}"
@@ -158,6 +179,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/memo_view"
             bind:editMode="@{vm.isEditMode().booleanValue()}"
+            bind:showCalendar="@{vm.showCalendar.contentIfNotHandled}"
             bind:isEdit="@{vm.isEditMode().booleanValue()}"
             bind:items="@{vm.planProject.planDataList}" />
 

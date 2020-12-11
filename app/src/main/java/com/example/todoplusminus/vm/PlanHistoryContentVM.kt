@@ -3,6 +3,7 @@ package com.example.todoplusminus.vm
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanProject
@@ -29,6 +30,7 @@ class PlanHistoryContentVM(
 
     val mode: LiveData<Event<String>> = MutableLiveData(Event(_mode))
 
+    //chart data --------------------
     val mGraphBarColor: LiveData<Int>
         get() = MutableLiveData(_mPlanProject.getPlanDataBgColorByIndex(0))
 
@@ -40,17 +42,17 @@ class PlanHistoryContentVM(
                     _mPlanProject.getWeekCountListBetween(
                         _mPlanProject.getOldDate(),
                         TimeHelper.getCurDate()
-                    )
+                    ).reversed()
                 MODE_MONTH ->
                     _mPlanProject.getMonthCountListBetween(
                         _mPlanProject.getOldDate(),
                         TimeHelper.getCurDate()
-                    )
+                    ).reversed()
                 MODE_YEAR ->
                     _mPlanProject.getYearCountListBetween(
                         _mPlanProject.getOldDate(),
                         TimeHelper.getCurDate()
-                    )
+                    ).reversed()
                 else -> emptyList()
             }
         }
@@ -63,19 +65,19 @@ class PlanHistoryContentVM(
                         _mPlanProject.getOldDate(),
                         TimeHelper.getCurDate()
                     )
-                )
+                ).reversed()
                 MODE_MONTH -> TimeHelper.getDayOfMonthList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
                         TimeHelper.getCurDate()
                     )
-                )
+                ).reversed()
                 MODE_YEAR -> TimeHelper.getYearList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
                         TimeHelper.getCurDate()
                     )
-                )
+                ).reversed()
                 else -> emptyList()
             }
         }
@@ -83,11 +85,51 @@ class PlanHistoryContentVM(
     val graphTitle: List<LocalDateRange>
         get() {
             return when (mode.value?.peekContent()) {
-                MODE_WEEK -> TimeHelper.getWeekRangeList(LocalDateRange(_mPlanProject.getOldDate(), TimeHelper.getCurDate()))
-                MODE_MONTH -> TimeHelper.getMonthRangeList(LocalDateRange(_mPlanProject.getOldDate(), TimeHelper.getCurDate()))
-                MODE_YEAR -> TimeHelper.getYearRangeList(LocalDateRange(_mPlanProject.getOldDate(), TimeHelper.getCurDate()))
+                MODE_WEEK -> TimeHelper.getWeekRangeList(
+                    LocalDateRange(
+                        _mPlanProject.getOldDate(),
+                        TimeHelper.getCurDate()
+                    )
+                ).reversed()
+                MODE_MONTH -> TimeHelper.getMonthRangeList(
+                    LocalDateRange(
+                        _mPlanProject.getOldDate(),
+                        TimeHelper.getCurDate()
+                    )
+                ).reversed()
+                MODE_YEAR -> TimeHelper.getYearRangeList(
+                    LocalDateRange(
+                        _mPlanProject.getOldDate(),
+                        TimeHelper.getCurDate()
+                    )
+                ).reversed()
                 else -> emptyList()
             }
         }
+
+    //summary data --------------------------
+
+    val summaryTargetIndex: MutableLiveData<Int> = MutableLiveData(0)
+
+
+    val summaryAverage: LiveData<Int> = Transformations.switchMap(summaryTargetIndex) { index ->
+        val value = yData?.get(index)?.sum()
+        val count = xData[index].size
+
+        val average = value?.div(count)
+
+        MutableLiveData(average ?: 0)
+    }
+
+    val summaryAccumulation: LiveData<Int> =
+        Transformations.switchMap(summaryTargetIndex) { index ->
+            val value = yData?.get(index)?.sum()
+
+            MutableLiveData(value ?: 0)
+        }
+
+    val totalAccumulation: LiveData<Int>
+        get() = MutableLiveData(_mPlanProject.getTotalCount())
+
 
 }

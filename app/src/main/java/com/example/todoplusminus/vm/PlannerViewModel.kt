@@ -1,7 +1,6 @@
 package com.example.todoplusminus.vm
 
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.todoplusminus.PMCoroutineSpecification
 import com.example.todoplusminus.base.Event
@@ -9,7 +8,6 @@ import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
 import com.example.todoplusminus.entities.PlanProject
 import com.example.todoplusminus.repository.IPlannerRepository
-import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.util.TimeHelper
 import kotlinx.coroutines.*
 import java.time.LocalDate
@@ -44,12 +42,13 @@ class PlannerViewModel(
 
     val isEditMode: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val editPlanDataID: MutableLiveData<Event<String>?> = MutableLiveData()
+    val showEditPlanDataID: MutableLiveData<Event<String>?> = MutableLiveData()
 
-    val isShowMemoEditor: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
+    val showMemoEditor: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
     val showHistoryId: MutableLiveData<Event<String>> = MutableLiveData(Event(""))
 
+    val showCalendar : MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
     fun onItemDelete(index: Int) {
         val targetDeleteObj = planProject.value?.getPlanDataByIndex(index)
@@ -79,11 +78,20 @@ class PlannerViewModel(
         if (!checkWhetherEditMode()) return
 
         if (checkIdEmpty(id)) {
-            this.editPlanDataID.value = Event(PlanData.EMPTY_ID)
+            this.showEditPlanDataID.value = Event(PlanData.EMPTY_ID)
             return
         }
 
-        this.editPlanDataID.value = Event(id!!)
+        this.showEditPlanDataID.value = Event(id!!)
+    }
+
+    fun showCalendar(){
+        if(this.showCalendar.value!!.peekContent()){
+            this.showCalendar.value = Event(false)
+            return
+        }
+
+        this.showCalendar.value = Event(true)
     }
 
     fun updateCountByIndex(count: Int, index: Int) {
@@ -93,7 +101,7 @@ class PlannerViewModel(
     }
 
     fun showMemo() {
-        isShowMemoEditor.value = Event(true)
+        showMemoEditor.value = Event(true)
     }
 
     fun showHistory(id: String?) {

@@ -30,8 +30,8 @@ class PlanHistoryVM(val targetId: String, private val repository: PlannerReposit
     val mTabColor: LiveData<Int>
         get() = MutableLiveData(_mPlanProject.getPlanDataBgColorByIndex(0))
 
-    var wantEditorClose
-            : MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
+    var wantEditorClose: MutableLiveData<Event<Boolean>> =
+        MutableLiveData(Event(false))
 
 
     fun onCancel() {

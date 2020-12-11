@@ -24,7 +24,10 @@ class PlannerRepository(
         if (!checkWhetherExistInfoDataByDate(date)) {
 
             //2번째 케이스에 대응된다.
+
+            //planItem의 데이터를 가져와서
             val itemList = getAllPlanItem()
+            //planItem이 존재한다면 2번케이스에 대응되는 것.
             if (itemList.isNotEmpty()) {
                 itemList.forEach {
                     val info = generateInfoData(it.id, date)

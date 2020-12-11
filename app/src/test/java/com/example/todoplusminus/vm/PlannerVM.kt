@@ -1,29 +1,20 @@
 package com.example.todoplusminus.vm
 
-import android.util.EventLog
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.todoplusminus.PMCoroutineSpecification
-import com.example.todoplusminus.PlanProjectTest
 import com.example.todoplusminus.TestCoroutineRule
-import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
-import com.example.todoplusminus.entities.PlanProject
 import com.example.todoplusminus.getOrAwaitValue
 import com.example.todoplusminus.repository.IPlannerRepository
-import com.example.todoplusminus.util.ColorManager
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
@@ -127,11 +118,11 @@ class PlannerVM {
 
             //not empty id
             planVM.onItemClick(targetPlanData2.id)
-            assertEquals(planVM.editPlanDataID.getOrAwaitValue()?.peekContent(), targetPlanData2.id)
+            assertEquals(planVM.showEditPlanDataID.getOrAwaitValue()?.peekContent(), targetPlanData2.id)
 
             //empty id
             planVM.onItemClick(null)
-            assertEquals(planVM.editPlanDataID.getOrAwaitValue()?.peekContent(), PlanData.EMPTY_ID)
+            assertEquals(planVM.showEditPlanDataID.getOrAwaitValue()?.peekContent(), PlanData.EMPTY_ID)
         }
     }
 

@@ -53,4 +53,11 @@
     <string name="month_accumulation">월 누적</string>
     <string name="year_average">연 평균</string>
     <string name="year_accumulation">연 누적</string>
+    <string name="monday">월</string>
+    <string name="tuesday">화</string>
+    <string name="wednesday">수</string>
+    <string name="thursday">목</string>
+    <string name="friday">금</string>
+    <string name="saturday">토</string>
+    <string name="sunday">일</string>
 </resources>

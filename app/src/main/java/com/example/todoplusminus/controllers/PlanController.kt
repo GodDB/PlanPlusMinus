@@ -114,7 +114,7 @@ class PlannerController : DBControllerBase {
             itemSwipeEventHelper.isSwipeEnabled = !editMode
         })
 
-        planVM.isShowMemoEditor.observe(this, Observer { event ->
+        planVM.showMemoEditor.observe(this, Observer { event ->
             //livedata 변경 후에 이벤트가 처리된 적 있다면 null, 아니면 변경된 값을 전달받는다.
             event.getContentIfNotHandled()?.let { isShow ->
                 if (isShow) mDelegate?.showMemoEditor()
@@ -129,13 +129,11 @@ class PlannerController : DBControllerBase {
         })
 
 
-        planVM.editPlanDataID.observe(this, Observer { event ->
+        planVM.showEditPlanDataID.observe(this, Observer { event ->
             event?.getContentIfNotHandled()?.let { id ->
                 showPlanEditor(id)
             }
         })
-
-
     }
 
     private fun planListScrollMoveTo(index: Int) {

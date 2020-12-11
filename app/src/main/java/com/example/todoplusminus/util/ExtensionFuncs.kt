@@ -7,7 +7,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjusters
+import java.time.temporal.WeekFields
+import java.util.*
+
+
+// ------ LocalDate extension function ---------------------------------
 
 fun LocalDate.copy(): LocalDate =
     LocalDate.of(this.year, this.month, this.dayOfMonth)
@@ -22,11 +29,19 @@ fun LocalDate.copy(): LocalDate =
  * 같으면 0
  * */
 fun LocalDate.compareUntilWeek(target: LocalDate): Int {
-    val result = ChronoUnit.WEEKS.between(target, this)
-    return when {
-        result > 0 -> 1
-        result < 0 -> -1
-        else -> 0
+
+    return when{
+        this.compareUntilMonth(target) == 0 -> {
+            val thisWeekOfMonth = this.get(ChronoField.ALIGNED_WEEK_OF_MONTH)
+            val targetWeekOfMonth = target.get(ChronoField.ALIGNED_WEEK_OF_MONTH)
+            when{
+                thisWeekOfMonth == targetWeekOfMonth -> 0
+                thisWeekOfMonth > targetWeekOfMonth -> 1
+                else -> -1
+            }
+        }
+        this.compareUntilMonth(target) == 1 -> 1
+        else -> -1
     }
 }
 
@@ -51,6 +66,8 @@ fun LocalDate.compareUntilYear(target: LocalDate): Int {
         else -> -1
     }
 }
+
+// ---------------------------------------------------------------------------------
 
 fun CardView.setColorById(id : Int){
     this.setCardBackgroundColor(this.context.getColor(id))
