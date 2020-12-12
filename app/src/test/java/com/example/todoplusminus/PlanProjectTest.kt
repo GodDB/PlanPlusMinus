@@ -2,17 +2,13 @@ package com.example.todoplusminus
 
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanProject
-import com.example.todoplusminus.util.TimeHelper
+import com.example.todoplusminus.util.DateHelper
 import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
-import java.time.Instant
 import java.time.LocalDate
-import java.time.chrono.ChronoLocalDate
-import java.time.temporal.ChronoField
-import java.time.temporal.TemporalField
 
 @RunWith(MockitoJUnitRunner::class)
 class PlanProjectTest {
@@ -68,7 +64,7 @@ class PlanProjectTest {
 
     @Test
     fun aaa(){
-        val range = TimeHelper.getWeekDayRangeBy(LocalDate.now())
+        val range = DateHelper.getWeekDayRangeBy(LocalDate.now())
 
         println(range.startDate.dayOfWeek.value)
         println(range.startDate.dayOfWeek.name)

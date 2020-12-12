@@ -7,7 +7,7 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.math.abs
 
-object TimeHelper {
+object DateHelper {
 
     fun getCurAllDate(): String {
         val curMills = System.currentTimeMillis()

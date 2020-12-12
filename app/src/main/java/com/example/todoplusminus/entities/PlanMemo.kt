@@ -2,7 +2,7 @@ package com.example.todoplusminus.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.todoplusminus.util.TimeHelper
+import com.example.todoplusminus.util.DateHelper
 import java.time.LocalDate
 
 @Entity(tableName = "PlannerMemo")
@@ -12,7 +12,7 @@ data class PlanMemo(
 ) {
     companion object {
         fun create() = PlanMemo(
-            TimeHelper.getCurDate(),
+            DateHelper.getCurDate(),
             ""
         )
     }

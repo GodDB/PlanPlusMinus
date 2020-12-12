@@ -1,7 +1,7 @@
 package com.example.todoplusminus.entities
 
 import android.graphics.Color
-import com.example.todoplusminus.util.TimeHelper
+import com.example.todoplusminus.util.DateHelper
 import java.time.LocalDate
 import java.util.*
 
@@ -25,7 +25,7 @@ class PlanData(
                 0,
                 "",
                 DEFAULT_BG_COLOR,
-                TimeHelper.getCurDate(),
+                DateHelper.getCurDate(),
                 0,
                 0
             )

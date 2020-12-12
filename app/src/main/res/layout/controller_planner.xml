@@ -40,7 +40,7 @@
             bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}"
             />
 
-        <CalendarView
+        <com.example.todoplusminus.ui.PMCalendarView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="@id/guide_left"

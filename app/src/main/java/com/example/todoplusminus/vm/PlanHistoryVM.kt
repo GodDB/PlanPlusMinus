@@ -1,13 +1,10 @@
 package com.example.todoplusminus.vm
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.todoplusminus.base.Event
-import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanProject
 import com.example.todoplusminus.repository.PlannerRepository
-import com.example.todoplusminus.util.TimeHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 

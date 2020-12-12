@@ -1,15 +1,13 @@
 package com.example.todoplusminus.vm
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.example.todoplusminus.base.Event
-import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanProject
 import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.util.LocalDateRange
-import com.example.todoplusminus.util.TimeHelper
+import com.example.todoplusminus.util.DateHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -41,17 +39,17 @@ class PlanHistoryContentVM(
                 MODE_WEEK ->
                     _mPlanProject.getWeekCountListBetween(
                         _mPlanProject.getOldDate(),
-                        TimeHelper.getCurDate()
+                        DateHelper.getCurDate()
                     ).reversed()
                 MODE_MONTH ->
                     _mPlanProject.getMonthCountListBetween(
                         _mPlanProject.getOldDate(),
-                        TimeHelper.getCurDate()
+                        DateHelper.getCurDate()
                     ).reversed()
                 MODE_YEAR ->
                     _mPlanProject.getYearCountListBetween(
                         _mPlanProject.getOldDate(),
-                        TimeHelper.getCurDate()
+                        DateHelper.getCurDate()
                     ).reversed()
                 else -> emptyList()
             }
@@ -60,22 +58,22 @@ class PlanHistoryContentVM(
     val xData: List<List<String>>
         get() {
             return when (mode.value?.peekContent()) {
-                MODE_WEEK -> TimeHelper.getDayOfWeekList(
+                MODE_WEEK -> DateHelper.getDayOfWeekList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
-                        TimeHelper.getCurDate()
+                        DateHelper.getCurDate()
                     )
                 ).reversed()
-                MODE_MONTH -> TimeHelper.getDayOfMonthList(
+                MODE_MONTH -> DateHelper.getDayOfMonthList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
-                        TimeHelper.getCurDate()
+                        DateHelper.getCurDate()
                     )
                 ).reversed()
-                MODE_YEAR -> TimeHelper.getYearList(
+                MODE_YEAR -> DateHelper.getYearList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
-                        TimeHelper.getCurDate()
+                        DateHelper.getCurDate()
                     )
                 ).reversed()
                 else -> emptyList()
@@ -85,22 +83,22 @@ class PlanHistoryContentVM(
     val graphTitle: List<LocalDateRange>
         get() {
             return when (mode.value?.peekContent()) {
-                MODE_WEEK -> TimeHelper.getWeekRangeList(
+                MODE_WEEK -> DateHelper.getWeekRangeList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
-                        TimeHelper.getCurDate()
+                        DateHelper.getCurDate()
                     )
                 ).reversed()
-                MODE_MONTH -> TimeHelper.getMonthRangeList(
+                MODE_MONTH -> DateHelper.getMonthRangeList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
-                        TimeHelper.getCurDate()
+                        DateHelper.getCurDate()
                     )
                 ).reversed()
-                MODE_YEAR -> TimeHelper.getYearRangeList(
+                MODE_YEAR -> DateHelper.getYearRangeList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
-                        TimeHelper.getCurDate()
+                        DateHelper.getCurDate()
                     )
                 ).reversed()
                 else -> emptyList()

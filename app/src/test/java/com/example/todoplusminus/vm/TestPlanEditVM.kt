@@ -1,31 +1,18 @@
 package com.example.todoplusminus.vm
 
-import android.graphics.Color
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.todoplusminus.PMCoroutineSpecification
 import com.example.todoplusminus.TestCoroutineRule
-import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.getOrAwaitValue
 import com.example.todoplusminus.repository.IPlannerRepository
-import com.example.todoplusminus.repository.PlannerRepository
-import com.example.todoplusminus.util.ColorManager
-import com.example.todoplusminus.util.TimeHelper
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.*
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestRule
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
@@ -99,6 +86,27 @@ class TestPlanEditVM {
 
             assertEquals(planEditVM.isEditEnd.getOrAwaitValue().peekContent(), true)
         }
+    }
+
+    @Test
+    fun test(){
+
+        val calendar = Calendar.getInstance()
+
+        calendar.set(Calendar.DATE, 1)
+
+        val currentMonthMaxDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        println(currentMonthMaxDate)
+
+
+        val prevMonthTail = calendar.get(Calendar.DAY_OF_WEEK) -1
+        println(prevMonthTail)
+
+        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1)
+        val maxDate = calendar.getActualMaximum(Calendar.DATE)
+        val maxOffsetDate = maxDate - prevMonthTail
+
+        println(maxOffsetDate)
     }
 
 

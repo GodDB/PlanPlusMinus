@@ -8,7 +8,7 @@ import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
 import com.example.todoplusminus.entities.PlanProject
 import com.example.todoplusminus.repository.IPlannerRepository
-import com.example.todoplusminus.util.TimeHelper
+import com.example.todoplusminus.util.DateHelper
 import kotlinx.coroutines.*
 import java.time.LocalDate
 
@@ -32,13 +32,13 @@ class PlannerViewModel(
 
     //https://developer.android.com/topic/libraries/architecture/coroutines?hl=ko
     val planProject: LiveData<PlanProject> = MediatorLiveData<PlanProject>().apply {
-        val data: LiveData<MutableList<PlanData>> = repository.getAllPlanDataByDate(TimeHelper.getCurDate())
+        val data: LiveData<MutableList<PlanData>> = repository.getAllPlanDataByDate(DateHelper.getCurDate())
         addSource(data) {
             this.value = PlanProject.create(it)
         }
     }
 
-    val planMemo: LiveData<PlanMemo> = repository.getMemoByDate(TimeHelper.getCurDate())
+    val planMemo: LiveData<PlanMemo> = repository.getMemoByDate(DateHelper.getCurDate())
 
     val isEditMode: MutableLiveData<Boolean> = MutableLiveData(false)
 

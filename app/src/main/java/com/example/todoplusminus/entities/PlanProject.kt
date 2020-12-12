@@ -1,10 +1,8 @@
 package com.example.todoplusminus.entities
 
-import android.util.Log
 import com.example.todoplusminus.util.*
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
-import kotlin.math.abs
 
 /**
  * 모든 플랜을 관리하는 planObject
@@ -144,7 +142,7 @@ class PlanProject private constructor() {
      * 단위는 1일
      * */
     private fun getWeekDataInclude(date: LocalDate): List<PlanData> {
-        val range = TimeHelper.getWeekDayRangeBy(date)
+        val range = DateHelper.getWeekDayRangeBy(date)
 
         val list = MutableList<PlanData>(7) { PlanData.create() }
 
@@ -164,7 +162,7 @@ class PlanProject private constructor() {
      * 단위는 1일
      * */
     private fun getMonthDataInclude(date: LocalDate): List<PlanData> {
-        val monthRange = TimeHelper.getMonthRangeBy(date)
+        val monthRange = DateHelper.getMonthRangeBy(date)
 
         //배열의 마지막 index(= 마지막 날)
         val endIndex = monthRange.endDate.dayOfMonth
@@ -187,7 +185,7 @@ class PlanProject private constructor() {
      * 단위는 1달 - 1일
      * */
     fun getYearDataInclude(date: LocalDate): List<List<PlanData>> {
-        val yearRange = TimeHelper.getYearRangeBy(date)
+        val yearRange = DateHelper.getYearRangeBy(date)
 
         //배열의 마지막 index (= 마지막 달)
         val yearList: MutableList<List<PlanData>> = mutableListOf()

@@ -14,10 +14,6 @@ import com.example.todoplusminus.databinding.ControllerPlanHistoryBinding
 import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.repository.LocalDataSourceImpl
 import com.example.todoplusminus.repository.PlannerRepository
-import com.example.todoplusminus.util.TimeHelper
-import com.example.todoplusminus.util.compareUntilMonth
-import com.example.todoplusminus.util.compareUntilWeek
-import com.example.todoplusminus.util.compareUntilYear
 import com.example.todoplusminus.vm.PlanHistoryContentVM
 import com.example.todoplusminus.vm.PlanHistoryVM
 import com.google.android.material.tabs.TabLayout

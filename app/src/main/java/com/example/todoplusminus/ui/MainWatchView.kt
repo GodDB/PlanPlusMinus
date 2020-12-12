@@ -3,7 +3,7 @@ package com.example.todoplusminus.ui
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
-import com.example.todoplusminus.util.TimeHelper
+import com.example.todoplusminus.util.DateHelper
 import kotlinx.coroutines.*
 
 class MainWatchView : AppCompatTextView {
@@ -21,7 +21,7 @@ class MainWatchView : AppCompatTextView {
     fun startAnimation(){
         CoroutineScope(Dispatchers.Main + mJob).launch {
             while(true){
-                this@MainWatchView.text = TimeHelper.getCurDateTime()
+                this@MainWatchView.text = DateHelper.getCurDateTime()
                 delay(10000)
             }
         }
