@@ -1,6 +1,7 @@
 package com.example.todoplusminus.vm
 
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.todoplusminus.PMCoroutineSpecification
 import com.example.todoplusminus.base.Event
@@ -25,20 +26,25 @@ class PlannerViewModel(
 ) : ViewModel() {
 
     init {
-        viewModelScope.launch (dispatcher) {
+        viewModelScope.launch(dispatcher) {
             repository.refreshPlannerData(LocalDate.now())
         }
     }
 
-    //https://developer.android.com/topic/libraries/architecture/coroutines?hl=ko
-    val planProject: LiveData<PlanProject> = MediatorLiveData<PlanProject>().apply {
-        val data: LiveData<MutableList<PlanData>> = repository.getAllPlanDataByDate(DateHelper.getCurDate())
-        addSource(data) {
-            this.value = PlanProject.create(it)
+    private val _targetDate: MutableLiveData<LocalDate> = MutableLiveData(DateHelper.getCurDate())
+
+    private val _dataList: LiveData<MutableList<PlanData>> =
+        Transformations.switchMap(_targetDate) {
+            repository.getAllPlanDataByDate(it)
         }
+
+    val planProject: LiveData<PlanProject> = Transformations.switchMap(_dataList) {
+        MutableLiveData(PlanProject.create(it))
     }
 
-    val planMemo: LiveData<PlanMemo> = repository.getMemoByDate(DateHelper.getCurDate())
+    val planMemo: LiveData<PlanMemo> = Transformations.switchMap(_targetDate) {
+        repository.getMemoByDate(it)
+    }
 
     val isEditMode: MutableLiveData<Boolean> = MutableLiveData(false)
 
@@ -48,7 +54,7 @@ class PlannerViewModel(
 
     val showHistoryId: MutableLiveData<Event<String>> = MutableLiveData(Event(""))
 
-    val showCalendar : MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
+    val showCalendar: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
     fun onItemDelete(index: Int) {
         val targetDeleteObj = planProject.value?.getPlanDataByIndex(index)
@@ -85,8 +91,8 @@ class PlannerViewModel(
         this.showEditPlanDataID.value = Event(id!!)
     }
 
-    fun showCalendar(){
-        if(this.showCalendar.value!!.peekContent()){
+    fun showCalendar() {
+        if (this.showCalendar.value!!.peekContent()) {
             this.showCalendar.value = Event(false)
             return
         }
@@ -107,6 +113,11 @@ class PlannerViewModel(
     fun showHistory(id: String?) {
         if (checkIdEmpty(id)) return
         showHistoryId.value = Event(id!!)
+    }
+
+    fun changeDate(year: Int, month: Int, day: Int) {
+        val date = LocalDate.of(year, month, day)
+        _targetDate.value = date
     }
 
     private fun updateAll() {
@@ -131,6 +142,8 @@ class PlannerViewModel(
     private fun checkWhetherEditMode(): Boolean = isEditMode.value!!
 
     private fun checkIdEmpty(id: String?): Boolean = (id == "" || id == null)
-
 }
+
+
+
 

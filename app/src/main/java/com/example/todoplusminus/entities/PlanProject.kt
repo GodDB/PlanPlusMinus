@@ -19,6 +19,7 @@ class PlanProject private constructor() {
     }
 
     private var mPlanDataList: MutableList<PlanData> = mutableListOf(PlanData.create())
+    private val dateHelper = DateHelper()
 
     fun setPlanDatas(planList: List<PlanData>) {
         mPlanDataList.clear()
@@ -142,7 +143,7 @@ class PlanProject private constructor() {
      * 단위는 1일
      * */
     private fun getWeekDataInclude(date: LocalDate): List<PlanData> {
-        val range = DateHelper.getWeekDayRangeBy(date)
+        val range = dateHelper.getWeekDayRangeBy(date)
 
         val list = MutableList<PlanData>(7) { PlanData.create() }
 
@@ -162,7 +163,7 @@ class PlanProject private constructor() {
      * 단위는 1일
      * */
     private fun getMonthDataInclude(date: LocalDate): List<PlanData> {
-        val monthRange = DateHelper.getMonthRangeBy(date)
+        val monthRange = dateHelper.getMonthRangeBy(date)
 
         //배열의 마지막 index(= 마지막 날)
         val endIndex = monthRange.endDate.dayOfMonth
@@ -185,7 +186,7 @@ class PlanProject private constructor() {
      * 단위는 1달 - 1일
      * */
     fun getYearDataInclude(date: LocalDate): List<List<PlanData>> {
-        val yearRange = DateHelper.getYearRangeBy(date)
+        val yearRange = dateHelper.getYearRangeBy(date)
 
         //배열의 마지막 index (= 마지막 달)
         val yearList: MutableList<List<PlanData>> = mutableListOf()

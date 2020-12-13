@@ -1,117 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/calendar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/guide_title_bottom"
         android:text="test"
-        android:textSize="15sp"
         android:textColor="@color/black"
-        />
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/guide_title_bottom"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <!-- day of week -->
     <TextView
         android:id="@+id/monday"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guide_title_bottom"
-        app:layout_constraintRight_toLeftOf="@id/tuesday"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
         android:text="@string/monday"
-        />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tuesday"
+        app:layout_constraintTop_toTopOf="@id/guide_title_bottom" />
 
     <TextView
         android:id="@+id/tuesday"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/monday"
-        app:layout_constraintTop_toTopOf="@id/guide_title_bottom"
-        app:layout_constraintRight_toLeftOf="@id/wednesday"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
         android:text="@string/tuesday"
-        />
+        app:layout_constraintLeft_toRightOf="@id/monday"
+        app:layout_constraintRight_toLeftOf="@id/wednesday"
+        app:layout_constraintTop_toTopOf="@id/guide_title_bottom" />
 
     <TextView
         android:id="@+id/wednesday"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/tuesday"
-        app:layout_constraintTop_toTopOf="@id/guide_title_bottom"
-        app:layout_constraintRight_toLeftOf="@id/thursday"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
         android:text="@string/wednesday"
-        />
+        app:layout_constraintLeft_toRightOf="@id/tuesday"
+        app:layout_constraintRight_toLeftOf="@id/thursday"
+        app:layout_constraintTop_toTopOf="@id/guide_title_bottom" />
 
     <TextView
         android:id="@+id/thursday"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/wednesday"
-        app:layout_constraintTop_toTopOf="@id/guide_title_bottom"
-        app:layout_constraintRight_toLeftOf="@id/friday"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
         android:text="@string/thursday"
-        />
+        app:layout_constraintLeft_toRightOf="@id/wednesday"
+        app:layout_constraintRight_toLeftOf="@id/friday"
+        app:layout_constraintTop_toTopOf="@id/guide_title_bottom" />
 
     <TextView
         android:id="@+id/friday"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/thursday"
-        app:layout_constraintTop_toTopOf="@id/guide_title_bottom"
-        app:layout_constraintRight_toLeftOf="@id/saturday"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
         android:text="@string/friday"
-        />
+        app:layout_constraintLeft_toRightOf="@id/thursday"
+        app:layout_constraintRight_toLeftOf="@id/saturday"
+        app:layout_constraintTop_toTopOf="@id/guide_title_bottom" />
 
     <TextView
         android:id="@+id/saturday"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/friday"
-        app:layout_constraintTop_toTopOf="@id/guide_title_bottom"
-        app:layout_constraintRight_toLeftOf="@id/sunday"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
         android:text="@string/saturday"
-        />
+        app:layout_constraintLeft_toRightOf="@id/friday"
+        app:layout_constraintRight_toLeftOf="@id/sunday"
+        app:layout_constraintTop_toTopOf="@id/guide_title_bottom" />
 
     <TextView
         android:id="@+id/sunday"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/saturday"
-        app:layout_constraintTop_toTopOf="@id/guide_title_bottom"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
         android:text="@string/sunday"
-        />
+        app:layout_constraintLeft_toRightOf="@id/saturday"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guide_title_bottom" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendar_content_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guide_list_top"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/monday" />
 
 
-    
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_title_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1"
-        />
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guide_list_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15"
-        />
+        app:layout_constraintGuide_percent="0.1" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

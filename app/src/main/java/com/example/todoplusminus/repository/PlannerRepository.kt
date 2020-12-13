@@ -1,5 +1,6 @@
 package com.example.todoplusminus.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.todoplusminus.db.PlannerInfoEntity
 import com.example.todoplusminus.db.PlannerItemEntity
@@ -19,8 +20,9 @@ class PlannerRepository(
         //전달 받은 날짜에 해당하는 info데이터가 있는지 확인한다.
         //즉 전달받은 낧짜에 info 데이터가 없다는 것은 2가지를 의미한다.
 
-        //1. 사용자가 첫 설치해서, 등록한 데이터가 없는 경우
-        //2. 새로운 날짜가 되어, 그에 대응되는 info 테이블이 없는 경우
+        //1. 사용자가 첫 설치해서, 등록한 데이터가 없는 경우 - 이 경우는 처리하지 않는다.
+        //2. 새로운 날짜가 되어, 그에 대응되는 info 테이블이 없는 경우 - 이 경우를 처리하기 위함
+        //(info, item을 조인해서 데이터를 가져오기 때문에 항상 해당 날짜에 info 데이터가 있어야 한다.)
         if (!checkWhetherExistInfoDataByDate(date)) {
 
             //2번째 케이스에 대응된다.

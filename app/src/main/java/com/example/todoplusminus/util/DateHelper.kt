@@ -1,37 +1,71 @@
 package com.example.todoplusminus.util
 
+import android.content.Context
 import android.util.Log
+import com.example.todoplusminus.R
 import java.text.SimpleDateFormat
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjuster
+import java.time.temporal.TemporalAdjusters
 import java.util.*
 import kotlin.math.abs
 
-object DateHelper {
+class DateHelper {
 
-    fun getCurAllDate(): String {
-        val curMills = System.currentTimeMillis()
-        val date = Date(curMills)
-        val result = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-        return result.format(date)
+    object DateConverter{
+        fun parseStringWeekRange(context : Context, dateRange: LocalDateRange) : String{
+            val startDate = dateRange.startDate
+            val endDate = dateRange.endDate
+
+            return "${startDate.year}${context.getString(R.string.year)} ${startDate.monthValue}${context.getString(R.string.month)} ${startDate.dayOfMonth}${context.getString(R.string.day)}" +
+                    "~ ${endDate.dayOfMonth}${context.getString(R.string.day)}"
+        }
+
+        fun parseStringMonthRange(context: Context, dateRange: LocalDateRange) : String{
+            val endDate = dateRange.endDate
+
+            return "${endDate.year}${context.getString(R.string.year)} ${endDate.monthValue}${context.getString(R.string.month)}"
+        }
+
+        fun parseStringYearRange(context: Context, dateRange : LocalDateRange) : String{
+            val endDate = dateRange.endDate
+
+            return "${endDate.year}${context.getString(R.string.year)}"
+        }
     }
 
+    companion object{
+        fun getCurAllDate(): String {
+            val curMills = System.currentTimeMillis()
+            val date = Date(curMills)
+            val result = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+            return result.format(date)
+        }
 
-    fun getCurDate(): LocalDate = LocalDate.now()
 
-    fun getCurDateTime(): String {
-        val curMills = System.currentTimeMillis()
-        val date = Date(curMills)
-        val result = SimpleDateFormat("MM/dd\n a HH:mm")
-        return result.format(date)
+        fun getCurDate(): LocalDate = LocalDate.now()
+
+        fun getCurDateTime(): String {
+            val curMills = System.currentTimeMillis()
+            val date = Date(curMills)
+            val result = SimpleDateFormat("MM/dd\n a HH:mm")
+            return result.format(date)
+        }
+
+        fun getCurTime(): String {
+            val curMills = System.currentTimeMillis()
+            val date = Date(curMills)
+            val result = SimpleDateFormat("HH:mm:ss")
+            return result.format(date)
+        }
+
+        fun convertYearData(){
+
+        }
     }
 
-    fun getCurTime(): String {
-        val curMills = System.currentTimeMillis()
-        val date = Date(curMills)
-        val result = SimpleDateFormat("HH:mm:ss")
-        return result.format(date)
-    }
 
     //todo 다국어 처리
     //전달받은 dateRange의 주별 날짜리스트를 전달한다.
@@ -187,5 +221,43 @@ object DateHelper {
 
         return LocalDateRange(startDate, endDate)
     }
+
+    /**
+     * 전달받은 dateRange를 바탕으로 달력 데이터를 전달해준다.
+     * */
+
+    fun getCalendarBy(range: LocalDateRange) : List<List<Int>> {
+        var startDate = range.startDate.copy()
+        val endDate = range.endDate.copy()
+
+        val calendarDataList : MutableList<List<Int>> = mutableListOf()
+        while (startDate.compareUntilMonth(endDate) <= 0) {
+            calendarDataList.add(makeMonthDate(startDate))
+            startDate = startDate.plusMonths(1)
+        }
+        return calendarDataList
+    }
+
+    /**
+     * 전달받은 LocalDate의 월을 이용해서
+     *
+     * 한달치 달력 데이터를 만든다.
+     * 시작일은 월요일이 기준이며,
+     *
+     * 배열의 0값을 통해 해당 월의 시작 요일을 맞춘다. ex 2020/12/1은 화요일이므로 [0, 1, 2, 3 ... ]
+     *                                      ex 2020/11/1은 일요일이므로 [0, 0, 0, 0, 0, 0, 1, 2, 3 ...]
+     * */
+    private fun makeMonthDate(date: LocalDate): List<Int> {
+        val firstDayOfMonth = date.with(TemporalAdjusters.firstDayOfMonth())
+        val dayOfWeek = firstDayOfMonth.dayOfWeek.value
+
+        val monthDateList: MutableList<Int> = mutableListOf()
+
+        for (i in 1 until dayOfWeek) monthDateList.add(0)
+        for (i in 1..date.lengthOfMonth()) monthDateList.add(i)
+
+        return monthDateList
+    }
+
 
 }

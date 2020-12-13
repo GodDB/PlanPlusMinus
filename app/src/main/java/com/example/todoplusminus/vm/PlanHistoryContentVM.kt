@@ -10,6 +10,7 @@ import com.example.todoplusminus.util.LocalDateRange
 import com.example.todoplusminus.util.DateHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import java.sql.Date
 
 class PlanHistoryContentVM(
     _mode: String,
@@ -34,7 +35,8 @@ class PlanHistoryContentVM(
 
     val yData: List<List<Int>>?
         get() {
-            //todo 완성하
+            val dateHelper = DateHelper()
+
             return when (mode.value?.peekContent()) {
                 MODE_WEEK ->
                     _mPlanProject.getWeekCountListBetween(
@@ -57,20 +59,22 @@ class PlanHistoryContentVM(
 
     val xData: List<List<String>>
         get() {
+            val dateHelper = DateHelper()
+
             return when (mode.value?.peekContent()) {
-                MODE_WEEK -> DateHelper.getDayOfWeekList(
+                MODE_WEEK -> dateHelper.getDayOfWeekList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
                         DateHelper.getCurDate()
                     )
                 ).reversed()
-                MODE_MONTH -> DateHelper.getDayOfMonthList(
+                MODE_MONTH -> dateHelper.getDayOfMonthList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
-                        DateHelper.getCurDate()
+                       DateHelper.getCurDate()
                     )
                 ).reversed()
-                MODE_YEAR -> DateHelper.getYearList(
+                MODE_YEAR -> dateHelper.getYearList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
                         DateHelper.getCurDate()
@@ -82,20 +86,22 @@ class PlanHistoryContentVM(
 
     val graphTitle: List<LocalDateRange>
         get() {
+            val dateHelper = DateHelper()
+
             return when (mode.value?.peekContent()) {
-                MODE_WEEK -> DateHelper.getWeekRangeList(
+                MODE_WEEK -> dateHelper.getWeekRangeList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
                         DateHelper.getCurDate()
                     )
                 ).reversed()
-                MODE_MONTH -> DateHelper.getMonthRangeList(
+                MODE_MONTH -> dateHelper.getMonthRangeList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
                         DateHelper.getCurDate()
                     )
                 ).reversed()
-                MODE_YEAR -> DateHelper.getYearRangeList(
+                MODE_YEAR -> dateHelper.getYearRangeList(
                     LocalDateRange(
                         _mPlanProject.getOldDate(),
                         DateHelper.getCurDate()

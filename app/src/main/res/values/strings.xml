@@ -8,6 +8,7 @@
     <string name="year">Year</string>
     <string name="month">Month</string>
     <string name="week">Week</string>
+    <string name="day">day</string>
     <string name="today_memo">Today\'s Memo</string>
     <string name="lastday_of_execution">Last day of execution</string>
     <string name="week_average">Week average</string>

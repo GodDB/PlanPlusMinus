@@ -62,14 +62,6 @@ class PlanProjectTest {
 
     }
 
-    @Test
-    fun aaa(){
-        val range = DateHelper.getWeekDayRangeBy(LocalDate.now())
 
-        println(range.startDate.dayOfWeek.value)
-        println(range.startDate.dayOfWeek.name)
-        println(range.endDate.dayOfWeek.value)
-        println(range.endDate.dayOfWeek.name)
-    }
 
 }
