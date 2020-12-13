@@ -2,6 +2,7 @@ package com.example.todoplusminus
 
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanProject
+import com.example.todoplusminus.util.ColorManager
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -27,5 +28,10 @@ class ExampleUnitTest {
 
         assertEquals(planData.date, LocalDate.now())
 
+    }
+
+    @Test
+    fun getColor(){
+        print(ColorManager.getRandomColor())
     }
 }

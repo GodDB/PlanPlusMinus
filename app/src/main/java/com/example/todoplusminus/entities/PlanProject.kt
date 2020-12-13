@@ -41,6 +41,16 @@ class PlanProject private constructor() {
         return PlanData.create()
     }
 
+    fun getPlanDataListByDate(date : LocalDate) : List<PlanData>{
+        val result : MutableList<PlanData> = mutableListOf()
+
+        mPlanDataList.forEach { planData ->
+            if(planData.date == date) result.add(planData)
+        }
+
+        return result
+    }
+
     fun increasePlanDataCountByIndex(count: Int, index: Int) {
         mPlanDataList[index].increaseCount(count)
     }

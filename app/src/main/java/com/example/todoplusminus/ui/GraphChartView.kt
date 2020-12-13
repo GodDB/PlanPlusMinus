@@ -14,6 +14,7 @@ import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import com.example.todoplusminus.R
 import com.example.todoplusminus.databinding.UiGraphViewBinding
 import com.example.todoplusminus.util.ColorManager
@@ -123,7 +124,7 @@ class GraphChartView : LinearLayout {
             if(yDatas[i] > 0){
                 val graphView = CardView(binder.root.context).apply {
                     this.x = x + DpConverter.dpToPx(1.2f)
-                    this.setCardBackgroundColor(mGraphViewColor)
+                    this.setCardBackgroundColor(ContextCompat.getColor(context, mGraphViewColor))
                     this.radius = 10f
                     //나머지 y나 height값들은 애니메이션을 통해서 값을 채워준다.
                 }

@@ -41,7 +41,7 @@ object CommonAnimationHelper {
     fun startFadeOutAnimation(v : View){
         v.animate()
             .alpha(0f)
-            .setDuration(500)
+            .setDuration(0)
             .setListener(object : AnimatorListenerAdapter(){
                 override fun onAnimationEnd(animation: Animator?) {
                     v.visibility = View.GONE

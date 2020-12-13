@@ -1,11 +1,13 @@
 package com.example.todoplusminus.bindingAdapter
 
 
+import android.content.Context
 import android.graphics.Color
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoplusminus.controllers.PlanHistoryChartAdapter
@@ -95,9 +97,9 @@ fun setShowCalendar(rv: RecyclerView, isEdit: Boolean, isShowCalendar: Boolean) 
 @BindingAdapter(value = ["bind:backgroundColor", "bind:isEdit"], requireAll = true)
 fun setBackgroundColorWhenEditMode(view: CardView, data: PlanData, isEdit: Boolean) {
     if (isEdit)
-        view.setCardBackgroundColor(data.bgColor)
+        view.setCardBackgroundColor(ContextCompat.getColor(view.context, data.bgColor))
     else {
-        if (data.count >= 1) view.setCardBackgroundColor(data.bgColor)
+        if (data.count >= 1) view.setCardBackgroundColor(ContextCompat.getColor(view.context, data.bgColor))
         else view.setCardBackgroundColor(Color.WHITE)
     }
 }
@@ -182,12 +184,12 @@ fun setGraphViewListData(
 
 @BindingAdapter("bind:tabIndicatorColor")
 fun setTabIndicatorColor(tabLayout: TabLayout, bgColor: Int) {
-    tabLayout.setSelectedTabIndicatorColor(bgColor)
+    tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(tabLayout.context, bgColor))
 }
 
 @BindingAdapter("bind:setCardViewColorById")
 fun setCardViewColorById(view: CardView, colorId: Int) {
-    view.setCardBackgroundColor(view.context.getColor(colorId))
+    view.setCardBackgroundColor(ContextCompat.getColor(view.context, colorId))
 }
 
 @BindingAdapter("bind:setItemClickListener")

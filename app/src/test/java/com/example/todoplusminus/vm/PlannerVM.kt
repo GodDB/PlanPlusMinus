@@ -71,7 +71,7 @@ class PlannerVM {
             planVM = PlannerViewModel(repository, PMCoroutineSpecification.MAIN_DISPATCHER)
 
             //plan project에 대해서 옵저빙을 실시한다.
-            planVM.planProject.getOrAwaitValue()
+            planVM.targetDatePlanProject.getOrAwaitValue()
         }
     }
 
@@ -80,9 +80,9 @@ class PlannerVM {
         runBlocking {
             planVM.onItemDelete(0)
 
-            assertEquals(planVM.planProject.value?.getPlanDataByIndex(0)?.id, targetPlanData1.id)
-            assertEquals(planVM.planProject.value?.getPlanDataByIndex(1)?.id, targetPlanData2.id)
-            assertEquals(planVM.planProject.value?.getPlanDataByIndex(2)?.id, targetPlanData3.id)
+            assertEquals(planVM.targetDatePlanProject.value?.getPlanDataByIndex(0)?.id, targetPlanData1.id)
+            assertEquals(planVM.targetDatePlanProject.value?.getPlanDataByIndex(1)?.id, targetPlanData2.id)
+            assertEquals(planVM.targetDatePlanProject.value?.getPlanDataByIndex(2)?.id, targetPlanData3.id)
             Mockito.verify(repository).deletePlannerDataById(targetPlanData1.id)
         }
     }
@@ -95,7 +95,7 @@ class PlannerVM {
             planVM.switchEditMode()
 
             assertEquals(planVM.isEditMode.getOrAwaitValue(), false)
-            Mockito.verify(repository).updatePlannerDataList(planVM.planProject.getOrAwaitValue().getPlanDataList())
+            Mockito.verify(repository).updatePlannerDataList(planVM.targetDatePlanProject.getOrAwaitValue().getPlanDataList())
         }
     }
 

@@ -1,7 +1,6 @@
 package com.example.todoplusminus.vm
 
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.todoplusminus.PMCoroutineSpecification
 import com.example.todoplusminus.base.Event
@@ -10,8 +9,10 @@ import com.example.todoplusminus.entities.PlanMemo
 import com.example.todoplusminus.entities.PlanProject
 import com.example.todoplusminus.repository.IPlannerRepository
 import com.example.todoplusminus.util.DateHelper
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
 import java.time.LocalDate
+
 
 /**
  * planner의 모든 비즈니스 로직을 담당하는 viewModel
@@ -31,19 +32,22 @@ class PlannerViewModel(
         }
     }
 
+
     private val _targetDate: MutableLiveData<LocalDate> = MutableLiveData(DateHelper.getCurDate())
 
-    private val _dataList: LiveData<MutableList<PlanData>> =
-        Transformations.switchMap(_targetDate) {
-            repository.getAllPlanDataByDate(it)
-        }
+    private val _allDatePlanData = repository.getAllPlannerData()
 
-    val planProject: LiveData<PlanProject> = Transformations.switchMap(_dataList) {
+    private val _planProject: LiveData<PlanProject> = Transformations.switchMap(_allDatePlanData) {
         MutableLiveData(PlanProject.create(it))
+    }
+
+    val targetDatePlanProject : CombinedLiveData<LocalDate,PlanProject, PlanProject> = CombinedLiveData(_targetDate, _planProject){ a, b ->
+        PlanProject.create(b.getPlanDataListByDate(a))
     }
 
     val planMemo: LiveData<PlanMemo> = Transformations.switchMap(_targetDate) {
         repository.getMemoByDate(it)
+
     }
 
     val isEditMode: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -57,7 +61,7 @@ class PlannerViewModel(
     val showCalendar: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
     fun onItemDelete(index: Int) {
-        val targetDeleteObj = planProject.value?.getPlanDataByIndex(index)
+        val targetDeleteObj = targetDatePlanProject.value?.getPlanDataByIndex(index)
 
         if (targetDeleteObj != null) onDelete(targetDeleteObj)
     }
@@ -101,7 +105,7 @@ class PlannerViewModel(
     }
 
     fun updateCountByIndex(count: Int, index: Int) {
-        planProject.value?.increasePlanDataCountByIndex(count, index)
+        targetDatePlanProject.value?.increasePlanDataCountByIndex(count, index)
         updateByIndex(index)
 
     }
@@ -122,13 +126,13 @@ class PlannerViewModel(
 
     private fun updateAll() {
         viewModelScope.launch(dispatcher) {
-            repository.updatePlannerDataList(planProject.value!!.getPlanDataList())
+            repository.updatePlannerDataList(targetDatePlanProject.value!!.getPlanDataList())
         }
     }
 
     private fun updateByIndex(index: Int) {
         viewModelScope.launch(dispatcher) {
-            repository.updatePlannerData(planProject.value!!.getPlanDataByIndex(index))
+            repository.updatePlannerData(targetDatePlanProject.value!!.getPlanDataByIndex(index))
         }
     }
 
@@ -142,6 +146,26 @@ class PlannerViewModel(
     private fun checkWhetherEditMode(): Boolean = isEditMode.value!!
 
     private fun checkIdEmpty(id: String?): Boolean = (id == "" || id == null)
+}
+
+class CombinedLiveData<A, B, C>(private val liveData1: LiveData<A>, private val liveData2: LiveData<B>, private val action : (A, B) -> C) :
+    MediatorLiveData<C>() {
+
+    private var a : A? = null
+    private var b : B? = null
+
+    init {
+        addSource(liveData1) { a ->
+            this.a = a
+            if(b != null) this.value = action(a, b!!)
+        }
+
+        addSource(liveData2) { b ->
+            this.b = b
+            if(a != null) this.value = action(a!!, b)
+        }
+
+    }
 }
 
 

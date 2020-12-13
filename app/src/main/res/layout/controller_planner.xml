@@ -50,6 +50,7 @@
             android:background="@color/white"
             bind:editMode1="@{vm.isEditMode().booleanValue()}"
             bind:showCalendar="@{vm.showCalendar.contentIfNotHandled}"
+            android:visibility="gone"
             />
 
         <TextView
@@ -182,7 +183,7 @@
             bind:editMode="@{vm.isEditMode().booleanValue()}"
             bind:showCalendar="@{vm.showCalendar.contentIfNotHandled}"
             bind:isEdit="@{vm.isEditMode().booleanValue()}"
-            bind:items="@{vm.planProject.planDataList}" />
+            bind:items="@{vm.targetDatePlanProject.planDataList}" />
 
 
         <androidx.constraintlayout.widget.Guideline
