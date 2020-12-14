@@ -1,8 +1,8 @@
 package com.example.todoplusminus.bindingAdapter
 
 
-import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todoplusminus.controllers.PlanHistoryChartAdapter
 import com.example.todoplusminus.controllers.PlanListAdapter
 import com.example.todoplusminus.entities.PlanData
-import com.example.todoplusminus.util.CommonAnimationHelper
-import com.example.todoplusminus.util.DeviceManager
-import com.example.todoplusminus.util.DpConverter
-import com.example.todoplusminus.util.LocalDateRange
+import com.example.todoplusminus.entities.PlanMemo
+import com.example.todoplusminus.ui.PMCalendarView
+import com.example.todoplusminus.util.*
 import com.example.todoplusminus.vm.OnDoneListener
 import com.google.android.material.tabs.TabLayout
+import java.time.LocalDate
 import kotlin.math.max
 
 
@@ -47,21 +47,24 @@ fun items(rv: RecyclerView, dataList: List<PlanData>?, isEdit: Boolean) {
 
 @BindingAdapter("bind:editMode")
 fun setEditMode(view: View, isEdit: Boolean) {
-    if(isEdit) return CommonAnimationHelper.startFadeInAnimation(view)
+    if (isEdit) return CommonAnimationHelper.startFadeInAnimation(view)
 
     CommonAnimationHelper.startFadeOutAnimation(view)
 }
 
 @BindingAdapter("bind:showCalendar")
-fun setShowCalendar(v : View, isShowCalendar: Boolean){
-    if(isShowCalendar) return CommonAnimationHelper.startFadeInAnimation(v)
+fun setShowCalendar(v: View, isShowCalendar: Boolean) {
+    if (isShowCalendar) return CommonAnimationHelper.startFadeInAnimation(v)
 
     CommonAnimationHelper.startFadeOutAnimation(v)
 }
 
 @BindingAdapter("bind:yMoveWhenshowCalendar")
-fun setYMoveWhenShowCalendar(v : View, isShowCalendar: Boolean){
-    if(isShowCalendar) return CommonAnimationHelper.startYMoveUpAnimation(v, DpConverter.dpToPx(30f).toInt())
+fun setYMoveWhenShowCalendar(v: View, isShowCalendar: Boolean) {
+    if (isShowCalendar) return CommonAnimationHelper.startYMoveUpAnimation(
+        v,
+        DpConverter.dpToPx(30f).toInt()
+    )
 
     CommonAnimationHelper.startYMoveUpAnimation(v, 0)
 }
@@ -69,13 +72,14 @@ fun setYMoveWhenShowCalendar(v : View, isShowCalendar: Boolean){
 
 @BindingAdapter(value = ["bind:editMode1", "bind:showCalendar"], requireAll = true)
 fun setShowCalendar(v: View, isEdit: Boolean, isShowCalendar: Boolean) {
-    when{
+    when {
         isEdit and isShowCalendar -> CommonAnimationHelper.startFadeOutAnimation(v)
         !isEdit and isShowCalendar -> CommonAnimationHelper.startFadeInAnimation(v)
         isEdit and !isShowCalendar -> CommonAnimationHelper.startFadeOutAnimation(v)
         else -> CommonAnimationHelper.startFadeOutAnimation(v)
     }
 }
+
 /**
  * 리사이클러뷰만의 editMode
  *
@@ -99,7 +103,12 @@ fun setBackgroundColorWhenEditMode(view: CardView, data: PlanData, isEdit: Boole
     if (isEdit)
         view.setCardBackgroundColor(ContextCompat.getColor(view.context, data.bgColor))
     else {
-        if (data.count >= 1) view.setCardBackgroundColor(ContextCompat.getColor(view.context, data.bgColor))
+        if (data.count >= 1) view.setCardBackgroundColor(
+            ContextCompat.getColor(
+                view.context,
+                data.bgColor
+            )
+        )
         else view.setCardBackgroundColor(Color.WHITE)
     }
 }
@@ -209,4 +218,63 @@ fun setOnClickEvent(view: CardView, onClick: () -> Unit) {
         if (clickGestureDetector.onTouchEvent(event)) onClick()
         true
     }
+}
+
+@BindingAdapter(value = ["bind:setCalendarData1", "bind:setCalendarData2"], requireAll = true)
+fun setCalendarData(
+    calendarView: PMCalendarView,
+    planDataList: List<PlanData>?,
+    planMemoList: List<PlanMemo>?
+) {
+    if (planDataList == null || planMemoList == null) return
+
+    //todo 얘를 누가 관리하면 좋을까 ...
+    val calendarRange = LocalDateRange(LocalDate.of(2015, 1, 1), LocalDate.now())
+    val dateHelper = DateHelper()
+
+    val mCalendarList: MutableList<MutableList<PMCalendarView.CalendarData>> = mutableListOf()
+
+    val sortedPlanDataList = planDataList.sortedBy {
+        it.date
+    }
+
+    val sortedPlanMemoList = planMemoList.sortedBy {
+        it.date
+    }
+
+    dateHelper.getCalendarBy(calendarRange).forEach { dateList ->
+        val calendarList: MutableList<PMCalendarView.CalendarData> = mutableListOf()
+        dateList.forEach { date ->
+            calendarList.add(
+                PMCalendarView.CalendarData(
+                    date,
+                    checkContainPlanDataByDate(sortedPlanDataList, date),
+                    checkContainPlanMemoByDate(sortedPlanMemoList, date)
+                )
+            )
+        }
+        mCalendarList.add(calendarList)
+    }
+
+    calendarView.setCalendarData(mCalendarList)
+}
+
+private fun checkContainPlanDataByDate(planDataList: List<PlanData>, date: LocalDate?): Boolean? {
+    if (date == null) return null
+    planDataList.forEach {
+        //planData의 date가 전달받은 date를 넘어가면 종료한다... planData는 날짜 순임을 보장한다.
+        if (date.isBefore(it.date)) return false
+        if (it.date == date) return true
+    }
+    return false
+}
+
+private fun checkContainPlanMemoByDate(planMemoList: List<PlanMemo>, date: LocalDate?): Boolean? {
+    if (date == null) return null
+    planMemoList.forEach {
+        //planData의 date가 전달받은 date를 넘어가면 종료한다... planData는 날짜 순임을 보장한다.
+        if (date.isBefore(it.date)) return false
+        if (it.date == date) return true
+    }
+    return false
 }

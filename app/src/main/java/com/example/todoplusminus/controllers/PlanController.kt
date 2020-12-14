@@ -21,6 +21,7 @@ import com.example.todoplusminus.util.*
 import com.example.todoplusminus.vm.PlanEditVM
 import com.example.todoplusminus.vm.PlannerViewModel
 import com.example.todoplusminus.vm.PlannerVMFactory
+import java.time.LocalDate
 import kotlin.math.max
 import kotlin.math.min
 
@@ -94,8 +95,8 @@ class PlannerController : DBControllerBase {
     private fun addEvent() {
         binder.calendarView.setDelegate(
             object : PMCalendarView.Delegate{
-                override fun selectedDate(year: Int, month: Int, day: Int) {
-                    planVM.changeDate(year, month, day)
+                override fun selectedDate(date: LocalDate) {
+                    planVM.changeDate(date)
                 }
             }
         )
@@ -144,7 +145,6 @@ class PlannerController : DBControllerBase {
         })
 
         planVM.targetDate.observe(this, Observer { date ->
-            Log.d("godgod", "a")
             binder.calendarView.setSelectDate(date)
         })
     }

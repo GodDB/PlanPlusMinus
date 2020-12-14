@@ -45,6 +45,9 @@ class PlannerViewModel(
         MutableLiveData(PlanProject.create(it))
     }
 
+    val allDatePlanData : LiveData<MutableList<PlanData>> = _allDatePlanData
+    val allDatePlanMemo : LiveData<MutableList<PlanMemo>> = repository.getAllPlanMemo()
+
     val targetDatePlanProject : CombinedLiveData<LocalDate,PlanProject, PlanProject> = CombinedLiveData(_targetDate, _allDatePlanProject){ a, b ->
         PlanProject.create(b.getPlanDataListByDate(a))
     }
@@ -63,6 +66,7 @@ class PlannerViewModel(
 
     val showCalendar: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
+
     fun onItemDelete(index: Int) {
         val targetDeleteObj = targetDatePlanProject.value?.getPlanDataByIndex(index)
 
@@ -70,8 +74,7 @@ class PlannerViewModel(
     }
 
     fun switchEditMode() {
-        //editMode일 땐 targetDate를 현재로 변경한다.
-        changeDate(LocalDate.now())
+        resetTargetDate()
 
         if (checkWhetherEditMode()) {
             isEditMode.value = false
@@ -104,6 +107,7 @@ class PlannerViewModel(
     fun showCalendar() {
         if (this.showCalendar.value!!.peekContent()) {
             this.showCalendar.value = Event(false)
+            resetTargetDate()
             return
         }
 
@@ -117,6 +121,7 @@ class PlannerViewModel(
     }
 
     fun showMemo() {
+        resetTargetDate()
         showMemoEditor.value = Event(true)
     }
 
@@ -151,6 +156,10 @@ class PlannerViewModel(
         viewModelScope.launch(dispatcher) {
             repository.deletePlannerDataById(planData.id)
         }
+    }
+
+    private fun resetTargetDate(){
+        _targetDate.value = DateHelper.getCurDate()
     }
 
     private fun checkWhetherEditMode(): Boolean = isEditMode.value!!

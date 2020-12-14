@@ -6,32 +6,40 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.CalendarView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.todoplusminus.R
 import com.example.todoplusminus.databinding.UiCalendarViewBinding
 import com.example.todoplusminus.databinding.UiCalendarViewItemBinding
 import com.example.todoplusminus.util.DateHelper
-import com.example.todoplusminus.util.LocalDateRange
+import com.example.todoplusminus.util.DpConverter
 import com.example.todoplusminus.util.compareUntilMonth
 import java.time.LocalDate
 
 class PMCalendarView : LinearLayout {
 
+    data class CalendarData(
+        val date: LocalDate?,
+        val isShowCheckView1: Boolean?,
+        val isShowCheckView2: Boolean?
+    )
+
     interface Delegate {
-        fun selectedDate(year: Int, month: Int, day: Int)
+        fun selectedDate(date: LocalDate)
     }
 
     private lateinit var binder: UiCalendarViewBinding
-    private var calendarRange = LocalDateRange(LocalDate.of(2010, 1, 1), LocalDate.now())
-    private val calendarDataList = DateHelper().getCalendarBy(calendarRange).reversed()
-    private val calendarTitleList = DateHelper().getMonthRangeList(calendarRange).reversed()
+    private var mCalendarDataList: List<List<CalendarData>>? = null
+    private var mCalendarTitleList: List<String>? = null
     private var mDelegate: Delegate? = null
 
-    //현재 사용자에게 보여지는 년, 월
-    private var curDate: LocalDateRange = calendarTitleList[0]
 
     constructor(context: Context?) : super(context) {
         customInit(context)
@@ -53,20 +61,25 @@ class PMCalendarView : LinearLayout {
         mDelegate = delegate
     }
 
+    fun setCalendarData(calendarList: List<List<CalendarData>>) {
+        mCalendarDataList = calendarList.reversed()
+        mCalendarTitleList = getCalendarTitleList(mCalendarDataList!!)
+
+        (binder.calendarContentList.adapter as? CalendarViewAdapter)?.setData(mCalendarDataList!!)
+        setTitle(mCalendarTitleList!![0])
+    }
+
     fun setSelectDate(date: LocalDate) {
         val monthIndex = getIndexWhenEqualMonth(date)
         val dayIndex = getIndexWhenEqualDay(date, monthIndex)
 
-        if(monthIndex == -1 || dayIndex == -1) return
+        if (monthIndex == -1 || dayIndex == -1) return
 
         //스크롤 이동
         scrollBy(monthIndex)
 
         //title 변경
-        setTitle(DateHelper.DateConverter.parseStringMonthRange(
-            binder.root.context,
-            calendarTitleList[monthIndex]
-        ))
+        setTitle(mCalendarTitleList?.get(monthIndex))
 
         //vh 갱신
         val vh = getVHByIndex(monthIndex)
@@ -75,6 +88,22 @@ class PMCalendarView : LinearLayout {
         //어댑터 갱신
         val adapter = binder.calendarContentList.adapter as? CalendarViewAdapter
         adapter?.notifyDataSetChanged()
+    }
+
+    private fun getCalendarTitleList(list: List<List<CalendarData>>): List<String> {
+        val titleList: MutableList<String> = mutableListOf()
+        //한달씩 데이터가 분리되어 있음을 보장한다.
+        list.forEach {
+            val date = it[(it.size) / 2].date
+
+            val title =
+                "${date?.year}${context.getString(R.string.year)} ${date?.monthValue}${context.getString(
+                    R.string.month
+                )}"
+            titleList.add(title)
+        }
+
+        return titleList
     }
 
     private fun scrollBy(index: Int) {
@@ -90,11 +119,11 @@ class PMCalendarView : LinearLayout {
     private fun initCalendarContents() {
 
         binder.calendarContentList.adapter = CalendarViewAdapter().apply {
-            setData(calendarDataList)
             setDelegate(object : CalendarViewAdapter.Delegate {
-                override fun selectedDay(day: Int) {
-                    mDelegate?.selectedDate(curDate.endDate.year, curDate.endDate.monthValue, day)
+                override fun selectedDate(date: LocalDate) {
+                    mDelegate?.selectedDate(date)
                 }
+
             })
         }
 
@@ -102,37 +131,40 @@ class PMCalendarView : LinearLayout {
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, true)
 
         snapHelper.attachToRecyclerView(binder.calendarContentList)
-
-        setTitle(DateHelper.DateConverter.parseStringMonthRange(
-            binder.root.context,
-            calendarTitleList[0]
-        ))
     }
 
     private fun getIndexWhenEqualMonth(date: LocalDate): Int {
-        calendarTitleList.forEachIndexed { index, localDateRange ->
-            if (localDateRange.endDate.compareUntilMonth(date) == 0) return index
+        mCalendarDataList?.forEachIndexed { index, list ->
+            val calendarDate = list[list.size / 2].date
+
+            if (calendarDate?.let { date.compareUntilMonth(it) } == 0) return index
         }
 
         //없으면 -1
         return -1
     }
 
-    private fun getIndexWhenEqualDay(date : LocalDate, monthIndex : Int) : Int{
-        calendarDataList[monthIndex].forEachIndexed { index, value ->
-            if(value == date.dayOfMonth) return index
+    private fun getIndexWhenEqualDay(date: LocalDate, monthIndex: Int): Int {
+        /*  mCalendarDataList[monthIndex].forEachIndexed { index, value ->
+              if(value?.dayOfMonth == date.dayOfMonth) return index
+          }*/
+        mCalendarDataList?.get(monthIndex)?.forEachIndexed { index, calendarData ->
+            if (date.dayOfMonth == calendarData.date?.dayOfMonth) return index
         }
 
         //없으면 -1
         return -1
     }
 
-    private fun setTitle(title : String){
+    private fun setTitle(title: String?) {
         binder.calendarTitle.text = title
     }
 
-    private fun getVHByIndex(index : Int) : CalendarViewAdapter.CalendarVH? {
-        val childView = (binder.calendarContentList.layoutManager as? LinearLayoutManager)?.findViewByPosition(index)
+    private fun getVHByIndex(index: Int): CalendarViewAdapter.CalendarVH? {
+        val childView =
+            (binder.calendarContentList.layoutManager as? LinearLayoutManager)?.findViewByPosition(
+                index
+            )
         return childView?.let {
             binder.calendarContentList.getChildViewHolder(it)
         } as? CalendarViewAdapter.CalendarVH
@@ -147,12 +179,7 @@ class PMCalendarView : LinearLayout {
         ): Int {
             val index = super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
 
-            setTitle(DateHelper.DateConverter.parseStringMonthRange(
-                binder.root.context,
-                calendarTitleList[index]
-            ))
-
-            curDate = calendarTitleList[index]
+            setTitle(mCalendarTitleList?.get(index))
 
             return super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
         }
@@ -162,13 +189,13 @@ class PMCalendarView : LinearLayout {
 class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarVH>() {
 
     interface Delegate {
-        fun selectedDay(day: Int)
+        fun selectedDate(date: LocalDate)
     }
 
-    private val mDataList: MutableList<List<Int>> = mutableListOf()
+    private val mDataList: MutableList<List<PMCalendarView.CalendarData>> = mutableListOf()
     private var mDelegate: Delegate? = null
 
-    fun setData(list: List<List<Int>>) {
+    fun setData(list: List<List<PMCalendarView.CalendarData>>) {
         mDataList.clear()
         mDataList.addAll(list)
         notifyDataSetChanged()
@@ -204,16 +231,23 @@ class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarVH>
 
         private var selectedIndex: Int? = null
 
-        fun setSelectedIndex(index : Int){
+        fun setSelectedIndex(index: Int) {
             this.selectedIndex = index
         }
 
         fun bind() {
             //데이터의 길이만큼 반복한다.
-            mDataList[adapterPosition].forEachIndexed { index, value ->
-                tvList[index].text = if (value != 0) value.toString() else ""
+            mDataList[adapterPosition].forEachIndexed { index, calendarData ->
+                tvList[index].text = calendarData.date?.dayOfMonth?.toString() ?: ""
 
-                if (value != 0) setOnClickEvent(index, value)
+                if(calendarData.isShowCheckView1 != null && calendarData.isShowCheckView1) generateCheckView(tvList[index])
+                if (calendarData.isShowCheckView2 != null && calendarData.isShowCheckView2) tvList[index].text =
+                    tvList[index].context.getString(
+                        R.string.memo_icon,
+                        tvList[index].text.toString()
+                    )
+
+                if (calendarData.date != null) setOnClickEvent(index, calendarData.date)
                 else tvList[index].setOnClickListener(null)
 
                 if (selectedIndex != index) tvList[index].setTextColor(Color.BLACK)
@@ -225,19 +259,45 @@ class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarVH>
         }
 
 
-        private fun clearSelectedIndex(){
+        private fun clearSelectedIndex() {
             selectedIndex = null
         }
 
-        private fun setOnClickEvent(index : Int, value : Int){
+        private fun setOnClickEvent(index: Int, date: LocalDate) {
             tvList[index].setOnClickListener {
                 //선택한 일자를 전달한다.
-                mDelegate?.selectedDay(value)
+                mDelegate?.selectedDate(date)
             }
         }
 
-        private fun setEmptyValueBetween(from : Int, to: Int){
+        private fun setEmptyValueBetween(from: Int, to: Int) {
             for (i in from until to) tvList[i].text = ""
+        }
+
+        /**
+         * TextView를 전달받아 textView의 2/3 지점에 조그만한 뷰를 생성한다.
+         *
+         * 이 뷰는 해당 달력 날짜에 사용자가 plan의 count를 1이라도 올렸으면 표시한다.
+         * */
+        private fun generateCheckView(tv : TextView){
+            tv.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+                override fun onGlobalLayout() {
+                    val x = tv.x
+                    val y = tv.y
+
+                    val checkView = CardView(tv.context).apply {
+                        val params = ViewGroup.LayoutParams(DpConverter.dpToPx(8f).toInt(), DpConverter.dpToPx(8f).toInt())
+                        this.layoutParams = params
+
+                        this.x = x
+                        this.y = y
+                        this.setCardBackgroundColor(Color.RED)
+                    }
+
+                    vb.root.addView(checkView)
+                    tv.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
         }
 
     }

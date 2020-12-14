@@ -98,6 +98,9 @@ interface UserPlanDao{
     @Query("update PlannerItem set title = :title, bgColor = :bgColor where id = :id")
     fun updateTitleBgById(id : String, title : String, bgColor: Int)
 
+    @Query("select * from PlannerMemo")
+    fun getAllPlanMemo() : LiveData<MutableList<PlanMemo>>
+
     @Query("select * from PlannerMemo where date = :date")
     fun getMemoByDate(date : LocalDate) : LiveData<PlanMemo>
 
@@ -112,8 +115,6 @@ interface UserPlanDao{
 class Converters{
     @TypeConverter
     fun stringToCalendar(value : String) : LocalDate{
-        if(value == "2020/12/03") return LocalDate.parse("2020-12-03")
-        Log.d("godgod", "${value}")
         return LocalDate.parse(value)
     }
 

@@ -50,6 +50,8 @@
             android:background="@color/white"
             bind:editMode1="@{vm.isEditMode().booleanValue()}"
             bind:showCalendar="@{vm.showCalendar.contentIfNotHandled}"
+            bind:setCalendarData1="@{vm.allDatePlanData}"
+            bind:setCalendarData2="@{vm.allDatePlanMemo}"
             android:visibility="gone"
             />
 

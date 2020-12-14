@@ -13,28 +13,6 @@ import kotlin.math.abs
 
 class DateHelper {
 
-    object DateConverter{
-        fun parseStringWeekRange(context : Context, dateRange: LocalDateRange) : String{
-            val startDate = dateRange.startDate
-            val endDate = dateRange.endDate
-
-            return "${startDate.year}${context.getString(R.string.year)} ${startDate.monthValue}${context.getString(R.string.month)} ${startDate.dayOfMonth}${context.getString(R.string.day)}" +
-                    "~ ${endDate.dayOfMonth}${context.getString(R.string.day)}"
-        }
-
-        fun parseStringMonthRange(context: Context, dateRange: LocalDateRange) : String{
-            val endDate = dateRange.endDate
-
-            return "${endDate.year}${context.getString(R.string.year)} ${endDate.monthValue}${context.getString(R.string.month)}"
-        }
-
-        fun parseStringYearRange(context: Context, dateRange : LocalDateRange) : String{
-            val endDate = dateRange.endDate
-
-            return "${endDate.year}${context.getString(R.string.year)}"
-        }
-    }
-
     companion object{
         fun getCurAllDate(): String {
             val curMills = System.currentTimeMillis()
@@ -53,6 +31,7 @@ class DateHelper {
             return result.format(date)
         }
 
+        //todo 00시 기점으로 에러 발생 !! hot fix
         fun getRemainingTimeInDay(): String {
             val curTime = LocalTime.now()
             val curSecond = curTime.toSecondOfDay()
@@ -227,11 +206,11 @@ class DateHelper {
      * 전달받은 dateRange를 바탕으로 달력 데이터를 전달해준다.
      * */
 
-    fun getCalendarBy(range: LocalDateRange) : List<List<Int>> {
+    fun getCalendarBy(range: LocalDateRange) : List<List<LocalDate?>> {
         var startDate = range.startDate.copy()
         val endDate = range.endDate.copy()
 
-        val calendarDataList : MutableList<List<Int>> = mutableListOf()
+        val calendarDataList : MutableList<List<LocalDate?>> = mutableListOf()
         while (startDate.compareUntilMonth(endDate) <= 0) {
             calendarDataList.add(makeMonthDate(startDate))
             startDate = startDate.plusMonths(1)
@@ -245,17 +224,17 @@ class DateHelper {
      * 한달치 달력 데이터를 만든다.
      * 시작일은 월요일이 기준이며,
      *
-     * 배열의 0값을 통해 해당 월의 시작 요일을 맞춘다. ex 2020/12/1은 화요일이므로 [0, 1, 2, 3 ... ]
-     *                                      ex 2020/11/1은 일요일이므로 [0, 0, 0, 0, 0, 0, 1, 2, 3 ...]
+     * 배열의 0값을 통해 해당 월의 시작 요일을 맞춘다. ex 2020/12/1은 화요일이므로 [null, 1, 2, 3 ... ]
+     *                                      ex 2020/11/1은 일요일이므로 [null, null, null, null, null, null, 1, 2, 3 ...]
      * */
-    private fun makeMonthDate(date: LocalDate): List<Int> {
+    private fun makeMonthDate(date: LocalDate): List<LocalDate?> {
         val firstDayOfMonth = date.with(TemporalAdjusters.firstDayOfMonth())
         val dayOfWeek = firstDayOfMonth.dayOfWeek.value
 
-        val monthDateList: MutableList<Int> = mutableListOf()
+        val monthDateList: MutableList<LocalDate?> = mutableListOf()
 
-        for (i in 1 until dayOfWeek) monthDateList.add(0)
-        for (i in 1..date.lengthOfMonth()) monthDateList.add(i)
+        for (i in 1 until dayOfWeek) monthDateList.add(null)
+        for (i in 1..date.lengthOfMonth()) monthDateList.add(LocalDate.of(date.year, date.month, i))
 
         return monthDateList
     }

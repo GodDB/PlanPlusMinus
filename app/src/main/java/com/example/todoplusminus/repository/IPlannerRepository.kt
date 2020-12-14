@@ -11,6 +11,8 @@ interface IPlannerRepository {
 
     fun getAllPlannerData(): LiveData<MutableList<PlanData>>
 
+    fun getAllPlanMemo() : LiveData<MutableList<PlanMemo>>
+
     fun getAllPlanDataByDate(date: LocalDate): LiveData<MutableList<PlanData>>
 
     fun getAllPlanDataById(id: String): List<PlanData>

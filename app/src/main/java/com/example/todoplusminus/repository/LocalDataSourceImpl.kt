@@ -16,6 +16,9 @@ class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
     override fun getAllPlannerData(): LiveData<MutableList<PlanData>> =
         db.userPlanDao().getAllPlannerData()
 
+    override fun getAllPlanMemo(): LiveData<MutableList<PlanMemo>> =
+        db.userPlanDao().getAllPlanMemo()
+
     override fun getAllPlannerDataByDate(date : LocalDate): LiveData<MutableList<PlanData>> =
         db.userPlanDao().getAllPlannerDataByDate(date)
 

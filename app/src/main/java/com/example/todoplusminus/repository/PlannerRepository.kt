@@ -42,6 +42,9 @@ class PlannerRepository(
     override fun getAllPlannerData(): LiveData<MutableList<PlanData>> =
         localSource.getAllPlannerData()
 
+    override fun getAllPlanMemo(): LiveData<MutableList<PlanMemo>> =
+        localSource.getAllPlanMemo()
+
     override fun getAllPlanDataByDate(date: LocalDate): LiveData<MutableList<PlanData>> {
         return localSource.getAllPlannerDataByDate(date)
     }

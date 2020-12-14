@@ -17,6 +17,8 @@ interface ILocalDataSource {
 
     fun getAllPlannerData() : LiveData<MutableList<PlanData>>
 
+    fun getAllPlanMemo() : LiveData<MutableList<PlanMemo>>
+
     fun getAllPlannerDataByDate(date : LocalDate) : LiveData<MutableList<PlanData>>
 
     fun getAllPlannerDataById(id : String) : List<PlanData>
