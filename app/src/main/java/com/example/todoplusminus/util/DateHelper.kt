@@ -1,13 +1,12 @@
 package com.example.todoplusminus.util
 
 import android.content.Context
-import android.util.Log
 import com.example.todoplusminus.R
 import java.text.SimpleDateFormat
-import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalAdjuster
 import java.time.temporal.TemporalAdjusters
 import java.util.*
 import kotlin.math.abs
@@ -50,15 +49,17 @@ class DateHelper {
         fun getCurDateTime(): String {
             val curMills = System.currentTimeMillis()
             val date = Date(curMills)
-            val result = SimpleDateFormat("MM/dd\n a HH:mm")
+            val result = SimpleDateFormat("MM/dd \n a hh:mm")
             return result.format(date)
         }
 
-        fun getCurTime(): String {
-            val curMills = System.currentTimeMillis()
-            val date = Date(curMills)
-            val result = SimpleDateFormat("HH:mm:ss")
-            return result.format(date)
+        fun getRemainingTimeInDay(): String {
+            val curTime = LocalTime.now()
+            val curSecond = curTime.toSecondOfDay()
+            val oneDaySecond = 24 * 60 * 60
+
+            val diffTime = LocalTime.ofSecondOfDay(oneDaySecond - curSecond.toLong())
+            return diffTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
         }
 
         fun convertYearData(){

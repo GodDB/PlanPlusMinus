@@ -142,6 +142,11 @@ class PlannerController : DBControllerBase {
                 showPlanEditor(id)
             }
         })
+
+        planVM.targetDate.observe(this, Observer { date ->
+            Log.d("godgod", "a")
+            binder.calendarView.setSelectDate(date)
+        })
     }
 
     private fun planListScrollMoveTo(index: Int) {

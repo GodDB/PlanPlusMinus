@@ -137,12 +137,13 @@
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
-            android:visibility="@{vm.planMemo.contents != null ? View.VISIBLE : View.GONE }"
-            bind:editMode="@{!vm.isEditMode().booleanValue()}"
+            android:visibility="@{vm.targetDatePlanMemo.contents != null ? View.VISIBLE : View.GONE }"
             android:background="@color/white"
-            android:text="@{vm.planMemo.contents}"
+            android:text="@{vm.targetDatePlanMemo.contents}"
             android:onClick="@{() -> vm.showMemo()}"
             android:layout_margin="1dp"
+            bind:editMode1="@{vm.isEditMode().booleanValue()}"
+            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}"
             />
 
         <androidx.cardview.widget.CardView

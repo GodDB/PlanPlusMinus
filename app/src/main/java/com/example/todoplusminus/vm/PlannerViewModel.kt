@@ -33,21 +33,24 @@ class PlannerViewModel(
     }
 
 
-    private val _targetDate: MutableLiveData<LocalDate> = MutableLiveData(DateHelper.getCurDate())
+    private val _targetDate: MutableLiveData<LocalDate> = MutableLiveData<LocalDate>(DateHelper.getCurDate())
+
+    val targetDate : LiveData<LocalDate> = _targetDate.switchMap {
+        MutableLiveData(it)
+    }
 
     private val _allDatePlanData = repository.getAllPlannerData()
 
-    private val _planProject: LiveData<PlanProject> = Transformations.switchMap(_allDatePlanData) {
+    private val _allDatePlanProject: LiveData<PlanProject> = Transformations.switchMap(_allDatePlanData) {
         MutableLiveData(PlanProject.create(it))
     }
 
-    val targetDatePlanProject : CombinedLiveData<LocalDate,PlanProject, PlanProject> = CombinedLiveData(_targetDate, _planProject){ a, b ->
+    val targetDatePlanProject : CombinedLiveData<LocalDate,PlanProject, PlanProject> = CombinedLiveData(_targetDate, _allDatePlanProject){ a, b ->
         PlanProject.create(b.getPlanDataListByDate(a))
     }
 
-    val planMemo: LiveData<PlanMemo> = Transformations.switchMap(_targetDate) {
+    val targetDatePlanMemo: LiveData<PlanMemo> = Transformations.switchMap(_targetDate) {
         repository.getMemoByDate(it)
-
     }
 
     val isEditMode: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -67,6 +70,9 @@ class PlannerViewModel(
     }
 
     fun switchEditMode() {
+        //editMode일 땐 targetDate를 현재로 변경한다.
+        changeDate(LocalDate.now())
+
         if (checkWhetherEditMode()) {
             isEditMode.value = false
             updateAll()
@@ -121,6 +127,10 @@ class PlannerViewModel(
 
     fun changeDate(year: Int, month: Int, day: Int) {
         val date = LocalDate.of(year, month, day)
+        _targetDate.value = date
+    }
+
+    fun changeDate(date : LocalDate){
         _targetDate.value = date
     }
 

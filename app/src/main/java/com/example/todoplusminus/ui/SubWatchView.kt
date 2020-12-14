@@ -43,7 +43,7 @@ class SubWatchView : LinearLayout {
 
         CoroutineScope(Dispatchers.Main + mJob).launch {
             while (true) {
-                vb.clockTime.text = DateHelper.getCurTime()
+                vb.clockTime.text = DateHelper.getRemainingTimeInDay()
                 delay(500)
             }
         }
