@@ -30,6 +30,7 @@ class PlanData(
                 0
             )
         }
+
     }
 
 
@@ -40,5 +41,13 @@ class PlanData(
 
     fun copy(): PlanData = PlanData(id, index, title, bgColor, date, count, infoId)
 
+    override fun toString(): String {
+        return "id : $id, " +
+                "index : $index, " +
+                "bgColor : $bgColor, " +
+                "date : $date ," +
+                "count : $count, " +
+                "infoId : $infoId"
+    }
 
 }

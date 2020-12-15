@@ -220,6 +220,11 @@ fun setOnClickEvent(view: CardView, onClick: () -> Unit) {
     }
 }
 
+/**
+ * planmemo, plandata를 calendar data로 변경시키는 mapper
+ *
+ * 지정된 날짜 범위 안에서 planmemo와 plandata가 존재하는지를 확인하고, 그에 맞게 calendarData로 변환한다.
+ * */
 @BindingAdapter(value = ["bind:setCalendarData1", "bind:setCalendarData2"], requireAll = true)
 fun setCalendarData(
     calendarView: PMCalendarView,

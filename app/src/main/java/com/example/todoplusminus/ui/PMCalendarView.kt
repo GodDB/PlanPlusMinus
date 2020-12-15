@@ -256,6 +256,7 @@ class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarVH>
 
             setEmptyValueBetween(mDataList[adapterPosition].size, tvList.size)
             clearSelectedIndex()
+
         }
 
 

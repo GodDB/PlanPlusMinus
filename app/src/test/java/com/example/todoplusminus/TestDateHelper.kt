@@ -29,4 +29,28 @@ class TestDateHelper {
         )
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun test_getWeekDayRangeBy(){
+        val dateHelper = DateHelper()
+        val test1 = LocalDate.of(2020, 11, 1)
+        val test2 = LocalDate.of(2020, 11, 21)
+        val test3 = LocalDate.of(2020, 11, 30)
+        val test4 = LocalDate.of(2020, 12, 15)
+
+        val expected1 = dateHelper.getWeekDayRangeBy(test1)
+        val expected2 = dateHelper.getWeekDayRangeBy(test2)
+        val expected3 = dateHelper.getWeekDayRangeBy(test3)
+        val expected4 = dateHelper.getWeekDayRangeBy(test4)
+
+        val actual1 = LocalDateRange(LocalDate.of(2020, 10, 26), LocalDate.of(2020,11,1))
+        val actual2 = LocalDateRange(LocalDate.of(2020,11, 16), LocalDate.of(2020, 11, 22))
+        val actual3 = LocalDateRange(LocalDate.of(2020,11, 30), LocalDate.of(2020,12,6))
+        val actual4 = LocalDateRange(LocalDate.of(2020, 12, 14), LocalDate.of(2020,12, 20))
+
+        assertEquals(expected1, actual1)
+        assertEquals(expected2, actual2)
+        assertEquals(expected3, actual3)
+        assertEquals(expected4, actual4)
+    }
 }

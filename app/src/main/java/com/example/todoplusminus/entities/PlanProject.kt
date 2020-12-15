@@ -1,5 +1,6 @@
 package com.example.todoplusminus.entities
 
+import androidx.annotation.VisibleForTesting
 import com.example.todoplusminus.util.*
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -84,6 +85,7 @@ class PlanProject private constructor() {
 
         // startDate가 endDate와 같은 주 일때까지 반복한다.
         while (startDate.compareUntilWeek(endDate) <= 0) {
+            println(startDate)
             val list: List<Int> = getWeekDataInclude(startDate).map { it.count }
             weekDataList.add(list)
             startDate = startDate.plusWeeks(1)
@@ -120,7 +122,7 @@ class PlanProject private constructor() {
         if (getOldDate().isAfter(_startDate)) return emptyList()
 
         val yearDataList: MutableList<List<Int>> = mutableListOf()
-        var startDate = _startDate.copy()
+        var startDate = _startDate
 
         // starDate가 endDate와 같은 년도 일때까지 반복한다.
         while (startDate.compareUntilYear(endDate) <= 0) {
@@ -152,6 +154,9 @@ class PlanProject private constructor() {
      *
      * 단위는 1일
      * */
+
+    //todo - plandata.create()는 현재 요일을 default값으로 생성하기 때문에 추후 문제 발생 가능성이 있다..
+
     private fun getWeekDataInclude(date: LocalDate): List<PlanData> {
         val range = dateHelper.getWeekDayRangeBy(date)
 

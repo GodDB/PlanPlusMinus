@@ -20,4 +20,16 @@ class LocalDateRange(val startDate : LocalDate, val endDate : LocalDate){
 
         return false
     }
+
+    override fun equals(other: Any?): Boolean {
+        val other = (other as? LocalDateRange)?: return false
+
+        if(startDate == other.startDate && endDate == other.endDate) return true
+
+        return false
+    }
+
+    override fun toString(): String {
+        return "$startDate ~ $endDate"
+    }
 }

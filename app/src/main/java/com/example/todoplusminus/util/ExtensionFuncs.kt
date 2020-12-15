@@ -32,8 +32,8 @@ fun LocalDate.compareUntilWeek(target: LocalDate): Int {
 
     return when{
         this.compareUntilMonth(target) == 0 -> {
-            val thisWeekOfMonth = this.get(ChronoField.ALIGNED_WEEK_OF_MONTH)
-            val targetWeekOfMonth = target.get(ChronoField.ALIGNED_WEEK_OF_MONTH)
+            val thisWeekOfMonth = this.get(WeekFields.of(Locale.FRANCE).weekOfMonth()) // 프랑스는 1주를 월~일이다.
+            val targetWeekOfMonth = target.get(WeekFields.of(Locale.FRANCE).weekOfMonth())
             when{
                 thisWeekOfMonth == targetWeekOfMonth -> 0
                 thisWeekOfMonth > targetWeekOfMonth -> 1

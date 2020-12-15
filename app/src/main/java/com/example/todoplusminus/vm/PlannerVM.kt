@@ -167,6 +167,11 @@ class PlannerViewModel(
     private fun checkIdEmpty(id: String?): Boolean = (id == "" || id == null)
 }
 
+/**
+ * 타입이 다른 두 라이브데이터의 변경을 감지하기 위한 object
+ *
+ * 두 라이브 데이터 중 하나라도 변경사항이 발생하면 알림을 받는다.
+ * */
 class CombinedLiveData<A, B, C>(private val liveData1: LiveData<A>, private val liveData2: LiveData<B>, private val action : (A, B) -> C) :
     MediatorLiveData<C>() {
 
