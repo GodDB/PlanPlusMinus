@@ -53,4 +53,14 @@ class TestDateHelper {
         assertEquals(expected3, actual3)
         assertEquals(expected4, actual4)
     }
+
+    @Test
+    fun getCalendarBy2(){
+        val dateHelper = DateHelper()
+
+        val localRange = LocalDateRange(LocalDate.of(2020,10, 1), LocalDate.of(2020, 12, 11))
+
+        print(dateHelper.getCalendarBy2(localRange))
+
+    }
 }

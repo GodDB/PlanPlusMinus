@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
+import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.MyTransitionCH
 import com.example.todoplusminus.R
@@ -67,7 +68,7 @@ class PlannerController : DBControllerBase {
     override fun onViewBound(v: View) {
         Log.d("godgod", "onCreate")
         binder.subWatch.start()
-        binder.mainWatch.startAnimation()
+        binder.mainWatch.start()
 
         addEvent()
         configureRV()
@@ -76,18 +77,15 @@ class PlannerController : DBControllerBase {
 
     private fun showPlanEditor(id: String) {
         //todo test
-        val factory = PlannerVMFactory(repository!!)
-        val vm =
-            ViewModelProvider(activity as AppCompatActivity, factory).get(PlanEditVM::class.java)
+
+        val vm = PlanEditVM(repository!!).apply { setData(id) }
 
         pushController(RouterTransaction.with(
-            PlanEditController(vm.apply {
-                setData(id)
-            })
+            PlanEditController(vm)
         ).apply {
-            //todo view 살리는 방법으로 transition 구현해보자 ...
             pushChangeHandler(MyTransitionCH())
             popChangeHandler(MyTransitionCH())
+            retainViewMode = RetainViewMode.RETAIN_DETACH
         })
     }
 

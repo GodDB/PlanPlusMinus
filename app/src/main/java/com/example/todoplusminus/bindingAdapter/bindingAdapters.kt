@@ -91,7 +91,7 @@ fun setShowCalendar(rv: RecyclerView, isEdit: Boolean, isShowCalendar: Boolean) 
         isEdit ->
             CommonAnimationHelper.startYMoveDownAnimation(rv, DpConverter.dpToPx(100f).toInt())
         isShowCalendar ->
-            CommonAnimationHelper.startYMoveDownAnimation(rv, DpConverter.dpToPx(250f).toInt())
+            CommonAnimationHelper.startYMoveDownAnimation(rv, DpConverter.dpToPx(50f).toInt())
         else ->
             CommonAnimationHelper.startYMoveDownAnimation(rv, DpConverter.dpToPx(0f).toInt())
     }
@@ -237,7 +237,7 @@ fun setCalendarData(
     val calendarRange = LocalDateRange(LocalDate.of(2015, 1, 1), LocalDate.now())
     val dateHelper = DateHelper()
 
-    val mCalendarList: MutableList<MutableList<PMCalendarView.CalendarData>> = mutableListOf()
+    val mCalendarList: MutableList<List<PMCalendarView.CalendarData>> = mutableListOf()
 
     val sortedPlanDataList = planDataList.sortedBy {
         it.date
@@ -247,7 +247,9 @@ fun setCalendarData(
         it.date
     }
 
-    dateHelper.getCalendarBy(calendarRange).forEach { dateList ->
+    Log.d("godgod", "${dateHelper.getCalendarBy3(calendarRange)}")
+
+    dateHelper.getCalendarBy3(calendarRange).forEach { dateList ->
         val calendarList: MutableList<PMCalendarView.CalendarData> = mutableListOf()
         dateList.forEach { date ->
             calendarList.add(

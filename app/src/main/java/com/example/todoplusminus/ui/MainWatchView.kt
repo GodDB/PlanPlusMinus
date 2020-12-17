@@ -18,7 +18,7 @@ class MainWatchView : AppCompatTextView {
         defStyleAttr
     )
 
-    fun startAnimation(){
+    fun start(){
         CoroutineScope(Dispatchers.Main + mJob).launch {
             while(true){
                 this@MainWatchView.text = DateHelper.getCurDateTime()

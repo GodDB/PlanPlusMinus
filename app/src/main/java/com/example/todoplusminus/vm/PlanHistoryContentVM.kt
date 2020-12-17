@@ -10,7 +10,6 @@ import com.example.todoplusminus.util.LocalDateRange
 import com.example.todoplusminus.util.DateHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import java.sql.Date
 
 class PlanHistoryContentVM(
     _mode: String,

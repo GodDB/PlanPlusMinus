@@ -1,8 +1,6 @@
 package com.example.todoplusminus.vm
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.todoplusminus.PMCoroutineSpecification
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanData
@@ -13,7 +11,7 @@ import kotlinx.coroutines.*
 class PlanEditVM(
     private val repository: IPlannerRepository,
     private val dispatcher: CoroutineDispatcher = PMCoroutineSpecification.IO_DISPATCHER
-) : ViewModel() {
+) {
 
     var mId: String = PlanData.EMPTY_ID
     var mBgColor: MutableLiveData<Int> = MutableLiveData(ColorManager.getRandomColor())
@@ -32,7 +30,7 @@ class PlanEditVM(
         mId = id
 
         if (!checkIsEmptyId())
-            viewModelScope.launch(dispatcher) {
+            CoroutineScope(dispatcher).launch {
                 val data = repository.getPlannerDataById(id)
                 setTitle(data.title)
                 setBgColor(data.bgColor)
@@ -73,26 +71,26 @@ class PlanEditVM(
 
     fun setTitle(title: String) {
         //메인 스레드에서 작동시킨다.
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.Main).launch {
             mTitle.value = title
         }
     }
 
     fun setBgColor(bgColor: Int) {
         //메인 스레드에서 작동시킨다.
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.Main).launch {
             mBgColor.value = bgColor
         }
     }
 
     private fun updateTitleBgById(id: String, title: String, bgColor: Int) {
-        viewModelScope.launch(dispatcher) {
+        CoroutineScope(dispatcher).launch {
             repository.updateTitleBgById(id, title, bgColor)
         }
     }
 
     private fun insertData(planData: PlanData) {
-        viewModelScope.launch(dispatcher) {
+        CoroutineScope(dispatcher).launch {
             repository.insertPlannerData(planData)
         }
     }

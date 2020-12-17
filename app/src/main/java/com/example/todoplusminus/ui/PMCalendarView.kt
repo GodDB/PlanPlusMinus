@@ -5,9 +5,9 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.CalendarView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -16,11 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoplusminus.R
+import com.example.todoplusminus.bindingAdapter.setSlideEvent
 import com.example.todoplusminus.databinding.UiCalendarViewBinding
 import com.example.todoplusminus.databinding.UiCalendarViewItemBinding
 import com.example.todoplusminus.util.DateHelper
 import com.example.todoplusminus.util.DpConverter
-import com.example.todoplusminus.util.compareUntilMonth
+import com.example.todoplusminus.util.compareUntilWeek
 import java.time.LocalDate
 
 class PMCalendarView : LinearLayout {
@@ -39,6 +40,7 @@ class PMCalendarView : LinearLayout {
     private var mCalendarDataList: List<List<CalendarData>>? = null
     private var mCalendarTitleList: List<String>? = null
     private var mDelegate: Delegate? = null
+    private var mSelectedDate : LocalDate = DateHelper.getCurDate()
 
 
     constructor(context: Context?) : super(context) {
@@ -66,35 +68,33 @@ class PMCalendarView : LinearLayout {
         mCalendarTitleList = getCalendarTitleList(mCalendarDataList!!)
 
         (binder.calendarContentList.adapter as? CalendarViewAdapter)?.setData(mCalendarDataList!!)
-        setTitle(mCalendarTitleList!![0])
+
+        setSelectDate(mSelectedDate)
     }
 
     fun setSelectDate(date: LocalDate) {
-        val monthIndex = getIndexWhenEqualMonth(date)
-        val dayIndex = getIndexWhenEqualDay(date, monthIndex)
+        val weekIndex = getIndexWhenEqualWeek(date)
 
-        if (monthIndex == -1 || dayIndex == -1) return
+        if (weekIndex == -1) return
 
         //스크롤 이동
-        scrollBy(monthIndex)
+        scrollBy(weekIndex)
 
         //title 변경
-        setTitle(mCalendarTitleList?.get(monthIndex))
-
-        //vh 갱신
-        val vh = getVHByIndex(monthIndex)
-        vh?.setSelectedIndex(dayIndex)
+        setTitle(mCalendarTitleList?.get(weekIndex))
 
         //어댑터 갱신
+        binder.calendarContentList.recycledViewPool.clear()
         val adapter = binder.calendarContentList.adapter as? CalendarViewAdapter
-        adapter?.notifyDataSetChanged()
+        adapter?.setSelectedDate(date)
+
+        mSelectedDate = date
     }
 
     private fun getCalendarTitleList(list: List<List<CalendarData>>): List<String> {
         val titleList: MutableList<String> = mutableListOf()
-        //한달씩 데이터가 분리되어 있음을 보장한다.
         list.forEach {
-            val date = it[(it.size) / 2].date
+            val date = it[0].date
 
             val title =
                 "${date?.year}${context.getString(R.string.year)} ${date?.monthValue}${context.getString(
@@ -123,33 +123,19 @@ class PMCalendarView : LinearLayout {
                 override fun selectedDate(date: LocalDate) {
                     mDelegate?.selectedDate(date)
                 }
-
             })
         }
 
-        binder.calendarContentList.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, true)
+        binder.calendarContentList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, true)
 
         snapHelper.attachToRecyclerView(binder.calendarContentList)
     }
 
-    private fun getIndexWhenEqualMonth(date: LocalDate): Int {
+    private fun getIndexWhenEqualWeek(date: LocalDate): Int {
         mCalendarDataList?.forEachIndexed { index, list ->
-            val calendarDate = list[list.size / 2].date
-
-            if (calendarDate?.let { date.compareUntilMonth(it) } == 0) return index
-        }
-
-        //없으면 -1
-        return -1
-    }
-
-    private fun getIndexWhenEqualDay(date: LocalDate, monthIndex: Int): Int {
-        /*  mCalendarDataList[monthIndex].forEachIndexed { index, value ->
-              if(value?.dayOfMonth == date.dayOfMonth) return index
-          }*/
-        mCalendarDataList?.get(monthIndex)?.forEachIndexed { index, calendarData ->
-            if (date.dayOfMonth == calendarData.date?.dayOfMonth) return index
+            list.forEach {
+                if(date == it.date) return index
+            }
         }
 
         //없으면 -1
@@ -159,17 +145,6 @@ class PMCalendarView : LinearLayout {
     private fun setTitle(title: String?) {
         binder.calendarTitle.text = title
     }
-
-    private fun getVHByIndex(index: Int): CalendarViewAdapter.CalendarVH? {
-        val childView =
-            (binder.calendarContentList.layoutManager as? LinearLayoutManager)?.findViewByPosition(
-                index
-            )
-        return childView?.let {
-            binder.calendarContentList.getChildViewHolder(it)
-        } as? CalendarViewAdapter.CalendarVH
-    }
-
 
     private val snapHelper = object : PagerSnapHelper() {
         override fun findTargetSnapPosition(
@@ -194,6 +169,7 @@ class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarVH>
 
     private val mDataList: MutableList<List<PMCalendarView.CalendarData>> = mutableListOf()
     private var mDelegate: Delegate? = null
+    private var mSelectedDate: LocalDate? = null
 
     fun setData(list: List<List<PMCalendarView.CalendarData>>) {
         mDataList.clear()
@@ -203,6 +179,11 @@ class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarVH>
 
     fun setDelegate(delegate: Delegate) {
         mDelegate = delegate
+    }
+
+    fun setSelectedDate(date: LocalDate) {
+        this.mSelectedDate = date
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarVH {
@@ -220,49 +201,73 @@ class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarVH>
 
     inner class CalendarVH(private val vb: UiCalendarViewItemBinding) :
         RecyclerView.ViewHolder(vb.root) {
-        private val tvList = listOf<TextView>(
-            vb.date1, vb.date2, vb.date3, vb.date4, vb.date5, vb.date6, vb.date7, vb.date8,
-            vb.date9, vb.date10, vb.date11, vb.date12, vb.date13, vb.date14, vb.date15, vb.date16,
-            vb.date17, vb.date18, vb.date19, vb.date20, vb.date21, vb.date22, vb.date23, vb.date24,
-            vb.date25, vb.date26, vb.date27, vb.date28, vb.date29, vb.date30, vb.date31, vb.date32,
-            vb.date33, vb.date34, vb.date35, vb.date36, vb.date37, vb.date38, vb.date39, vb.date40,
-            vb.date41, vb.date42
+
+        private val todayDate = DateHelper.getCurDate()
+
+        private val tvList = listOf(
+            vb.date1, vb.date2, vb.date3, vb.date4, vb.date5, vb.date6, vb.date7
         )
 
-        private var selectedIndex: Int? = null
+        private val checkViewList = listOf(
+            vb.date1CheckView,
+            vb.date2CheckView,
+            vb.date3CheckView,
+            vb.date4CheckView,
+            vb.date5CheckView,
+            vb.date6CheckView,
+            vb.date7CheckView
+        )
 
-        fun setSelectedIndex(index: Int) {
-            this.selectedIndex = index
-        }
+        private val selectedViewList = listOf(
+            vb.date1Selected,
+            vb.date2Selected,
+            vb.date3Selected,
+            vb.date4Selected,
+            vb.date5Selected,
+            vb.date6Selected,
+            vb.date7Selected
+        )
 
         fun bind() {
+            if(adapterPosition == RecyclerView.NO_POSITION) {
+                Log.d("godgod", "no")
+                return
+            }
             //데이터의 길이만큼 반복한다.
             mDataList[adapterPosition].forEachIndexed { index, calendarData ->
                 tvList[index].text = calendarData.date?.dayOfMonth?.toString() ?: ""
 
-                if(calendarData.isShowCheckView1 != null && calendarData.isShowCheckView1) generateCheckView(tvList[index])
-                if (calendarData.isShowCheckView2 != null && calendarData.isShowCheckView2) tvList[index].text =
+                // 체크뷰 보여줄 것인가?
+                if (calendarData.isShowCheckView1 == true) checkViewList[index].visibility =
+                        View.VISIBLE
+                else checkViewList[index].visibility = View.GONE
+
+                // 체크뷰2 보여줄 것인가?
+                if (calendarData.isShowCheckView2 == true) tvList[index].text =
                     tvList[index].context.getString(
                         R.string.memo_icon,
                         tvList[index].text.toString()
                     )
 
+                // date값이 존재
                 if (calendarData.date != null) setOnClickEvent(index, calendarData.date)
                 else tvList[index].setOnClickListener(null)
 
-                if (selectedIndex != index) tvList[index].setTextColor(Color.BLACK)
-                else tvList[index].setTextColor(Color.GREEN)
+                // 사용자가 선택한 날짜
+                if (mSelectedDate != calendarData.date) selectedViewList[index].visibility = View.GONE
+                else selectedViewList[index].visibility = View.VISIBLE
+
+                // 오늘 날짜
+                if (todayDate == calendarData.date) tvList[index].setTextColor(
+                    ContextCompat.getColor(
+                        vb.root.context,
+                        R.color.pastel_color1
+                    )
+                )
+                else tvList[index].setTextColor(Color.BLACK)
             }
-
-            setEmptyValueBetween(mDataList[adapterPosition].size, tvList.size)
-            clearSelectedIndex()
-
         }
 
-
-        private fun clearSelectedIndex() {
-            selectedIndex = null
-        }
 
         private fun setOnClickEvent(index: Int, date: LocalDate) {
             tvList[index].setOnClickListener {
@@ -270,36 +275,5 @@ class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarVH>
                 mDelegate?.selectedDate(date)
             }
         }
-
-        private fun setEmptyValueBetween(from: Int, to: Int) {
-            for (i in from until to) tvList[i].text = ""
-        }
-
-        /**
-         * TextView를 전달받아 textView의 2/3 지점에 조그만한 뷰를 생성한다.
-         *
-         * 이 뷰는 해당 달력 날짜에 사용자가 plan의 count를 1이라도 올렸으면 표시한다.
-         * */
-        private fun generateCheckView(tv : TextView){
-            tv.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
-                override fun onGlobalLayout() {
-                    val x = tv.x
-                    val y = tv.y
-
-                    val checkView = CardView(tv.context).apply {
-                        val params = ViewGroup.LayoutParams(DpConverter.dpToPx(8f).toInt(), DpConverter.dpToPx(8f).toInt())
-                        this.layoutParams = params
-
-                        this.x = x
-                        this.y = y
-                        this.setCardBackgroundColor(Color.RED)
-                    }
-
-                    vb.root.addView(checkView)
-                    tv.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                }
-            })
-        }
-
     }
 }

@@ -43,7 +43,7 @@
         <com.example.todoplusminus.ui.PMCalendarView
             android:id="@+id/calendarView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="140dp"
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_top"
@@ -139,7 +139,6 @@
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
-            android:visibility="@{vm.targetDatePlanMemo.contents != null ? View.VISIBLE : View.GONE }"
             android:background="@color/white"
             android:text="@{vm.targetDatePlanMemo.contents}"
             android:onClick="@{() -> vm.showMemo()}"
