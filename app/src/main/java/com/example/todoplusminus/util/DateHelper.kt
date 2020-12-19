@@ -32,12 +32,13 @@ class DateHelper {
             return result.format(date)
         }
 
-        //todo 00시 기점으로 에러 발생 !! hot fix
         fun getRemainingTimeInDay(): String {
             val curTime = LocalTime.now()
             val curSecond = curTime.toSecondOfDay()
             val oneDaySecond = 24 * 60 * 60
 
+            //00시 00분 00초 일경우 두 시간을 빼면 문제가 발생한다.
+            if(curSecond - oneDaySecond == 0) return "24:00:00"
             val diffTime = LocalTime.ofSecondOfDay(oneDaySecond - curSecond.toLong())
             return diffTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
         }

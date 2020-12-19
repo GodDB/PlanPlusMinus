@@ -153,7 +153,10 @@ fun setSlideEvent(v: View, onComplete: () -> Unit) {
 
 
 @BindingAdapter(value = ["bind:setClickEvent", "bind:dim"], requireAll = true)
-fun setClickEventAndDim(v: View, listener: OnDoneListener, content: String) {
+fun setClickEventAndDim(v: View, listener: OnDoneListener, content: String?) {
+    Log.d("godgod", "$content")
+    if(content == null ) return
+
     if (content != "") {
         v.setOnClickListener { listener.onDone() }
         v.alpha = 1f
@@ -169,12 +172,13 @@ fun setClickEventAndDim(v: View, listener: OnDoneListener, content: String) {
 )
 fun setGraphViewListData(
     rv: RecyclerView,
-    xData: List<List<String>>,
-    yData: List<List<Int>>,
-    titleList: List<LocalDateRange>,
-    graphBarColor: Int
+    xData: List<List<String>>?,
+    yData: List<List<Int>>?,
+    titleList: List<LocalDateRange>?,
+    graphBarColor: Int?
 ) {
     if (rv.adapter == null) return
+    if (xData == null || yData == null || titleList == null || graphBarColor == null) return
 
     val mTitleList: List<String> =
         titleList.map { (it.startDate.toString() + " ~ " + it.endDate.toString()) }
@@ -183,7 +187,8 @@ fun setGraphViewListData(
 }
 
 @BindingAdapter("bind:tabIndicatorColor")
-fun setTabIndicatorColor(tabLayout: TabLayout, bgColor: Int) {
+fun setTabIndicatorColor(tabLayout: TabLayout, bgColor: Int?) {
+    if(bgColor == null) return
     tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(tabLayout.context, bgColor))
 }
 

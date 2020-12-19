@@ -2,14 +2,13 @@ package com.example.todoplusminus.vm
 
 
 import androidx.lifecycle.*
-import com.example.todoplusminus.PMCoroutineSpecification
+import com.example.todoplusminus.TwoCombinedLiveData
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
 import com.example.todoplusminus.entities.PlanProject
 import com.example.todoplusminus.repository.IPlannerRepository
 import com.example.todoplusminus.util.DateHelper
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -22,12 +21,11 @@ import java.time.LocalDate
  *  그래서 viewModel()을 사용한다.
  * */
 class PlannerViewModel(
-    private val repository: IPlannerRepository,
-    private val dispatcher: CoroutineDispatcher = PMCoroutineSpecification.IO_DISPATCHER
+    private val repository: IPlannerRepository
 ) : ViewModel() {
 
     init {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch{
             repository.refreshPlannerData(LocalDate.now())
         }
     }
@@ -39,21 +37,24 @@ class PlannerViewModel(
         MutableLiveData(it)
     }
 
-    private val _allDatePlanData = repository.getAllPlannerData()
+    private val _allDatePlanData = repository.getAllPlanProject().asLiveData()
 
     private val _allDatePlanProject: LiveData<PlanProject> = Transformations.switchMap(_allDatePlanData) {
-        MutableLiveData(PlanProject.create(it))
+        MutableLiveData(it)
     }
 
-    val allDatePlanData : LiveData<MutableList<PlanData>> = _allDatePlanData
-    val allDatePlanMemo : LiveData<MutableList<PlanMemo>> = repository.getAllPlanMemo()
+    val allDatePlanData : LiveData<List<PlanData>> = Transformations.switchMap(_allDatePlanData){
+        MutableLiveData(it.getPlanDataList())
+    }
 
-    val targetDatePlanProject : CombinedLiveData<LocalDate,PlanProject, PlanProject> = CombinedLiveData(_targetDate, _allDatePlanProject){ a, b ->
+    val allDatePlanMemo : LiveData<MutableList<PlanMemo>> = repository.getAllPlanMemo().asLiveData()
+
+    val targetDatePlanProject : TwoCombinedLiveData<LocalDate, PlanProject, PlanProject> = TwoCombinedLiveData(_targetDate, _allDatePlanProject){ a, b ->
         PlanProject.create(b.getPlanDataListByDate(a))
     }
 
     val targetDatePlanMemo: LiveData<PlanMemo> = Transformations.switchMap(_targetDate) {
-        repository.getMemoByDate(it)
+        repository.getMemoByDate(it).asLiveData()
     }
 
     val isEditMode: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -140,20 +141,20 @@ class PlannerViewModel(
     }
 
     private fun updateAll() {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             repository.updatePlannerDataList(targetDatePlanProject.value!!.getPlanDataList())
         }
     }
 
     private fun updateByIndex(index: Int) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             repository.updatePlannerData(targetDatePlanProject.value!!.getPlanDataByIndex(index))
         }
     }
 
 
     private fun onDelete(planData: PlanData) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             repository.deletePlannerDataById(planData.id)
         }
     }
@@ -165,31 +166,6 @@ class PlannerViewModel(
     private fun checkWhetherEditMode(): Boolean = isEditMode.value!!
 
     private fun checkIdEmpty(id: String?): Boolean = (id == "" || id == null)
-}
-
-/**
- * 타입이 다른 두 라이브데이터의 변경을 감지하기 위한 object
- *
- * 두 라이브 데이터 중 하나라도 변경사항이 발생하면 알림을 받는다.
- * */
-class CombinedLiveData<A, B, C>(private val liveData1: LiveData<A>, private val liveData2: LiveData<B>, private val action : (A, B) -> C) :
-    MediatorLiveData<C>() {
-
-    private var a : A? = null
-    private var b : B? = null
-
-    init {
-        addSource(liveData1) { a ->
-            this.a = a
-            if(b != null) this.value = action(a, b!!)
-        }
-
-        addSource(liveData2) { b ->
-            this.b = b
-            if(a != null) this.value = action(a!!, b)
-        }
-
-    }
 }
 
 

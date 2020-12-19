@@ -68,7 +68,7 @@ class PlannerVM {
                 PlanMemo.create()
             ))
 
-            planVM = PlannerViewModel(repository, PMCoroutineSpecification.MAIN_DISPATCHER)
+            planVM = PlannerViewModel(repository)
 
             //plan project에 대해서 옵저빙을 실시한다.
             planVM.targetDatePlanProject.getOrAwaitValue()

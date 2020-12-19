@@ -7,28 +7,29 @@ import com.example.todoplusminus.db.PlannerInfoEntity
 import com.example.todoplusminus.db.PlannerItemEntity
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
 
     val mapper = PlannerMapper()
 
-    override fun getAllPlannerData(): LiveData<MutableList<PlanData>> =
+    override fun getAllPlannerData(): Flow<MutableList<PlanData>> =
         db.userPlanDao().getAllPlannerData()
 
-    override fun getAllPlanMemo(): LiveData<MutableList<PlanMemo>> =
+    override fun getAllPlanMemo(): Flow<MutableList<PlanMemo>> =
         db.userPlanDao().getAllPlanMemo()
 
-    override fun getAllPlannerDataByDate(date : LocalDate): LiveData<MutableList<PlanData>> =
+    override fun getAllPlannerDataByDate(date : LocalDate): Flow<MutableList<PlanData>> =
         db.userPlanDao().getAllPlannerDataByDate(date)
 
-    override fun getAllPlannerDataById(id: String): List<PlanData> =
+    override fun getAllPlannerDataById(id: String): Flow<List<PlanData>> =
         db.userPlanDao().getAllPlannerDataById(id)
 
-    override fun getLastIndex(): Int =
+    override fun getLastestIndex(): Flow<Int> =
         db.userPlanDao().getLastIndex()
 
-    override fun getMemoByDate(date: LocalDate): LiveData<PlanMemo> = db.userPlanDao().getMemoByDate(date)
+    override fun getMemoByDate(date: LocalDate): Flow<PlanMemo> = db.userPlanDao().getMemoByDate(date)
 
 
     override suspend fun deletePlannerDataById(id: String) {

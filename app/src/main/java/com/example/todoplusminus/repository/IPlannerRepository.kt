@@ -3,23 +3,25 @@ package com.example.todoplusminus.repository
 import androidx.lifecycle.LiveData
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
+import com.example.todoplusminus.entities.PlanProject
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 interface IPlannerRepository {
 
     suspend fun refreshPlannerData(date : LocalDate)
 
-    fun getAllPlannerData(): LiveData<MutableList<PlanData>>
+    fun getAllPlanProject(): Flow<PlanProject>
 
-    fun getAllPlanMemo() : LiveData<MutableList<PlanMemo>>
+    fun getAllPlanMemo() : Flow<MutableList<PlanMemo>>
 
-    fun getAllPlanDataByDate(date: LocalDate): LiveData<MutableList<PlanData>>
+    fun getAllPlanDataByDate(date: LocalDate): Flow<MutableList<PlanData>>
 
-    fun getAllPlanDataById(id: String): List<PlanData>
+    fun getPlanProjectById(id: String): Flow<PlanProject>
 
-    fun getLastIndex(): Int
+    fun getLastestIndex(): Flow<Int>
 
-    fun getMemoByDate(date: LocalDate): LiveData<PlanMemo>
+    fun getMemoByDate(date: LocalDate): Flow<PlanMemo>
 
     suspend fun deletePlannerDataById(id: String)
 

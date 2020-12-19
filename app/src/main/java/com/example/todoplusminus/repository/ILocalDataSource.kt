@@ -11,21 +11,22 @@ import com.example.todoplusminus.db.PlannerItemEntity
 import com.example.todoplusminus.db.PlannerItemInfoEntity
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 interface ILocalDataSource {
 
-    fun getAllPlannerData() : LiveData<MutableList<PlanData>>
+    fun getAllPlannerData() : Flow<MutableList<PlanData>>
 
-    fun getAllPlanMemo() : LiveData<MutableList<PlanMemo>>
+    fun getAllPlanMemo() : Flow<MutableList<PlanMemo>>
 
-    fun getAllPlannerDataByDate(date : LocalDate) : LiveData<MutableList<PlanData>>
+    fun getAllPlannerDataByDate(date : LocalDate) : Flow<MutableList<PlanData>>
 
-    fun getAllPlannerDataById(id : String) : List<PlanData>
+    fun getAllPlannerDataById(id : String) : Flow<List<PlanData>>
 
-    fun getLastIndex() : Int
+    fun getLastestIndex() : Flow<Int>
 
-    fun getMemoByDate(date : LocalDate) : LiveData<PlanMemo>
+    fun getMemoByDate(date : LocalDate) : Flow<PlanMemo>
 
     suspend fun deletePlannerDataById(id : String)
 

@@ -77,7 +77,7 @@ class PlannerController : DBControllerBase {
     private fun showPlanEditor(id: String) {
         //todo test
 
-        val vm = PlanEditVM(repository!!).apply { setData(id) }
+        val vm = PlanEditVM(repository!!).apply { setId(id) }
 
         pushController(RouterTransaction.with(
             PlanEditController(vm)

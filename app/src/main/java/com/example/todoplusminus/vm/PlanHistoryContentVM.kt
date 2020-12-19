@@ -1,8 +1,8 @@
 package com.example.todoplusminus.vm
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
+import com.example.todoplusminus.ThreeCombinedLiveData
+import com.example.todoplusminus.TwoCombinedLiveData
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanProject
 import com.example.todoplusminus.repository.PlannerRepository
@@ -23,116 +23,128 @@ class PlanHistoryContentVM(
         const val MODE_YEAR = "year_mode"
     }
 
-    private val _mPlanProject: PlanProject =
-        PlanProject.create(runBlocking(Dispatchers.IO) { repository.getAllPlanDataById(targetId) })
+    private val _mPlanProject: LiveData<PlanProject> =
+        repository.getPlanProjectById(targetId).asLiveData()
 
     val mode: LiveData<Event<String>> = MutableLiveData(Event(_mode))
 
     //chart data --------------------
-    val mGraphBarColor: LiveData<Int>
-        get() = MutableLiveData(_mPlanProject.getPlanDataBgColorByIndex(0))
+    val mGraphBarColor: LiveData<Int> = _mPlanProject.switchMap {
+        MutableLiveData(it.getPlanDataBgColorByIndex(0))
+    }
 
-    val yData: List<List<Int>>?
-        get() {
-            val dateHelper = DateHelper()
-
-            return when (mode.value?.peekContent()) {
-                MODE_WEEK ->
-                    _mPlanProject.getWeekCountListBetween(
-                        _mPlanProject.getOldDate(),
-                        DateHelper.getCurDate()
-                    ).reversed()
-                MODE_MONTH ->
-                    _mPlanProject.getMonthCountListBetween(
-                        _mPlanProject.getOldDate(),
-                        DateHelper.getCurDate()
-                    ).reversed()
-                MODE_YEAR ->
-                    _mPlanProject.getYearCountListBetween(
-                        _mPlanProject.getOldDate(),
-                        DateHelper.getCurDate()
-                    ).reversed()
-                else -> emptyList()
+    val yData: LiveData<List<List<Int>>> = _mPlanProject.switchMap {
+        val data = when (mode.value?.peekContent()) {
+            MODE_WEEK -> {
+                it.getWeekCountListBetween(
+                    it.getOldDate(),
+                    DateHelper.getCurDate()
+                ).reversed()
             }
+
+            MODE_MONTH -> {
+                it.getMonthCountListBetween(
+                    it.getOldDate(),
+                    DateHelper.getCurDate()
+                ).reversed()
+            }
+
+            MODE_YEAR -> {
+                it.getYearCountListBetween(
+                    it.getOldDate(),
+                    DateHelper.getCurDate()
+                ).reversed()
+            }
+            else -> emptyList()
         }
 
-    val xData: List<List<String>>
-        get() {
-            val dateHelper = DateHelper()
+        MutableLiveData(data)
+    }
 
-            return when (mode.value?.peekContent()) {
-                MODE_WEEK -> dateHelper.getDayOfWeekList(
+    private val dateHelper = DateHelper()
+
+    val xData: LiveData<List<List<String>>> = _mPlanProject.switchMap {
+        val data = when (mode.value?.peekContent()) {
+            MODE_WEEK -> {
+                dateHelper.getDayOfWeekList(
                     LocalDateRange(
-                        _mPlanProject.getOldDate(),
+                        it.getOldDate(),
                         DateHelper.getCurDate()
                     )
                 ).reversed()
-                MODE_MONTH -> dateHelper.getDayOfMonthList(
-                    LocalDateRange(
-                        _mPlanProject.getOldDate(),
-                       DateHelper.getCurDate()
-                    )
-                ).reversed()
-                MODE_YEAR -> dateHelper.getYearList(
-                    LocalDateRange(
-                        _mPlanProject.getOldDate(),
-                        DateHelper.getCurDate()
-                    )
-                ).reversed()
-                else -> emptyList()
             }
+
+            MODE_MONTH -> {
+                dateHelper.getDayOfMonthList(
+                    LocalDateRange(
+                        it.getOldDate(),
+                        DateHelper.getCurDate()
+                    )
+                ).reversed()
+            }
+
+            MODE_YEAR -> {
+                dateHelper.getYearList(
+                    LocalDateRange(
+                        it.getOldDate(),
+                        DateHelper.getCurDate()
+                    )
+                ).reversed()
+            }
+            else -> emptyList()
         }
 
-    val graphTitle: List<LocalDateRange>
-        get() {
-            val dateHelper = DateHelper()
+        MutableLiveData(data)
+    }
 
-            return when (mode.value?.peekContent()) {
-                MODE_WEEK -> dateHelper.getWeekRangeList(
-                    LocalDateRange(
-                        _mPlanProject.getOldDate(),
-                        DateHelper.getCurDate()
-                    )
-                ).reversed()
-                MODE_MONTH -> dateHelper.getMonthRangeList(
-                    LocalDateRange(
-                        _mPlanProject.getOldDate(),
-                        DateHelper.getCurDate()
-                    )
-                ).reversed()
-                MODE_YEAR -> dateHelper.getYearRangeList(
-                    LocalDateRange(
-                        _mPlanProject.getOldDate(),
-                        DateHelper.getCurDate()
-                    )
-                ).reversed()
-                else -> emptyList()
-            }
+
+    val graphTitle: LiveData<List<LocalDateRange>> = _mPlanProject.switchMap {
+        val data = when (mode.value?.peekContent()) {
+            MODE_WEEK -> dateHelper.getWeekRangeList(
+                LocalDateRange(
+                    it.getOldDate(),
+                    DateHelper.getCurDate()
+                )
+            ).reversed()
+            MODE_MONTH -> dateHelper.getMonthRangeList(
+                LocalDateRange(
+                    it.getOldDate(),
+                    DateHelper.getCurDate()
+                )
+            ).reversed()
+            MODE_YEAR -> dateHelper.getYearRangeList(
+                LocalDateRange(
+                    it.getOldDate(),
+                    DateHelper.getCurDate()
+                )
+            ).reversed()
+            else -> emptyList()
         }
+
+        MutableLiveData(data)
+    }
+
 
     //summary data --------------------------
 
     val summaryTargetIndex: MutableLiveData<Int> = MutableLiveData(0)
 
+    val summaryAverage: ThreeCombinedLiveData<Int, List<List<String>>, List<List<Int>>, Int> =
+        ThreeCombinedLiveData(summaryTargetIndex, xData, yData){ index, xData, yData ->
+            val value = yData[index].sum()
+            val count = xData[index].size
 
-    val summaryAverage: LiveData<Int> = Transformations.switchMap(summaryTargetIndex) { index ->
-        val value = yData?.get(index)?.sum()
-        val count = xData[index].size
-
-        val average = value?.div(count)
-
-        MutableLiveData(average ?: 0)
-    }
-
-    val summaryAccumulation: LiveData<Int> =
-        Transformations.switchMap(summaryTargetIndex) { index ->
-            val value = yData?.get(index)?.sum()
-
-            MutableLiveData(value ?: 0)
+            value.div(count)
         }
 
-    val totalAccumulation: LiveData<Int>
-        get() = MutableLiveData(_mPlanProject.getTotalCount())
+    val summaryAccumulation: TwoCombinedLiveData<Int, List<List<Int>>, Int> =
+        TwoCombinedLiveData(summaryTargetIndex, yData){ index, yData ->
+            yData[index].sum()
+        }
+
+    val totalAccumulation: LiveData<Int> = _mPlanProject.switchMap {
+        MutableLiveData(it.getTotalCount())
+    }
 
 
 }

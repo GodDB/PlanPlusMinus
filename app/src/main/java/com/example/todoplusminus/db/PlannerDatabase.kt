@@ -7,6 +7,7 @@ import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import java.util.*
 
@@ -69,22 +70,22 @@ interface UserPlanDao{
     suspend fun deletePlannerDataById(id : String)
 
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid order by item.`index` desc")
-    fun getAllPlannerData() : LiveData<MutableList<PlanData>>
+    fun getAllPlannerData() : Flow<MutableList<PlanData>>
 /*
 
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid and info.date == :date order by item.`index` desc")
     fun getAllPlannerDataByDate(date : String) : LiveData<MutableList<PlanData>>
 */
     @Query("select * from PlannerItem item left outer join PlannerInfo info on item.id = info.planId where date = :date order by item.`index` desc")
-    fun getAllPlannerDataByDate(date : LocalDate) : LiveData<MutableList<PlanData>>
+    fun getAllPlannerDataByDate(date : LocalDate) : Flow<MutableList<PlanData>>
 
 
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planId and info.planId == :id")
-    fun getAllPlannerDataById(id : String) : List<PlanData>
+    fun getAllPlannerDataById(id : String) : Flow<List<PlanData>>
 
     //가장 최신의 인덱스를 가져온다.
     @Query("select `index` from PlannerItem order by `index` DESC LIMIT 1")
-    fun getLastIndex() : Int
+    fun getLastIndex() : Flow<Int>
 
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid and item.id == :id")
     fun getPlannerDataById(id : String) : PlanData
@@ -99,10 +100,10 @@ interface UserPlanDao{
     fun updateTitleBgById(id : String, title : String, bgColor: Int)
 
     @Query("select * from PlannerMemo")
-    fun getAllPlanMemo() : LiveData<MutableList<PlanMemo>>
+    fun getAllPlanMemo() : Flow<MutableList<PlanMemo>>
 
     @Query("select * from PlannerMemo where date = :date")
-    fun getMemoByDate(date : LocalDate) : LiveData<PlanMemo>
+    fun getMemoByDate(date : LocalDate) : Flow<PlanMemo>
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updatePlanMemo(memo : PlanMemo)

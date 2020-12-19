@@ -50,7 +50,7 @@ class TestPlanEditVM {
 
         testCoroutineRule.runBlockingTest {
             `when`(repository.getPlannerDataById(anyString())).thenReturn(targetData)
-            planEditVM.setData(targetData.id)
+            planEditVM.setId(targetData.id)
 
             assertEquals(planEditVM.mId, targetData.id)
             assertEquals(planEditVM.mTitle.getOrAwaitValue(), targetData.title)
@@ -65,7 +65,7 @@ class TestPlanEditVM {
         }
 
         testCoroutineRule.runBlockingTest {
-            planEditVM.setData(targetData.id)
+            planEditVM.setId(targetData.id)
             planEditVM.onComplete()
 
             assertEquals(planEditVM.isEditEnd.getOrAwaitValue().peekContent(), true)

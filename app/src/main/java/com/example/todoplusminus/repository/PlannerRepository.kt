@@ -1,16 +1,22 @@
 package com.example.todoplusminus.repository
 
-import android.util.Log
-import androidx.lifecycle.LiveData
+import com.example.todoplusminus.PMCoroutineSpecification
 import com.example.todoplusminus.db.PlannerInfoEntity
 import com.example.todoplusminus.db.PlannerItemEntity
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
+import com.example.todoplusminus.entities.PlanProject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 class PlannerRepository(
     private val localSource: ILocalDataSource,
-    private val sharedPrefManager : SharedPrefManager
+    private val sharedPrefManager: SharedPrefManager,
+    private val dispatcher: CoroutineDispatcher = PMCoroutineSpecification.IO_DISPATCHER
 ) : IPlannerRepository {
 
     /**
@@ -24,38 +30,41 @@ class PlannerRepository(
         //1. 사용자가 첫 설치해서, 등록한 데이터가 없는 경우 - 이 경우는 처리하지 않는다.
         //2. 새로운 날짜가 되어, 그에 대응되는 info 테이블이 없는 경우 - 이 경우를 처리하기 위함
         //(info, item을 조인해서 데이터를 가져오기 때문에 항상 해당 날짜에 info 데이터가 있어야 한다.)
-        if (!checkWhetherExistInfoDataByDate(date)) {
+        withContext(dispatcher) {
+            if (!checkWhetherExistInfoDataByDate(date)) {
 
-            //2번째 케이스에 대응된다.
-
-            //planItem의 데이터를 가져와서
-            val itemList = getAllPlanItem()
-            //planItem이 존재한다면 2번케이스에 대응되는 것.
-            if (itemList.isNotEmpty()) {
-                itemList.forEach {
-                    val info = generateInfoData(it.id, date)
-                    localSource.insertPlanInfo(info)
+                //2번째 케이스에 대응된다.
+                //planItem의 데이터를 가져와서
+                val itemList = getAllPlanItem()
+                //planItem이 존재한다면 2번케이스에 대응되는 것.
+                if (itemList.isNotEmpty()) {
+                    itemList.forEach {
+                        val info = generateInfoData(it.id, date)
+                        localSource.insertPlanInfo(info)
+                    }
                 }
             }
         }
     }
 
-    override fun getAllPlannerData(): LiveData<MutableList<PlanData>> =
+    override fun getAllPlanProject(): Flow<PlanProject> =
         localSource.getAllPlannerData()
+            .map { PlanProject.create(it) }
 
-    override fun getAllPlanMemo(): LiveData<MutableList<PlanMemo>> =
+
+    override fun getAllPlanMemo(): Flow<MutableList<PlanMemo>> =
         localSource.getAllPlanMemo()
 
-    override fun getAllPlanDataByDate(date: LocalDate): LiveData<MutableList<PlanData>> {
-        return localSource.getAllPlannerDataByDate(date)
-    }
+    override fun getAllPlanDataByDate(date: LocalDate): Flow<MutableList<PlanData>> =
+        localSource.getAllPlannerDataByDate(date)
 
-    override fun getAllPlanDataById(id: String): List<PlanData> =
+    override fun getPlanProjectById(id: String): Flow<PlanProject> =
         localSource.getAllPlannerDataById(id)
+            .map { PlanProject.create(it) }
 
-    override fun getLastIndex(): Int = localSource.getLastIndex()
+    override fun getLastestIndex(): Flow<Int> = localSource.getLastestIndex()
 
-    override fun getMemoByDate(date: LocalDate): LiveData<PlanMemo> =
+    override fun getMemoByDate(date: LocalDate): Flow<PlanMemo> =
         localSource.getMemoByDate(date)
 
     override suspend fun deletePlannerDataById(id: String) {
@@ -63,7 +72,11 @@ class PlannerRepository(
     }
 
     override suspend fun insertPlannerData(planData: PlanData) {
-        localSource.insertPlannerData(planData)
+        coroutineScope {
+            launch(dispatcher) {
+                localSource.insertPlannerData(planData)
+            }
+        }
     }
 
     override suspend fun updatePlannerDataList(dataList: List<PlanData>) {
@@ -75,14 +88,20 @@ class PlannerRepository(
     }
 
     override suspend fun getPlannerDataById(id: String): PlanData =
-        localSource.getPlannerDataById(id)
+        withContext(dispatcher) {
+            localSource.getPlannerDataById(id)
+        }
 
     override suspend fun deleteAndUpdateAll(deleteTarget: PlanData, updateTarget: List<PlanData>) {
         localSource.deleteAndUpdateAll(deleteTarget, updateTarget)
     }
 
     override suspend fun updateTitleBgById(id: String, title: String, bgColor: Int) {
-        localSource.updateTitleBgById(id, title, bgColor)
+        coroutineScope {
+            launch(dispatcher) {
+                localSource.updateTitleBgById(id, title, bgColor)
+            }
+        }
     }
 
     override suspend fun updatePlanMemo(memo: PlanMemo) {
@@ -90,7 +109,11 @@ class PlannerRepository(
     }
 
     override suspend fun insertPlanMemo(memo: PlanMemo) {
-        localSource.insertPlanMemo(memo)
+        coroutineScope {
+            launch(dispatcher) {
+                localSource.insertPlanMemo(memo)
+            }
+        }
     }
 
 

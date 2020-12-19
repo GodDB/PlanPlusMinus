@@ -2,6 +2,8 @@ package com.example.todoplusminus.vm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.switchMap
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanProject
 import com.example.todoplusminus.repository.PlannerRepository
@@ -10,22 +12,17 @@ import kotlinx.coroutines.runBlocking
 
 class PlanHistoryVM(val targetId: String, private val repository: PlannerRepository) {
 
-    /*val planProject: LiveData<PlanProject> = MediatorLiveData<PlanProject>().apply {
-        val data : LiveData<MutableList<PlanData>> = repository.getAllPlanDataById(targetId)
-        this.value = PlanProject.create(null)
-        addSource(data){ data ->
-            this.value = PlanProject.create(data ?: return@addSource)
-        }
-    }*/
+    private val _mPlanProject: LiveData<PlanProject> =
+        repository.getPlanProjectById(targetId)
+            .asLiveData()
 
-    private val _mPlanProject: PlanProject =
-        PlanProject.create(runBlocking(Dispatchers.IO) { repository.getAllPlanDataById(targetId) })
+    val mHistoryTitle: LiveData<String> = _mPlanProject.switchMap {
+        MutableLiveData(it.getPlanDataById(targetId).title)
+    }
 
-    val mHistoryTitle: LiveData<String>
-        get() = MutableLiveData(_mPlanProject.getPlanDataById(targetId).title)
-
-    val mTabColor: LiveData<Int>
-        get() = MutableLiveData(_mPlanProject.getPlanDataBgColorByIndex(0))
+    val mTabColor: LiveData<Int> = _mPlanProject.switchMap {
+        MutableLiveData(it.getPlanDataBgColorByIndex(0))
+    }
 
     var wantEditorClose: MutableLiveData<Event<Boolean>> =
         MutableLiveData(Event(false))

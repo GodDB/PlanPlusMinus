@@ -1,7 +1,8 @@
 package com.example.todoplusminus.vm
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.todoplusminus.PMCoroutineSpecification
+import androidx.lifecycle.asLiveData
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.repository.IPlannerRepository
@@ -9,28 +10,26 @@ import com.example.todoplusminus.util.ColorManager
 import kotlinx.coroutines.*
 
 class PlanEditVM(
-    private val repository: IPlannerRepository,
-    private val dispatcher: CoroutineDispatcher = PMCoroutineSpecification.IO_DISPATCHER
+    private val repository: IPlannerRepository
 ) {
 
     var mId: String = PlanData.EMPTY_ID
     var mBgColor: MutableLiveData<Int> = MutableLiveData(ColorManager.getRandomColor())
     var mTitle: MutableLiveData<String> = MutableLiveData("")
 
-    private var mLastIndex: Int = runBlocking(Dispatchers.IO) {
-        repository.getLastIndex()
-    }
+    private var mLastestIndex: LiveData<Int> = repository.getLastestIndex().asLiveData()
+
 
     /** edit 작업이 끝났는지(done or back or cancel)를 체크한다.
      * */
     var isEditEnd: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
 
-    fun setData(id: String) {
+    fun setId(id: String) {
         mId = id
 
         if (!checkIsEmptyId())
-            CoroutineScope(dispatcher).launch {
+            CoroutineScope(Dispatchers.Main).launch {
                 val data = repository.getPlannerDataById(id)
                 setTitle(data.title)
                 setBgColor(data.bgColor)
@@ -47,7 +46,7 @@ class PlanEditVM(
         if (!checkIsEmptyId() && checkIsEmptyContent()) return
 
         val newData = PlanData.create().apply {
-            this.index = mLastIndex + 1
+            this.index = mLastestIndex.value?.plus(1) ?: 0
             this.title = mTitle.value ?: ""
             this.bgColor = mBgColor.value ?: PlanData.DEFAULT_BG_COLOR
         }
@@ -84,13 +83,13 @@ class PlanEditVM(
     }
 
     private fun updateTitleBgById(id: String, title: String, bgColor: Int) {
-        CoroutineScope(dispatcher).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             repository.updateTitleBgById(id, title, bgColor)
         }
     }
 
     private fun insertData(planData: PlanData) {
-        CoroutineScope(dispatcher).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             repository.insertPlannerData(planData)
         }
     }

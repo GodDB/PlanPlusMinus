@@ -1,5 +1,6 @@
 package com.example.todoplusminus.vm
 
+import android.provider.MediaStore
 import androidx.lifecycle.*
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanMemo
@@ -7,16 +8,19 @@ import com.example.todoplusminus.repository.IPlannerRepository
 import com.example.todoplusminus.util.DateHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
-class PlanMemoVM(private val repository: IPlannerRepository) {
+class PlanMemoVM(
+    private val repository: IPlannerRepository,
+    private val targetDate: LocalDate = LocalDate.now()
+) {
 
-    // convert livedata to MutableLivedata
-    val memoData: MutableLiveData<PlanMemo> = MediatorLiveData<PlanMemo>().apply{
-        val data : LiveData<PlanMemo> = repository.getMemoByDate(DateHelper.getCurDate()) // livedata는 비동기처리로 데이터가 전달됨
-        this.value = PlanMemo.create() //repository에 요청한 값이 도착할 때 까지 일단 기본값을 넣어둔다.
-        this.addSource(data) { data ->
-            this.value = data ?: return@addSource //만약 오늘 메모를 등록하지 않았다 (즉, data == null)이면 종료한다.
+    val memoData : MutableLiveData<PlanMemo> = MediatorLiveData<PlanMemo>().apply{
+        val data = repository.getMemoByDate(targetDate).asLiveData()
+        addSource(data){
+            this.value = it ?: PlanMemo.create()
         }
     }
         get() {
@@ -32,7 +36,7 @@ class PlanMemoVM(private val repository: IPlannerRepository) {
 
 
     fun onDone() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             repository.insertPlanMemo(memoData.value!!)
         }
         onCloseEditor()
