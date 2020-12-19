@@ -16,8 +16,10 @@ import com.example.todoplusminus.databinding.ControllerMainBinding
 import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.repository.LocalDataSourceImpl
 import com.example.todoplusminus.repository.PlannerRepository
+import com.example.todoplusminus.repository.SettingRepository
 import com.example.todoplusminus.repository.SharedPrefManager
 import com.example.todoplusminus.vm.PlanHistoryVM
+import com.example.todoplusminus.vm.SettingVM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -103,15 +105,21 @@ class MainController : VBControllerBase {
                     },
                     TrackerController.TAG
                 )
-                R.id.settingItem -> pushControllerByTag(
-                    childRouter,
-                    RouterTransaction.with(SettingController()).apply {
-                        tag(SettingController.TAG)
-                        SimpleSwapChangeHandler(false)
-                        SimpleSwapChangeHandler()
-                    },
-                    SettingController.TAG
-                )
+                R.id.settingItem -> {
+                    //todo replace dagger
+                    val settingRepo = SettingRepository()
+                    val settingVM = SettingVM(settingRepo)
+
+                    pushControllerByTag(
+                        childRouter,
+                        RouterTransaction.with(SettingController(settingVM)).apply {
+                            tag(SettingController.TAG)
+                            SimpleSwapChangeHandler(false)
+                            SimpleSwapChangeHandler()
+                        },
+                        SettingController.TAG
+                    )
+                }
             }
             true
         }

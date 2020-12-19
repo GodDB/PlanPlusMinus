@@ -19,6 +19,7 @@
     <string name="year_average">Year average</string>
     <string name="year_accumulation">Year accumulation</string>
     <string name="memo_icon" translatable="false">%1$s📌</string>
+    <string name="setting">Setting</string>
 
     <string name="monday">Mon</string>
     <string name="tuesday">Tue</string>
