@@ -8,7 +8,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
-import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.MyTransitionCH
 import com.example.todoplusminus.R
@@ -342,6 +341,7 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
             planData.index = index
         }
     }
+
 
     inner class PlanListVH(private val binder: PlanListItemBinding) :
         RecyclerView.ViewHolder(binder.root) {

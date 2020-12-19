@@ -26,7 +26,7 @@
         app:layout_constraintLeft_toLeftOf="@id/date1"
         app:layout_constraintRight_toRightOf="@id/date1"
         app:layout_constraintTop_toTopOf="@id/date1"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="0.8" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/date1_selected"
@@ -62,7 +62,7 @@
         app:layout_constraintLeft_toLeftOf="@id/date2"
         app:layout_constraintRight_toRightOf="@id/date2"
         app:layout_constraintTop_toTopOf="@id/date2"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="0.8" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/date2_selected"
@@ -98,7 +98,7 @@
         app:layout_constraintLeft_toLeftOf="@id/date3"
         app:layout_constraintRight_toRightOf="@id/date3"
         app:layout_constraintTop_toTopOf="@id/date3"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="0.8" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/date3_selected"
@@ -134,7 +134,7 @@
         app:layout_constraintLeft_toLeftOf="@id/date4"
         app:layout_constraintRight_toRightOf="@id/date4"
         app:layout_constraintTop_toTopOf="@id/date4"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="0.8" />
 
 
     <androidx.cardview.widget.CardView
@@ -171,7 +171,7 @@
         app:layout_constraintLeft_toLeftOf="@id/date5"
         app:layout_constraintRight_toRightOf="@id/date5"
         app:layout_constraintTop_toTopOf="@id/date5"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="0.8" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/date5_selected"
@@ -207,7 +207,7 @@
         app:layout_constraintLeft_toLeftOf="@id/date6"
         app:layout_constraintRight_toRightOf="@id/date6"
         app:layout_constraintTop_toTopOf="@id/date6"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="0.8" />
 
 
     <androidx.cardview.widget.CardView
@@ -243,7 +243,7 @@
         app:layout_constraintLeft_toLeftOf="@id/date7"
         app:layout_constraintRight_toRightOf="@id/date7"
         app:layout_constraintTop_toTopOf="@id/date7"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="0.8" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/date7_selected"

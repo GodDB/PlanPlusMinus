@@ -9,7 +9,8 @@ import com.example.todoplusminus.entities.PlanMemo
 import java.time.LocalDate
 
 class PlannerRepository(
-    private val localSource: ILocalDataSource
+    private val localSource: ILocalDataSource,
+    private val sharedPrefManager : SharedPrefManager
 ) : IPlannerRepository {
 
     /**

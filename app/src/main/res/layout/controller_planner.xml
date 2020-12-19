@@ -4,7 +4,8 @@
     xmlns:bind="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
 
         <variable
             name="vm"
@@ -37,23 +38,21 @@
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintTop_toTopOf="@id/guide_top"
             bind:editMode1="@{vm.isEditMode().booleanValue()}"
-            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}"
-            />
+            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}" />
 
         <com.example.todoplusminus.ui.PMCalendarView
             android:id="@+id/calendarView"
             android:layout_width="0dp"
             android:layout_height="140dp"
+            android:background="@color/white"
+            android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            android:background="@color/white"
             bind:editMode1="@{vm.isEditMode().booleanValue()}"
-            bind:showCalendar="@{vm.showCalendar.contentIfNotHandled}"
             bind:setCalendarData1="@{vm.allDatePlanData}"
             bind:setCalendarData2="@{vm.allDatePlanMemo}"
-            android:visibility="gone"
-            />
+            bind:showCalendar="@{vm.showCalendar.contentIfNotHandled}" />
 
         <TextView
             android:id="@+id/edit_title"
@@ -75,12 +74,11 @@
             android:layout_height="30dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
+            android:onClick="@{()-> vm.showCalendar()}"
             android:src="@drawable/calendar"
             app:layout_constraintRight_toLeftOf="@id/btn_memo"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            bind:editMode="@{!vm.isEditMode().booleanValue()}"
-            android:onClick="@{()-> vm.showCalendar()}"
-            />
+            bind:editMode="@{!vm.isEditMode().booleanValue()}" />
 
         <ImageView
             android:id="@+id/btn_memo"
@@ -88,12 +86,11 @@
             android:layout_height="30dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
+            android:onClick="@{() -> vm.showMemo()}"
             android:src="@drawable/write"
             app:layout_constraintRight_toLeftOf="@id/btn_edit"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            bind:editMode="@{!vm.isEditMode().booleanValue()}"
-            android:onClick="@{() -> vm.showMemo()}"
-            />
+            bind:editMode="@{!vm.isEditMode().booleanValue()}" />
 
         <ImageView
             android:id="@+id/btn_edit"
@@ -105,8 +102,7 @@
             android:src="@drawable/playlist"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            bind:editMode="@{!vm.isEditMode().booleanValue()}"
-            />
+            bind:editMode="@{!vm.isEditMode().booleanValue()}" />
 
         <ImageView
             android:id="@+id/btn_done"
@@ -128,24 +124,8 @@
             android:layout_marginTop="50dp"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toBottomOf="@id/guide_top"
-            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}"
-            />
+            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}" />
 
-        <TextView
-            android:id="@+id/memo_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:maxHeight="100dp"
-            app:layout_constraintLeft_toLeftOf="@id/guide_left"
-            app:layout_constraintRight_toRightOf="@id/guide_right"
-            app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
-            android:background="@color/white"
-            android:text="@{vm.targetDatePlanMemo.contents}"
-            android:onClick="@{() -> vm.showMemo()}"
-            android:layout_margin="1dp"
-            bind:editMode1="@{vm.isEditMode().booleanValue()}"
-            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}"
-            />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/create_plan_view"
@@ -155,16 +135,15 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
             android:alpha="0.7"
+            android:onClick="@{() -> vm.showEditEditor(``)}"
+            android:transitionName="@{`none`}"
             android:visibility="gone"
             app:cardBackgroundColor="@color/right_gray"
             app:cardCornerRadius="50dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
-            bind:editMode="@{vm.isEditMode().booleanValue()}"
-            android:onClick="@{() -> vm.showEditEditor(``)}"
-            android:transitionName="@{`none`}"
-            >
+            bind:editMode="@{vm.isEditMode().booleanValue()}">
 
             <ImageView
                 android:layout_width="30dp"
@@ -173,20 +152,56 @@
                 android:src="@drawable/plus1" />
         </androidx.cardview.widget.CardView>
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/plan_list"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/memo_view"
-            bind:editMode="@{vm.isEditMode().booleanValue()}"
-            bind:showCalendar="@{vm.showCalendar.contentIfNotHandled}"
-            bind:isEdit="@{vm.isEditMode().booleanValue()}"
-            bind:items="@{vm.targetDatePlanProject.planDataList}" />
+            app:layout_constraintTop_toTopOf="@id/guide_planlist_top"
+            bind:yMoveWhenEditMode="@{vm.isEditMode().booleanValue()}"
+            bind:yMoveWhenShowCalendar="@{vm.showCalendar.contentIfNotHandled}">
 
+            <TextView
+                android:id="@+id/memo_view"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="@color/white"
+                android:maxHeight="100dp"
+                android:onClick="@{() -> vm.showMemo()}"
+                android:padding="5dp"
+                android:text="@{vm.targetDatePlanMemo.contents}"
+                android:textSize="17sp"
+                app:layout_constraintLeft_toLeftOf="@id/guide_memo_left"
+                app:layout_constraintRight_toRightOf="@id/guide_memo_right"
+                app:layout_constraintTop_toTopOf="parent"
+                bind:editMode="@{!vm.isEditMode().booleanValue()}" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/plan_list"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/memo_view"
+                bind:isEdit="@{vm.isEditMode().booleanValue()}"
+                bind:items="@{vm.targetDatePlanProject.planDataList}" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_memo_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.05" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_memo_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.95" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guide_planlist_top"

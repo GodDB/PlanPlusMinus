@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -59,16 +60,6 @@ fun setShowCalendar(v: View, isShowCalendar: Boolean) {
     CommonAnimationHelper.startFadeOutAnimation(v)
 }
 
-@BindingAdapter("bind:yMoveWhenshowCalendar")
-fun setYMoveWhenShowCalendar(v: View, isShowCalendar: Boolean) {
-    if (isShowCalendar) return CommonAnimationHelper.startYMoveUpAnimation(
-        v,
-        DpConverter.dpToPx(30f).toInt()
-    )
-
-    CommonAnimationHelper.startYMoveUpAnimation(v, 0)
-}
-
 
 @BindingAdapter(value = ["bind:editMode1", "bind:showCalendar"], requireAll = true)
 fun setShowCalendar(v: View, isEdit: Boolean, isShowCalendar: Boolean) {
@@ -81,19 +72,19 @@ fun setShowCalendar(v: View, isEdit: Boolean, isShowCalendar: Boolean) {
 }
 
 /**
- * 리사이클러뷰만의 editMode
+ * y축을 이동시키기 위한 바인딩 어댑터
  *
- * editMode시에 createPlanView의 height만큼 내린다
+ * editMode, calendar visible 상황을 반영한다.
  * */
-@BindingAdapter(value = ["bind:editMode", "bind:showCalendar"], requireAll = true)
-fun setShowCalendar(rv: RecyclerView, isEdit: Boolean, isShowCalendar: Boolean) {
+@BindingAdapter(value = ["bind:yMoveWhenEditMode", "bind:yMoveWhenShowCalendar"], requireAll = true)
+fun startYMove(viewGroup: ViewGroup, isEdit: Boolean, isShowCalendar: Boolean) {
     when {
         isEdit ->
-            CommonAnimationHelper.startYMoveDownAnimation(rv, DpConverter.dpToPx(100f).toInt())
+            CommonAnimationHelper.startYMoveDownAnimation(viewGroup, DpConverter.dpToPx(100f).toInt())
         isShowCalendar ->
-            CommonAnimationHelper.startYMoveDownAnimation(rv, DpConverter.dpToPx(50f).toInt())
+            CommonAnimationHelper.startYMoveDownAnimation(viewGroup, DpConverter.dpToPx(50f).toInt())
         else ->
-            CommonAnimationHelper.startYMoveDownAnimation(rv, DpConverter.dpToPx(0f).toInt())
+            CommonAnimationHelper.startYMoveDownAnimation(viewGroup, DpConverter.dpToPx(0f).toInt())
     }
 }
 

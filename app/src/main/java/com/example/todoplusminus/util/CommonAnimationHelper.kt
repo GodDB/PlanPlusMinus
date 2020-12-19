@@ -62,19 +62,6 @@ object CommonAnimationHelper {
         }
     }
 
-    fun startYMoveUpAnimation(v: View, y: Int) {
-        ValueAnimator.ofInt(y).apply {
-            duration = 300
-            addUpdateListener {
-                val animValue = it.animatedValue as Int
-                val marginParam = (v.layoutParams as ViewGroup.MarginLayoutParams)
-                marginParam.bottomMargin = animValue
-                v.layoutParams = marginParam
-            }
-            start()
-        }
-    }
-
     fun stop(v: View) {
         (v.tag as? ObjectAnimator)?.run {
             cancel()

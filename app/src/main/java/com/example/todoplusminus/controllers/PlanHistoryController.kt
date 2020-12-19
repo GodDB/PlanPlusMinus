@@ -14,6 +14,7 @@ import com.example.todoplusminus.databinding.ControllerPlanHistoryBinding
 import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.repository.LocalDataSourceImpl
 import com.example.todoplusminus.repository.PlannerRepository
+import com.example.todoplusminus.repository.SharedPrefManager
 import com.example.todoplusminus.vm.PlanHistoryContentVM
 import com.example.todoplusminus.vm.PlanHistoryVM
 import com.google.android.material.tabs.TabLayout
@@ -66,7 +67,8 @@ class PlanHistoryController : DBControllerBase {
             "plannerDB.sqlite3"
         ).createFromAsset("pre_planDB").build()
         val dataSource = LocalDataSourceImpl(db)
-        val plannerRepository = PlannerRepository(dataSource)
+        val sharedManager = SharedPrefManager(applicationContext!!)
+        val plannerRepository = PlannerRepository(dataSource, sharedManager)
 
         val mode = PlanHistoryContentVM.MODE_WEEK
         val vm = PlanHistoryContentVM(mode,mVM?.targetId ?:return, plannerRepository)

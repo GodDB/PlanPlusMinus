@@ -1,5 +1,6 @@
 package com.example.todoplusminus
 
+import android.app.Activity
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,17 +16,25 @@ import com.example.todoplusminus.databinding.ControllerMainBinding
 import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.repository.LocalDataSourceImpl
 import com.example.todoplusminus.repository.PlannerRepository
+import com.example.todoplusminus.repository.SharedPrefManager
 import com.example.todoplusminus.vm.PlanHistoryVM
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class MainController : VBControllerBase {
 
     private lateinit var binder: ControllerMainBinding
 
-    private var auxRouter : Router? = null
+    private var auxRouter: Router? = null
     private lateinit var childRouter: Router
 
     //todo test ... 추후에 dagger로 교체
-    private var plannerRepository : PlannerRepository? = null
+    private var plannerRepository: PlannerRepository? = null
 
     constructor() : super()
 
@@ -40,6 +49,7 @@ class MainController : VBControllerBase {
         auxRouter = getChildRouter(binder.subArea)
         //popLastView를 true로 둠으로써, 마지막 컨트롤러 삭제시 뷰도 삭제된다. false이면 마지막컨트롤러 삭제시 뷰는 삭제 안됨.
         auxRouter?.setPopsLastView(true)
+
     }
 
     private fun configureUI() {
@@ -53,7 +63,8 @@ class MainController : VBControllerBase {
         ).createFromAsset("pre_planDB").build()
 
         val dataSource = LocalDataSourceImpl(db)
-        plannerRepository = PlannerRepository(dataSource)
+        val sharedPrefManager = SharedPrefManager(applicationContext!!)
+        plannerRepository = PlannerRepository(dataSource, sharedPrefManager)
 
 
         childRouter = getChildRouter(binder.mainArea)
@@ -75,11 +86,12 @@ class MainController : VBControllerBase {
             when (it.itemId) {
                 R.id.plannerItem -> pushControllerByTag(
                     childRouter,
-                    RouterTransaction.with(PlannerController(plannerRepository!!, plannerDelegate)).apply {
-                        tag(PlannerController.TAG)
-                        SimpleSwapChangeHandler(false)
-                        SimpleSwapChangeHandler(false)
-                    },
+                    RouterTransaction.with(PlannerController(plannerRepository!!, plannerDelegate))
+                        .apply {
+                            tag(PlannerController.TAG)
+                            SimpleSwapChangeHandler(false)
+                            SimpleSwapChangeHandler(false)
+                        },
                     PlannerController.TAG
                 )
                 R.id.trackerItem -> pushControllerByTag(
@@ -106,16 +118,17 @@ class MainController : VBControllerBase {
     }
 
 
-    private val plannerDelegate = object : PlannerController.Delegate{
+    private val plannerDelegate = object : PlannerController.Delegate {
         override fun showMemoEditor() {
             Log.d("godgod", "showMemoEditor()")
-            auxRouter?.setRoot(RouterTransaction.with(PlanMemoController(plannerRepository!!)).apply {
-                pushChangeHandler(VerticalChangeHandler())
-                popChangeHandler(VerticalChangeHandler())
-            })
+            auxRouter?.setRoot(
+                RouterTransaction.with(PlanMemoController(plannerRepository!!)).apply {
+                    pushChangeHandler(VerticalChangeHandler())
+                    popChangeHandler(VerticalChangeHandler())
+                })
         }
 
-        override fun showHistoryEditor(id : String) {
+        override fun showHistoryEditor(id: String) {
             Log.d("godgod", "showHistoryEditor()")
             val vm = PlanHistoryVM(id, plannerRepository!!)
             auxRouter?.setRoot(RouterTransaction.with(PlanHistoryController(vm)).apply {
