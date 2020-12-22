@@ -62,4 +62,14 @@
     <string name="sunday">일</string>
     <string name="day">일</string>
     <string name="setting">설정</string>
+    <string name="plan">계획</string>
+    <string name="plan_recommendation_keywords">계획 추천 키워드</string>
+    <string name="push_to_the_right">오른쪽으로 밀어 플러스</string>
+    <string name="plus_minus">플러스마이너스</string>
+    <string name="calendar_in_basic_mode">달력을 기본모드로</string>
+    <string name="font_style">폰트 스타일</string>
+    <string name="alarm_at_10pm">오후 10:00 알람</string>
+    <string name="app_info">앱 정보</string>
+    <string name="app_version">앱 버전</string>
+    <string name="font">폰트</string>
 </resources>

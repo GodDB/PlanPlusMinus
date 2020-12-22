@@ -1,24 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="50dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/title_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="left"
-        android:layout_marginLeft="10dp"
-        android:gravity="center" />
+    <data>
+        <variable
+            name="vm"
+            type="com.example.todoplusminus.vm.SettingVM" />
+        <variable
+            name="tag"
+            type="java.lang.Integer" />
+    </data>
 
-    <Switch
-        android:id="@+id/value_toggle"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="right"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center" />
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
 
-</androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:layout_marginStart="10dp"
+            android:gravity="center" />
+
+        <Switch
+            android:id="@+id/value_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:onCheckedChanged="@{(button, bool) -> vm.onSwitchEvent(tag, bool)}"
+            />
+
+    </androidx.cardview.widget.CardView>
+</layout>

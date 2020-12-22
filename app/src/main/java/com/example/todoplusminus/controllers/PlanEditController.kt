@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerPlanEditBinding
 import com.example.todoplusminus.ui.CustomEditText
+import com.example.todoplusminus.util.DpConverter
 import com.example.todoplusminus.util.KeyboardDetector
 import com.example.todoplusminus.vm.PlanEditVM
 
@@ -59,7 +60,7 @@ class PlanEditController : DBControllerBase {
     }
 
     private fun addEvent() {
-        mKeyboardDetector = KeyboardDetector(binder.rootView)
+        mKeyboardDetector = KeyboardDetector(binder.root)
         mKeyboardDetector.setOnKeyboardChangedListener(keyboardChangeListener)
 
         binder.itemTitle.setDelegate(noHideKeypadDelegate)
@@ -97,13 +98,13 @@ class PlanEditController : DBControllerBase {
      * 키보드 변경을 감지하기 위한 listener
      * */
     private val keyboardChangeListener = object : KeyboardDetector.OnKeyboardChangedListener {
-        override fun onKeyboardChanged(visible: Boolean, height: Int) {
+        override fun onKeyboardChanged(visible: Boolean, keypadLocateY: Int) {
             if (visible) {
-                binder.keyboardOverlayView.y = height.toFloat() + binder.keyboardOverlayView.height
+                binder.keyboardOverlayView.y = keypadLocateY.toFloat() - binder.keyboardOverlayView.height
                 binder.keyboardOverlayView.visibility = View.VISIBLE
 
             } else {
-                binder.keyboardOverlayView.visibility = View.GONE
+                binder.keyboardOverlayView.visibility = View.INVISIBLE
             }
         }
     }

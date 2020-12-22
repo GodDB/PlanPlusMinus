@@ -10,6 +10,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bluelinelabs.conductor.Controller
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.base.GenericVH
@@ -37,62 +40,90 @@ class SettingController : DBControllerBase {
 
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
         binder = DataBindingUtil.inflate(inflater, R.layout.controller_setting, container, false)
+        binder.vm = mSettingVM
         binder.lifecycleOwner = this
         return binder.root
     }
 
     override fun onViewBound(v: View) {
+        Log.d("godgod", "settingVC create")
         initSettingList()
         onSubscribe()
 
     }
 
     private fun initSettingList() {
-        binder.settingList.adapter = SettingListAdapter()
+        binder.settingList.adapter = SettingListAdapter(mSettingVM)
         binder.settingList.layoutManager = LinearLayoutManager(binder.root.context)
     }
 
     private fun onSubscribe() {
-        mSettingVM.settingDataList.observe(this, Observer {
-            (binder.settingList.adapter as? SettingListAdapter)?.setSettingDatas(it)
+        mSettingVM.showFontSettingEditor.observe(this, Observer { event ->
+            event.getContentIfNotHandled()?.let {  show ->
+                if(show) showFontEditor()
+            }
+        })
+    }
+
+    private fun showFontEditor(){
+        val fontSettingVM = FontSettingVM()
+        val fontController = FontSettingController(fontSettingVM)
+        this.pushController(RouterTransaction.with(fontController).apply {
+            pushChangeHandler(FadeChangeHandler())
+            popChangeHandler(FadeChangeHandler())
         })
     }
 }
 
-class SettingListAdapter : RecyclerView.Adapter<GenericVH>() {
+class SettingListAdapter(private val settingVM: SettingVM) : RecyclerView.Adapter<GenericVH>() {
 
-    class SettingTitleVH(private val vb: ControllerSettingTitleItemBinding) : GenericVH(vb.root) {
+    class SettingTitleVH(private val vb: ControllerSettingTitleItemBinding,
+                         private val vm: SettingVM) :
+        GenericVH(vb.root) {
         companion object {
             const val TYPE = 1
         }
 
         override fun bind(data: Pair<Int, SettingData>) {
+            vb.vm = vm
             vb.titleTv.text = vb.root.context.getString(data.first)
         }
 
     }
 
-    class SettingContainToggleBtnVH(private val vb: ControllerSettingToggleItemBinding) : GenericVH(vb.root) {
+    class SettingContainToggleBtnVH(
+        private val vb: ControllerSettingToggleItemBinding,
+        private val vm: SettingVM
+    ) : GenericVH(vb.root) {
         companion object {
             const val TYPE = 2
         }
 
         override fun bind(data: Pair<Int, SettingData>) {
             val value = (data.second as? ValueBoolean)?.value
+            val tag = (data.second as? ValueBoolean)?.tag
+
+            vb.vm = vm
+            vb.tag = tag
 
             vb.titleTv.text = vb.root.context.getString(data.first)
-
+            vb.valueToggle.isChecked = value ?: false
         }
-
     }
 
-    class SettingContainTextViewVH(private val vb: ControllerSettingTextviewItemBinding) : GenericVH(vb.root) {
+    class SettingContainTextViewVH(
+        private val vb: ControllerSettingTextviewItemBinding,
+        private val vm: SettingVM
+    ) : GenericVH(vb.root) {
         companion object {
             const val TYPE = 3
         }
 
         override fun bind(data: Pair<Int, SettingData>) {
             val value = (data.second as? ValueString)?.value
+            val tag = (data.second as? ValueString)?.tag
+            vb.vm = vm
+            vb.tag = tag
 
             vb.titleTv.text = vb.root.context.getString(data.first)
             vb.valueTv.text = value
@@ -125,7 +156,7 @@ class SettingListAdapter : RecyclerView.Adapter<GenericVH>() {
                     parent,
                     false
                 )
-                SettingTitleVH(vb)
+                SettingTitleVH(vb, settingVM)
 
             }
             SettingContainTextViewVH.TYPE -> {
@@ -134,7 +165,7 @@ class SettingListAdapter : RecyclerView.Adapter<GenericVH>() {
                     parent,
                     false
                 )
-                SettingContainTextViewVH(vb)
+                SettingContainTextViewVH(vb, settingVM)
 
             }
             SettingContainToggleBtnVH.TYPE -> {
@@ -143,7 +174,7 @@ class SettingListAdapter : RecyclerView.Adapter<GenericVH>() {
                     parent,
                     false
                 )
-                SettingContainToggleBtnVH(vb)
+                SettingContainToggleBtnVH(vb, settingVM)
             }
             else -> {
                 val vb = ControllerSettingToggleItemBinding.inflate(
@@ -151,7 +182,7 @@ class SettingListAdapter : RecyclerView.Adapter<GenericVH>() {
                     parent,
                     false
                 )
-                SettingContainToggleBtnVH(vb)
+                SettingContainToggleBtnVH(vb, settingVM)
             }
         }
     }

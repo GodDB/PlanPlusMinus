@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
 import com.bluelinelabs.conductor.RouterTransaction
+import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.MyTransitionCH
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
@@ -184,6 +185,7 @@ class PlannerController : DBControllerBase {
         }
 
         private val mItemTouchListener = object : RecyclerView.OnItemTouchListener {
+
             private var targetView: View? = null
 
             override fun onTouchEvent(rv: RecyclerView, event: MotionEvent) {}
@@ -212,9 +214,8 @@ class PlannerController : DBControllerBase {
                                         result = false
 
                                         val position = mLayoutManager?.getPosition(v)
-                                        if (position != null) {
-                                            planVM.updateCountByIndex(-1, position)
-                                        }
+                                        if (position != null) onSwipe("left", position)
+
                                     }
 
                                     //오른쪽 swipe로 끝지점에 도달
@@ -224,9 +225,7 @@ class PlannerController : DBControllerBase {
                                         result = false
 
                                         val position = mLayoutManager?.getPosition(v)
-                                        if (position != null) {
-                                            planVM.updateCountByIndex(1, position)
-                                        }
+                                        if (position != null) onSwipe("right", position)
                                     }
                                 }
                             }
@@ -241,6 +240,23 @@ class PlannerController : DBControllerBase {
                     }
                 return false
             }
+
+            private fun onSwipe(direction : String, position: Int){
+                when(direction){
+                    "right" -> {
+                        if(checkPlusDirectToRight()) planVM.updateCountByIndex(1, position)
+                        else planVM.updateCountByIndex(-1, position)
+                    }
+                    "left" -> {
+                        if(checkPlusDirectToRight()) planVM.updateCountByIndex(-1, position)
+                        else planVM.updateCountByIndex(1, position)
+                    }
+                }
+            }
+
+            private fun checkPlusDirectToRight() : Boolean =
+                AppConfig.swipeDirectionToRight
+
 
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
         }

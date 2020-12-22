@@ -1,68 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="vm"
-            type="com.example.todoplusminus.vm.SettingVM" />
+            type="com.example.todoplusminus.vm.FontSettingVM" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white_smoke"
-        >
+        android:background="@color/white_smoke">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/white"
             android:gravity="center"
-            android:text="@string/setting"
+            android:text="@string/font_style"
             android:textColor="@color/black"
             android:textSize="18sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="20dp"
-            android:background="@color/white"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="15dp"
+            android:src="@drawable/ic_baseline_arrow_back_ios_24"
+            app:layout_constraintBottom_toBottomOf="@id/title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/title" />
+
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"
+            android:background="@color/right_gray"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title"
-            android:background="@color/right_gray"
-            />
+            app:layout_constraintTop_toBottomOf="@id/title" />
+
+        <TextView
+            android:id="@+id/sub_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/font"
+            android:textColor="@color/dark_gray"
+            app:layout_constraintLeft_toLeftOf="@id/guide_left"
+            app:layout_constraintTop_toBottomOf="@id/title" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/setting_list"
+            android:id="@+id/font_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintRight_toRightOf="@id/guide_right"
-            app:layout_constraintTop_toBottomOf="@id/title"
-            bind:setSettingItems="@{vm.settingDataList}"
-            />
+            app:layout_constraintTop_toBottomOf="@id/sub_title" />
+
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guide_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05"
-            />
+            app:layout_constraintGuide_percent="0.1" />
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guide_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.95"
-            />
+            app:layout_constraintGuide_percent="0.9" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

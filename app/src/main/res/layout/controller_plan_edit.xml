@@ -4,6 +4,8 @@
     xmlns:bind="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.example.todoplusminus.AppConfig"/>
+        <import type="android.view.View"/>
         <variable
             name="vm"
             type="com.example.todoplusminus.vm.PlanEditVM" />
@@ -71,10 +73,10 @@
         <LinearLayout
             android:id="@+id/keyboard_overlay_view"
             android:layout_width="0dp"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:elevation="10dp"
             android:orientation="vertical"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -83,7 +85,9 @@
                 android:id="@+id/title_selector_view"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="@color/white_smoke" />
+                android:background="@color/white_smoke"
+                android:visibility="@{AppConfig.INSTANCE.showSuggestedKeyword ? View.VISIBLE : View.GONE}"
+                />
 
             <com.example.todoplusminus.ui.ColorSelectorView
                 android:id="@+id/color_selector_view"

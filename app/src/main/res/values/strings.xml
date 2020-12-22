@@ -20,6 +20,16 @@
     <string name="year_accumulation">Year accumulation</string>
     <string name="memo_icon" translatable="false">%1$s📌</string>
     <string name="setting">Setting</string>
+    <string name="plan">Plan</string>
+    <string name="plan_recommendation_keywords">Plan Recommendation Keywords</string>
+    <string name="push_to_the_right">Push to the right</string>
+    <string name="plus_minus">PlusMinus</string>
+    <string name="calendar_in_basic_mode">Calendar in Basic Mode</string>
+    <string name="font_style">Font style</string>
+    <string name="alarm_at_10pm">Alarm at 10:00</string>
+    <string name="app_info">App Info</string>
+    <string name="app_version">App Version</string>
+    <string name="font">Font</string>
 
     <string name="monday">Mon</string>
     <string name="tuesday">Tue</string>

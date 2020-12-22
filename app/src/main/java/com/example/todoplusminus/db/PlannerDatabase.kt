@@ -34,7 +34,8 @@ data class PlannerItemEntity(
         )]
 )
 data class PlannerInfoEntity(
-    @PrimaryKey(autoGenerate = true)var infoId : Int,
+    @PrimaryKey(autoGenerate = true)
+    var infoId : Int,
     var date : LocalDate,
     var count : Int,
     var planId : String

@@ -1,11 +1,5 @@
 package com.example.todoplusminus.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
 import com.example.todoplusminus.db.PlannerInfoEntity
 import com.example.todoplusminus.db.PlannerItemEntity
 import com.example.todoplusminus.db.PlannerItemInfoEntity

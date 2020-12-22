@@ -20,7 +20,6 @@ class SharedPrefManager(private val context: Context) {
     private var mPreference: SharedPreferences? = null
     private var mEditor: SharedPreferences.Editor? = null
 
-    private var sharedListener : SharedPreferences.OnSharedPreferenceChangeListener? = null
 
     init {
         mPreference = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
@@ -79,7 +78,7 @@ class SharedPrefManager(private val context: Context) {
         when(key){
             SUGGESTED_KEYWORD -> AppConfig.showSuggestedKeyword = value
             SHOW_CALENDAR -> AppConfig.showCalendar = value
-            SWIPE_DIRECTION_TO_RIGHT -> AppConfig.swipeDerectionToRight = value
+            SWIPE_DIRECTION_TO_RIGHT -> AppConfig.swipeDirectionToRight = value
             ENABLE_ALARM -> AppConfig.enableAlarm = value
         }
     }

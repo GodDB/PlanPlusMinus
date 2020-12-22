@@ -1,23 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="50dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/title_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="left"
-        android:layout_marginLeft="10dp"
-        android:gravity="center"/>
+    <data>
+        <variable
+            name="vm"
+            type="com.example.todoplusminus.vm.SettingVM" />
+        <variable
+            name="tag"
+            type="java.lang.Integer" />
 
-    <TextView
-        android:id="@+id/value_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="right"
-        android:layout_marginRight="10dp"
-        android:gravity="center"/>
+    </data>
 
-</androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:id="@+id/value_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:gravity="center"
+            android:onClick="@{() -> vm.onClickEvent(tag)}"
+            />
+
+    </androidx.cardview.widget.CardView>
+</layout>
