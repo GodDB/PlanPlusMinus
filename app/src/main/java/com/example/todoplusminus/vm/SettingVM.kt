@@ -9,7 +9,9 @@ import com.example.todoplusminus.R
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.repository.SettingRepository
 
-class SettingVM(private val repository: SettingRepository) {
+
+//todo replace dagger -> repository 접근지정자 변경 public -> private
+class SettingVM(val repository: SettingRepository) {
 
     companion object {
         private const val TAG_PLAN_RECOMMEND_KEYWORD: Int = 1
@@ -35,7 +37,7 @@ class SettingVM(private val repository: SettingRepository) {
                     ValueBoolean(AppConfig.swipeDirectionToRight, TAG_PUSH_TO_THE_RIGHT)
                 ),
                 Pair(R.string.plus_minus, ValueEmpty()),
-                Pair(R.string.font_style, ValueString("준비중..", TAG_FONT_STYLE)),
+                Pair(R.string.font_style, ValueString(AppConfig.fontName, TAG_FONT_STYLE)),
                 Pair(R.string.alarm_at_10pm, ValueBoolean(AppConfig.enableAlarm, TAG_ALARM_AT_10)),
                 Pair(R.string.app_info, ValueEmpty()),
                 Pair(R.string.app_version, ValueString(AppConfig.version, TAG_APP_VERSION))

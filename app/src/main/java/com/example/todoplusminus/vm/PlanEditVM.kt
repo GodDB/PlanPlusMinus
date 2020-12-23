@@ -1,8 +1,10 @@
 package com.example.todoplusminus.vm
 
+import android.graphics.Typeface
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
+import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.repository.IPlannerRepository
@@ -12,6 +14,9 @@ import kotlinx.coroutines.*
 class PlanEditVM(
     private val repository: IPlannerRepository
 ) {
+
+    val font: Typeface?
+        get() = AppConfig.font
 
     var mId: String = PlanData.EMPTY_ID
     var mBgColor: MutableLiveData<Int> = MutableLiveData(ColorManager.getRandomColor())

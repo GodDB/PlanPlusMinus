@@ -66,7 +66,8 @@ class SettingController : DBControllerBase {
     }
 
     private fun showFontEditor(){
-        val fontSettingVM = FontSettingVM()
+        //todo replace dagger
+        val fontSettingVM = FontSettingVM(mSettingVM.repository)
         val fontController = FontSettingController(fontSettingVM)
         this.pushController(RouterTransaction.with(fontController).apply {
             pushChangeHandler(FadeChangeHandler())

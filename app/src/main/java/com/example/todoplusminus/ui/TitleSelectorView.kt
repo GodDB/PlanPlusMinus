@@ -1,6 +1,7 @@
 package com.example.todoplusminus.ui
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -49,9 +50,15 @@ class TitleSelectorAdapter : RecyclerView.Adapter<TitleSelectorAdapter.TitleVH>(
 
     private val titleList = TitleManager.titleIdList
     private var mVM: PlanEditVM? = null
+    private var font : Typeface? = null
 
     fun setVM(vm: PlanEditVM) {
         mVM = vm
+        notifyDataSetChanged()
+    }
+
+    fun setFont(font : Typeface){
+        this.font = font
         notifyDataSetChanged()
     }
 

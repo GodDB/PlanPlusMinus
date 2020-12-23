@@ -38,7 +38,9 @@
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintTop_toTopOf="@id/guide_top"
             bind:editMode1="@{vm.isEditMode().booleanValue()}"
-            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}" />
+            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}"
+            bind:font="@{vm.font}"
+            />
 
         <com.example.todoplusminus.ui.PMCalendarView
             android:id="@+id/calendarView"
@@ -52,7 +54,9 @@
             bind:editMode1="@{vm.isEditMode().booleanValue()}"
             bind:setCalendarData1="@{vm.allDatePlanData}"
             bind:setCalendarData2="@{vm.allDatePlanMemo}"
-            bind:showCalendar="@{vm.showCalendar.contentIfNotHandled}" />
+            bind:showCalendar="@{vm.showCalendar.contentIfNotHandled}"
+            bind:font="@{vm.font}"
+            />
 
         <TextView
             android:id="@+id/edit_title"
@@ -66,7 +70,9 @@
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            bind:editMode="@{vm.isEditMode().booleanValue()}" />
+            bind:editMode="@{vm.isEditMode().booleanValue()}"
+            bind:font="@{vm.font}"
+            />
 
         <ImageView
             android:id="@+id/btn_calendar"
@@ -115,7 +121,8 @@
             android:visibility="gone"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            bind:editMode="@{vm.isEditMode().booleanValue()}" />
+            bind:editMode="@{vm.isEditMode().booleanValue()}"
+            />
 
         <com.example.todoplusminus.ui.SubWatchView
             android:id="@+id/sub_watch"
@@ -124,7 +131,9 @@
             android:layout_marginTop="50dp"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toBottomOf="@id/guide_top"
-            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}" />
+            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}"
+            bind:font="@{vm.font}"
+            />
 
 
         <androidx.cardview.widget.CardView
@@ -175,7 +184,9 @@
                 app:layout_constraintLeft_toLeftOf="@id/guide_memo_left"
                 app:layout_constraintRight_toRightOf="@id/guide_memo_right"
                 app:layout_constraintTop_toTopOf="parent"
-                bind:editMode="@{!vm.isEditMode().booleanValue()}" />
+                bind:editMode="@{!vm.isEditMode().booleanValue()}"
+                bind:font="@{vm.font}"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/plan_list"

@@ -2,6 +2,7 @@ package com.example.todoplusminus.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.todoplusminus.AppConfig
 
 class SharedPrefManager(private val context: Context) {
@@ -13,7 +14,7 @@ class SharedPrefManager(private val context: Context) {
         const val SUGGESTED_KEYWORD = "suggested_keyword"
         const val SWIPE_DIRECTION_TO_RIGHT = "swipe_direction_to_right"
         const val SHOW_CALENDAR = "show_calendar"
-        const val TEXT_FONT = "text_font"
+        const val TEXT_FONT_NAME = "text_font"
         const val ENABLE_ALARM = "enable_alarm"
     }
 
@@ -24,8 +25,6 @@ class SharedPrefManager(private val context: Context) {
     init {
         mPreference = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
         mEditor = mPreference?.edit()
-
-        populateAppConfig()
     }
 
 
@@ -57,18 +56,29 @@ class SharedPrefManager(private val context: Context) {
         setValueToAppConfig(ENABLE_ALARM, wantAlarm)
     }
 
+    fun setFontName(fontName : String){
+        mEditor?.putString(TEXT_FONT_NAME, fontName)
+        mEditor?.commit()
+
+        setValueToAppConfig(TEXT_FONT_NAME, fontName)
+    }
+
+
     fun getAllData() = mPreference?.all
 
     /**
      * sharedPreference에 저장된 내용을 AppConfig에 채운다.
      * */
-    private fun populateAppConfig(){
+    fun populateAppConfig(){
         val dataMap = getAllData()
 
         dataMap?.keys?.forEach { key ->
-            val value = dataMap[key]
-            setValueToAppConfig(key, value as Boolean)
+            when(dataMap[key]){
+                is String -> setValueToAppConfig(key, dataMap[key] as String)
+                is Boolean -> setValueToAppConfig(key, dataMap[key] as Boolean)
+            }
         }
+        Log.d("godgod", "populate")
     }
 
     /**
@@ -80,6 +90,12 @@ class SharedPrefManager(private val context: Context) {
             SHOW_CALENDAR -> AppConfig.showCalendar = value
             SWIPE_DIRECTION_TO_RIGHT -> AppConfig.swipeDirectionToRight = value
             ENABLE_ALARM -> AppConfig.enableAlarm = value
+        }
+    }
+
+    private fun setValueToAppConfig(key : String, value : String){
+        when(key){
+            TEXT_FONT_NAME -> AppConfig.fontName = value
         }
     }
 }

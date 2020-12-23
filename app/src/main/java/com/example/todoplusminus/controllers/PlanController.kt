@@ -1,5 +1,6 @@
 package com.example.todoplusminus.controllers
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -278,6 +279,7 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
     ItemTouchHelperCallback.ItemTouchHelperListener {
 
     private val curDataList = mutableListOf<PlanData>()
+    private var font : Typeface? = null
 
     private lateinit var binder: PlanListItemBinding
 
@@ -303,7 +305,6 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
 
         notifyDataSetChanged()
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlanListVH {
         binder = DataBindingUtil.inflate(

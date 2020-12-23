@@ -1,6 +1,7 @@
 package com.example.todoplusminus.ui
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import com.example.todoplusminus.util.DateHelper

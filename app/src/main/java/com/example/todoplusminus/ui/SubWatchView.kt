@@ -1,6 +1,7 @@
 package com.example.todoplusminus.ui
 
 import android.content.Context
+import android.graphics.Typeface
 import android.graphics.drawable.AnimationDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -37,6 +38,11 @@ class SubWatchView : LinearLayout {
         mJob.cancel()
     }
 
+    fun setFont(font : Typeface?){
+        if(font == null) return
+
+        vb.clockTime.typeface = font
+    }
 
     fun start() {
         (vb.clockIv.background as AnimationDrawable).start()

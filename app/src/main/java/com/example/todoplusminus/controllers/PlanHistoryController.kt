@@ -67,7 +67,10 @@ class PlanHistoryController : DBControllerBase {
             "plannerDB.sqlite3"
         ).createFromAsset("pre_planDB").build()
         val dataSource = LocalDataSourceImpl(db)
-        val sharedManager = SharedPrefManager(applicationContext!!)
+        val sharedManager =
+            SharedPrefManager(
+                applicationContext!!
+            )
         val plannerRepository = PlannerRepository(dataSource, sharedManager)
 
         val mode = PlanHistoryContentVM.MODE_WEEK

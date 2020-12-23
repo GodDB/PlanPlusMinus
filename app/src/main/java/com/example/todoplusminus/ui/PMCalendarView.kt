@@ -2,6 +2,7 @@ package com.example.todoplusminus.ui
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -91,6 +92,21 @@ class PMCalendarView : LinearLayout {
         mSelectedDate = date
     }
 
+    fun setFont(font : Typeface?){
+        if(font == null) return
+
+        binder.calendarTitle.typeface = font
+        binder.monday.typeface = font
+        binder.tuesday.typeface = font
+        binder.wednesday.typeface = font
+        binder.thursday.typeface = font
+        binder.friday.typeface = font
+        binder.saturday.typeface = font
+        binder.sunday.typeface = font
+
+        (binder.calendarContentList.adapter as? CalendarViewAdapter)?.setFont(font)
+    }
+
     private fun getCalendarTitleList(list: List<List<CalendarData>>): List<String> {
         val titleList: MutableList<String> = mutableListOf()
         list.forEach {
@@ -170,6 +186,7 @@ class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarVH>
     private val mDataList: MutableList<List<PMCalendarView.CalendarData>> = mutableListOf()
     private var mDelegate: Delegate? = null
     private var mSelectedDate: LocalDate? = null
+    private var font : Typeface? = null
 
     fun setData(list: List<List<PMCalendarView.CalendarData>>) {
         mDataList.clear()
@@ -183,6 +200,11 @@ class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarVH>
 
     fun setSelectedDate(date: LocalDate) {
         this.mSelectedDate = date
+        notifyDataSetChanged()
+    }
+
+    fun setFont(font : Typeface){
+        this.font = font
         notifyDataSetChanged()
     }
 
@@ -236,6 +258,7 @@ class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarVH>
             //데이터의 길이만큼 반복한다.
             mDataList[adapterPosition].forEachIndexed { index, calendarData ->
                 tvList[index].text = calendarData.date?.dayOfMonth?.toString() ?: ""
+                tvList[index].typeface = font
 
                 // 체크뷰 보여줄 것인가?
                 if (calendarData.isShowCheckView1 == true) checkViewList[index].visibility =
@@ -265,6 +288,7 @@ class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarVH>
                     )
                 )
                 else tvList[index].setTextColor(Color.BLACK)
+
             }
         }
 

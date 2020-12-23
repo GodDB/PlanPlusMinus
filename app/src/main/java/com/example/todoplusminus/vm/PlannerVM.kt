@@ -1,7 +1,10 @@
 package com.example.todoplusminus.vm
 
 
+import android.graphics.Typeface
+import android.util.Log
 import androidx.lifecycle.*
+import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.TwoCombinedLiveData
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanData
@@ -25,33 +28,38 @@ class PlannerViewModel(
 ) : ViewModel() {
 
     init {
-        viewModelScope.launch{
+        viewModelScope.launch {
             repository.refreshPlannerData(LocalDate.now())
         }
     }
 
+    val font: Typeface?
+        get() = AppConfig.font
 
-    private val _targetDate: MutableLiveData<LocalDate> = MutableLiveData<LocalDate>(DateHelper.getCurDate())
+    private val _targetDate: MutableLiveData<LocalDate> =
+        MutableLiveData<LocalDate>(DateHelper.getCurDate())
 
-    val targetDate : LiveData<LocalDate> = _targetDate.switchMap {
+    val targetDate: LiveData<LocalDate> = _targetDate.switchMap {
         MutableLiveData(it)
     }
 
     private val _allDatePlanData = repository.getAllPlanProject().asLiveData()
 
-    private val _allDatePlanProject: LiveData<PlanProject> = Transformations.switchMap(_allDatePlanData) {
-        MutableLiveData(it)
-    }
+    private val _allDatePlanProject: LiveData<PlanProject> =
+        Transformations.switchMap(_allDatePlanData) {
+            MutableLiveData(it)
+        }
 
-    val allDatePlanData : LiveData<List<PlanData>> = Transformations.switchMap(_allDatePlanData){
+    val allDatePlanData: LiveData<List<PlanData>> = Transformations.switchMap(_allDatePlanData) {
         MutableLiveData(it.getPlanDataList())
     }
 
-    val allDatePlanMemo : LiveData<MutableList<PlanMemo>> = repository.getAllPlanMemo().asLiveData()
+    val allDatePlanMemo: LiveData<MutableList<PlanMemo>> = repository.getAllPlanMemo().asLiveData()
 
-    val targetDatePlanProject : TwoCombinedLiveData<LocalDate, PlanProject, PlanProject> = TwoCombinedLiveData(_targetDate, _allDatePlanProject){ a, b ->
-        PlanProject.create(b.getPlanDataListByDate(a))
-    }
+    val targetDatePlanProject: TwoCombinedLiveData<LocalDate, PlanProject, PlanProject> =
+        TwoCombinedLiveData(_targetDate, _allDatePlanProject) { a, b ->
+            PlanProject.create(b.getPlanDataListByDate(a))
+        }
 
     val targetDatePlanMemo: LiveData<PlanMemo> = Transformations.switchMap(_targetDate) {
         repository.getMemoByDate(it).asLiveData()
@@ -136,7 +144,7 @@ class PlannerViewModel(
         _targetDate.value = date
     }
 
-    fun changeDate(date : LocalDate){
+    fun changeDate(date: LocalDate) {
         _targetDate.value = date
     }
 
@@ -159,7 +167,7 @@ class PlannerViewModel(
         }
     }
 
-    private fun resetTargetDate(){
+    private fun resetTargetDate() {
         _targetDate.value = DateHelper.getCurDate()
     }
 

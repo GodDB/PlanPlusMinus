@@ -1,6 +1,8 @@
 package com.example.todoplusminus.vm
 
+import android.graphics.Typeface
 import androidx.lifecycle.*
+import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.ThreeCombinedLiveData
 import com.example.todoplusminus.TwoCombinedLiveData
 import com.example.todoplusminus.base.Event
@@ -22,6 +24,9 @@ class PlanHistoryContentVM(
         const val MODE_MONTH = "month_mode"
         const val MODE_YEAR = "year_mode"
     }
+
+    val font: Typeface?
+        get() = AppConfig.font
 
     private val _mPlanProject: LiveData<PlanProject> =
         repository.getPlanProjectById(targetId).asLiveData()
@@ -130,7 +135,7 @@ class PlanHistoryContentVM(
     val summaryTargetIndex: MutableLiveData<Int> = MutableLiveData(0)
 
     val summaryAverage: ThreeCombinedLiveData<Int, List<List<String>>, List<List<Int>>, Int> =
-        ThreeCombinedLiveData(summaryTargetIndex, xData, yData){ index, xData, yData ->
+        ThreeCombinedLiveData(summaryTargetIndex, xData, yData) { index, xData, yData ->
             val value = yData[index].sum()
             val count = xData[index].size
 
@@ -138,7 +143,7 @@ class PlanHistoryContentVM(
         }
 
     val summaryAccumulation: TwoCombinedLiveData<Int, List<List<Int>>, Int> =
-        TwoCombinedLiveData(summaryTargetIndex, yData){ index, yData ->
+        TwoCombinedLiveData(summaryTargetIndex, yData) { index, yData ->
             yData[index].sum()
         }
 

@@ -30,6 +30,9 @@
     <string name="app_info">App Info</string>
     <string name="app_version">App Version</string>
     <string name="font">Font</string>
+    <string name="failed_to_download_font">Failed to download font\n check connect network</string>
+    <string name="hangul">Hangul</string>
+    <string name="english">English</string>
 
     <string name="monday">Mon</string>
     <string name="tuesday">Tue</string>

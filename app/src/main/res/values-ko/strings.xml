@@ -72,4 +72,7 @@
     <string name="app_info">앱 정보</string>
     <string name="app_version">앱 버전</string>
     <string name="font">폰트</string>
+    <string name="failed_to_download_font">폰트 다운로드에 실패했습니다\n 네트워크 연결 상태를 확인하세요 </string>
+    <string name="hangul">한글</string>
+    <string name="english">영문</string>
 </resources>

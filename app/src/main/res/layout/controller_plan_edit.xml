@@ -62,7 +62,9 @@
                 android:gravity="center"
                 android:text="@={vm.MTitle}"
                 android:hint="@string/please_write_here"
-                android:textColor="@color/black">
+                android:textColor="@color/black"
+                bind:font="@{vm.font}"
+                >
 
                 <requestFocus />
             </com.example.todoplusminus.ui.CustomEditText>

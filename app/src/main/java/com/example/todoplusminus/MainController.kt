@@ -1,6 +1,5 @@
 package com.example.todoplusminus
 
-import android.app.Activity
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,20 +13,11 @@ import com.example.todoplusminus.base.VBControllerBase
 import com.example.todoplusminus.controllers.*
 import com.example.todoplusminus.databinding.ControllerMainBinding
 import com.example.todoplusminus.db.PlannerDatabase
-import com.example.todoplusminus.repository.LocalDataSourceImpl
-import com.example.todoplusminus.repository.PlannerRepository
-import com.example.todoplusminus.repository.SettingRepository
+import com.example.todoplusminus.repository.*
 import com.example.todoplusminus.repository.SharedPrefManager
 import com.example.todoplusminus.util.DeviceManager
 import com.example.todoplusminus.vm.PlanHistoryVM
 import com.example.todoplusminus.vm.SettingVM
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 class MainController : VBControllerBase {
 
@@ -52,9 +42,6 @@ class MainController : VBControllerBase {
         auxRouter = getChildRouter(binder.subArea)
         //popLastView를 true로 둠으로써, 마지막 컨트롤러 삭제시 뷰도 삭제된다. false이면 마지막컨트롤러 삭제시 뷰는 삭제 안됨.
         auxRouter?.setPopsLastView(true)
-
-        Log.d("godgod", "원래 디바이스 높이 ${DeviceManager.getDeviceHeight()}")
-
     }
 
     private fun configureUI() {
@@ -68,7 +55,10 @@ class MainController : VBControllerBase {
         ).createFromAsset("pre_planDB").build()
 
         val dataSource = LocalDataSourceImpl(db)
-        val sharedPrefManager = SharedPrefManager(applicationContext!!)
+        val sharedPrefManager =
+            SharedPrefManager(
+                applicationContext!!
+            )
         plannerRepository = PlannerRepository(dataSource, sharedPrefManager)
 
 
@@ -110,8 +100,12 @@ class MainController : VBControllerBase {
                 )
                 R.id.settingItem -> {
                     //todo replace dagger
-                    val sharedPrefManager = SharedPrefManager(applicationContext!!)
-                    val settingRepo = SettingRepository(sharedPrefManager)
+                    val sharedPrefManager =
+                        SharedPrefManager(
+                            applicationContext!!
+                        )
+                    val fontManager = FontDownloadManager(applicationContext!!)
+                    val settingRepo = SettingRepository(sharedPrefManager, fontManager)
                     val settingVM = SettingVM(settingRepo)
 
                     pushControllerByTag(
