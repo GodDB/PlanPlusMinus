@@ -1,20 +1,25 @@
 package com.example.todoplusminus.repository
 
 import android.graphics.Typeface
+import com.example.todoplusminus.AppConfig
+import com.example.todoplusminus.PMCoroutineSpecification
+import kotlinx.coroutines.CoroutineDispatcher
 
-class SettingRepository(private val sharedPrefManager: SharedPrefManager, private val fontManager : FontDownloadManager) {
+class SettingRepository(
+    private val sharedPrefManager: SharedPrefManager,
+    private val fontManager: FontDownloadManager,
+    private val dispatcher: CoroutineDispatcher = PMCoroutineSpecification.MAIN_DISPATCHER
+) {
 
-    fun getFont(fontName : String, onComplete: (Typeface) -> Unit, onError : () -> Unit ){
-        val onComplete2 : (Typeface) -> Unit = { typeface ->
-            sharedPrefManager.setFontName(fontName)
-            onComplete(typeface)
-        }
+    suspend fun getFont(fontName: String) : Typeface? {
+        val font = fontManager.downloadFont(fontName)
+        registerFont(font, fontName)
 
-        fontManager.downloadFont(fontName, onComplete2, onError)
+        return font
     }
 
     fun setSuggestedKeyword(wantShow: Boolean) {
-       sharedPrefManager.setSuggestedKeyword(wantShow)
+        sharedPrefManager.setSuggestedKeyword(wantShow)
     }
 
     fun setShowCalendar(wantShow: Boolean) {
@@ -27,6 +32,11 @@ class SettingRepository(private val sharedPrefManager: SharedPrefManager, privat
 
     fun setEnableAlarm(wantAlarm: Boolean) {
         sharedPrefManager.setEnableAlarm(wantAlarm)
+    }
+
+    private fun registerFont(font : Typeface?, fontName : String){
+        if(font != null) sharedPrefManager.setFontName(fontName)
+        AppConfig.font = font
     }
 
 }

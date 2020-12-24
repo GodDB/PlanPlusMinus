@@ -1,10 +1,8 @@
-package com.example.todoplusminus.ui
+package com.example.todoplusminus.customViews
 
 import android.content.Context
-import android.text.method.KeyListener
 import android.util.AttributeSet
 import android.view.KeyEvent
-import android.widget.EditText
 
 /**
  * 키패드를 내리는 행위 (backpress)를 감지할 수 있는 EditText

@@ -9,7 +9,7 @@ class SplashRepository(
     private val fontDownloadManager: FontDownloadManager
 ) {
 
-    fun initialize() {
+    suspend fun initialize() {
         populateAppConfig()
         downloadFont(AppConfig.fontName)
     }
@@ -18,9 +18,7 @@ class SplashRepository(
         prefManager.populateAppConfig()
     }
 
-    private fun downloadFont(fontName : String){
-        fontDownloadManager.downloadFont(fontName,
-            onSuccess = { typeface -> AppConfig.font = typeface },
-            onFail = {})
+    private suspend fun downloadFont(fontName : String){
+        fontDownloadManager.downloadFont(fontName)
     }
 }

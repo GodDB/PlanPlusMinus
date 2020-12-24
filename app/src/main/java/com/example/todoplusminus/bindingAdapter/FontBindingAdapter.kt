@@ -4,8 +4,8 @@ import android.graphics.Typeface
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import com.example.todoplusminus.ui.PMCalendarView
-import com.example.todoplusminus.ui.SubWatchView
+import com.example.todoplusminus.customViews.PMCalendarView
+import com.example.todoplusminus.customViews.SubWatchView
 
 @BindingAdapter("bind:font")
 fun setFont(tv : TextView, font : Typeface?){

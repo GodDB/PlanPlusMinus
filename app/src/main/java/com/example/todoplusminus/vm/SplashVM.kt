@@ -4,7 +4,7 @@ import com.example.todoplusminus.repository.SettingRepository
 
 class SplashVM(private val splashRepository: SplashRepository) {
 
-    fun initialize(){
+    suspend fun initialize(){
         splashRepository.initialize()
     }
 }

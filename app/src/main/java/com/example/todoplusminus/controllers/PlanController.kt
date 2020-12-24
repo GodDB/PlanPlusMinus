@@ -18,7 +18,7 @@ import com.example.todoplusminus.databinding.ControllerPlannerBinding
 import com.example.todoplusminus.databinding.PlanListItemBinding
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.repository.PlannerRepository
-import com.example.todoplusminus.ui.PMCalendarView
+import com.example.todoplusminus.customViews.PMCalendarView
 import com.example.todoplusminus.util.*
 import com.example.todoplusminus.vm.PlanEditVM
 import com.example.todoplusminus.vm.PlannerViewModel

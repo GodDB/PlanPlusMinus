@@ -1,24 +1,18 @@
-package com.example.todoplusminus.ui
+package com.example.todoplusminus.customViews
 
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Color
-import android.renderscript.Sampler
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import com.example.todoplusminus.R
 import com.example.todoplusminus.databinding.UiGraphViewBinding
 import com.example.todoplusminus.util.ColorManager
-import com.example.todoplusminus.util.CommonAnimationHelper
 import com.example.todoplusminus.util.DpConverter
 import kotlin.math.floor
 import kotlin.math.max

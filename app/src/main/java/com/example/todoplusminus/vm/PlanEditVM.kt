@@ -1,15 +1,18 @@
 package com.example.todoplusminus.vm
 
 import android.graphics.Typeface
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
 import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.repository.IPlannerRepository
 import com.example.todoplusminus.util.ColorManager
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 
 class PlanEditVM(
     private val repository: IPlannerRepository
@@ -19,10 +22,18 @@ class PlanEditVM(
         get() = AppConfig.font
 
     var mId: String = PlanData.EMPTY_ID
-    var mBgColor: MutableLiveData<Int> = MutableLiveData(ColorManager.getRandomColor())
-    var mTitle: MutableLiveData<String> = MutableLiveData("")
+    val mBgColor: MutableLiveData<Int> = MutableLiveData(ColorManager.getRandomColor())
+    val mTitle: MutableLiveData<String> = MutableLiveData("")
 
-    private var mLastestIndex: LiveData<Int> = repository.getLastestIndex().asLiveData()
+    //todo 수
+    private val mLastestIndex: LiveData<Int> = MutableLiveData<Int>().apply {
+        CoroutineScope(Dispatchers.Main).launch {
+            repository.getLastestIndex().collect{
+                this@apply.value = it
+            }
+        }
+    }
+
 
 
     /** edit 작업이 끝났는지(done or back or cancel)를 체크한다.
@@ -49,7 +60,6 @@ class PlanEditVM(
 
     private fun onCreateItem() {
         if (!checkIsEmptyId() && checkIsEmptyContent()) return
-
         val newData = PlanData.create().apply {
             this.index = mLastestIndex.value?.plus(1) ?: 0
             this.title = mTitle.value ?: ""

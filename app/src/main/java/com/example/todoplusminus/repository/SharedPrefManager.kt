@@ -63,7 +63,6 @@ class SharedPrefManager(private val context: Context) {
         setValueToAppConfig(TEXT_FONT_NAME, fontName)
     }
 
-
     fun getAllData() = mPreference?.all
 
     /**

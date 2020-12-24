@@ -33,6 +33,13 @@
     <string name="failed_to_download_font">Failed to download font\n check connect network</string>
     <string name="hangul">Hangul</string>
     <string name="english">English</string>
+    <string name="support">Support</string>
+    <string name="official_website">Official website</string>
+    <string name="faq">FAQ</string>
+    <string name="share_app_with_friends">Share app with friends</string>
+    <string name="to_delete_all_data">To delete all data</string>
+    <string name="plan_size">Plan size</string>
+    <string name="empty" translatable="false"></string>
 
     <string name="monday">Mon</string>
     <string name="tuesday">Tue</string>

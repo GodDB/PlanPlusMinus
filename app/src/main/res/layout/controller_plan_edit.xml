@@ -54,7 +54,7 @@
             app:layout_constraintTop_toTopOf="@id/guide_editView_top"
             >
 
-            <com.example.todoplusminus.ui.CustomEditText
+            <com.example.todoplusminus.customViews.CustomEditText
                 android:id="@+id/item_title"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -67,7 +67,7 @@
                 >
 
                 <requestFocus />
-            </com.example.todoplusminus.ui.CustomEditText>
+            </com.example.todoplusminus.customViews.CustomEditText>
 
 
         </androidx.cardview.widget.CardView>
@@ -83,7 +83,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.example.todoplusminus.ui.TitleSelectorView
+            <com.example.todoplusminus.customViews.TitleSelectorView
                 android:id="@+id/title_selector_view"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -91,7 +91,7 @@
                 android:visibility="@{AppConfig.INSTANCE.showSuggestedKeyword ? View.VISIBLE : View.GONE}"
                 />
 
-            <com.example.todoplusminus.ui.ColorSelectorView
+            <com.example.todoplusminus.customViews.ColorSelectorView
                 android:id="@+id/color_selector_view"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"

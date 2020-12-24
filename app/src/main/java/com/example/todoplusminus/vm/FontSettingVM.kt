@@ -8,6 +8,9 @@ import com.example.todoplusminus.R
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.repository.FontDownloadManager
 import com.example.todoplusminus.repository.SettingRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class FontSettingVM (private val repository: SettingRepository) {
 
@@ -42,19 +45,21 @@ class FontSettingVM (private val repository: SettingRepository) {
     }
 
     private fun getFont(fontName: String){
-        val onComplete : (Typeface) -> Unit = { typeface ->
-            Log.d("godgod", "${AppConfig.fontName}   ${AppConfig.font}")
-            setDownloadCompleteFontName(fontName)
-            allowOtherFontDownload()
-            stopLoading()
+        CoroutineScope(Dispatchers.Main).launch {
+            val font = repository.getFont(fontName) ?: return@launch onError()
+            onComplete(fontName)
         }
+    }
 
-        val onError : () -> Unit = {
-            allowOtherFontDownload()
-            stopLoading()
-        }
+    private fun onComplete(fontName: String){
+        setDownloadCompleteFontName(fontName)
+        allowOtherFontDownload()
+        stopLoading()
+    }
 
-        repository.getFont(fontName, onComplete, onError)
+    private fun onError(){
+        allowOtherFontDownload()
+        stopLoading()
     }
 
     private fun startLoading(fontName : String){

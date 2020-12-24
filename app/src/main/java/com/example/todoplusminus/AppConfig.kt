@@ -11,4 +11,5 @@ object AppConfig {
     var swipeDirectionToRight : Boolean = true
     var showCalendar : Boolean = false
     var enableAlarm : Boolean = true
+    var planSize : Int = 15
 }

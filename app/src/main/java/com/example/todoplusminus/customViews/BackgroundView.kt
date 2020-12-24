@@ -1,4 +1,4 @@
-package com.example.todoplusminus.ui
+package com.example.todoplusminus.customViews
 
 import android.content.Context
 import android.util.AttributeSet

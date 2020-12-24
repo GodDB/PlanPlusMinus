@@ -1,5 +1,6 @@
 package com.example.todoplusminus.repository
 
+import kotlinx.coroutines.flow.collect
 import androidx.lifecycle.LiveData
 import androidx.room.withTransaction
 import com.example.todoplusminus.db.PlannerDatabase
@@ -26,8 +27,10 @@ class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
     override fun getAllPlannerDataById(id: String): Flow<List<PlanData>> =
         db.userPlanDao().getAllPlannerDataById(id)
 
-    override fun getLastestIndex(): Flow<Int> =
-        db.userPlanDao().getLastIndex()
+    override fun getLastestIndex(): Flow<Int> {
+        return db.userPlanDao().getLastIndex()
+    }
+
 
     override fun getMemoByDate(date: LocalDate): Flow<PlanMemo> = db.userPlanDao().getMemoByDate(date)
 
@@ -108,3 +111,5 @@ class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
 
 
 }
+
+

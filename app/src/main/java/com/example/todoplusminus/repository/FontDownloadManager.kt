@@ -10,6 +10,8 @@ import androidx.core.provider.FontRequest
 import androidx.core.provider.FontsContractCompat
 import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.R
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class FontDownloadManager(private val mContext : Context) {
 
@@ -37,7 +39,7 @@ class FontDownloadManager(private val mContext : Context) {
         const val FONT_SUNFLOWER = "Sunflower"
     }
 
-    fun downloadFont(fontName: String, onSuccess: (Typeface) -> Unit, onFail: () -> Unit) {
+    suspend fun downloadFont(fontName: String) : Typeface? {
         val request = FontRequest(
             FONT_AUTHORITY,
             FONT_PACKAGE,
@@ -45,28 +47,30 @@ class FontDownloadManager(private val mContext : Context) {
             R.array.com_google_android_gms_fonts_certs
         )
 
-        val callback = object : FontsContractCompat.FontRequestCallback() {
-            override fun onTypefaceRetrieved(typeface: Typeface) {
-                AppConfig.font = typeface
-                onSuccess(typeface)
+        return suspendCoroutine<Typeface?> { contination ->
+            val callback = object : FontsContractCompat.FontRequestCallback() {
+                override fun onTypefaceRetrieved(typeface: Typeface) {
+                    AppConfig.font = typeface
+                    contination.resume(typeface)
+                }
+
+                override fun onTypefaceRequestFailed(reason: Int) {
+                    Toast.makeText(
+                        mContext,
+                        mContext.getString(R.string.failed_to_download_font),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    contination.resume(null)
+                }
             }
 
-            override fun onTypefaceRequestFailed(reason: Int) {
-                Toast.makeText(
-                    mContext,
-                    mContext.getString(R.string.failed_to_download_font),
-                    Toast.LENGTH_LONG
-                ).show()
-                onFail()
-            }
+            FontsContractCompat.requestFont(
+                mContext,
+                request,
+                callback,
+                getHandlerFontThread()
+            )
         }
-
-        FontsContractCompat.requestFont(
-            mContext,
-            request,
-            callback,
-            getHandlerFontThread()
-        )
     }
 
 

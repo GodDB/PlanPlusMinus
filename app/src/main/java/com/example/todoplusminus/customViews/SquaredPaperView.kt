@@ -1,11 +1,10 @@
-package com.example.todoplusminus.ui
+package com.example.todoplusminus.customViews
 
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import com.example.todoplusminus.util.DpConverter
 

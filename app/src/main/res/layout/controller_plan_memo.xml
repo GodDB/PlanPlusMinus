@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         >
 
-        <com.example.todoplusminus.ui.BackgroundView
+        <com.example.todoplusminus.customViews.BackgroundView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0.2"

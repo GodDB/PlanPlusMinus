@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.example.todoplusminus.ui.BackgroundView
+        <com.example.todoplusminus.customViews.BackgroundView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0.2"
@@ -57,7 +57,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/root_view" />
 
-            <com.example.todoplusminus.ui.SquaredPaperView
+            <com.example.todoplusminus.customViews.SquaredPaperView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="@id/guide_scroll_area"

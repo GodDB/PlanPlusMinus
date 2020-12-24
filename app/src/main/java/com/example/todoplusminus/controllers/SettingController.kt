@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.base.GenericVH
@@ -63,6 +64,12 @@ class SettingController : DBControllerBase {
                 if(show) showFontEditor()
             }
         })
+
+        mSettingVM.showPlanSizeEditor.observe(this, Observer { event ->
+            event.getContentIfNotHandled()?.let { show ->
+                if(show) showPlanSizeEditor()
+            }
+        })
     }
 
     private fun showFontEditor(){
@@ -72,6 +79,14 @@ class SettingController : DBControllerBase {
         this.pushController(RouterTransaction.with(fontController).apply {
             pushChangeHandler(FadeChangeHandler())
             popChangeHandler(FadeChangeHandler())
+        })
+    }
+
+    private fun showPlanSizeEditor(){
+        val planSizeEditor = PlanSizeEditorController()
+        this.pushController(RouterTransaction.with(planSizeEditor).apply {
+            pushChangeHandler(HorizontalChangeHandler(false))
+            popChangeHandler(HorizontalChangeHandler())
         })
     }
 }

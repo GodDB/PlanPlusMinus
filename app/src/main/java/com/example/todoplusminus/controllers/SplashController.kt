@@ -33,16 +33,10 @@ class SplashController : VBControllerBase {
     }
 
     override fun onViewBound(v: View) {
-        DpConverter.setUp(v.context)
-        DeviceManager.setUp(v.context)
-        VibrateHelper.setUp(v.context)
-
         //todo 완료했을때 적용하자... 지금 테스트 단계이니깐 0.5초 기다리기 좀 그래
         CoroutineScope(Dispatchers.Main).launch {
             initialize()
 
-         /*   delay(500)*/
-            Log.d("godgod", "${AppConfig.font}")
             replaceController(RouterTransaction.with(MainController()).apply {
                 pushChangeHandler(FadeChangeHandler())
             })
@@ -51,11 +45,11 @@ class SplashController : VBControllerBase {
     }
 
     private suspend fun initialize(){
-        withContext(Dispatchers.Main){
-            Log.d("godgod", "start initialize")
-            splashVM.initialize()
-            Log.d("godgod", "${AppConfig.font}")
-        }
+        DpConverter.setUp(applicationContext!!)
+        DeviceManager.setUp(applicationContext!!)
+        VibrateHelper.setUp(applicationContext!!)
+
+        splashVM.initialize()
     }
 
 }

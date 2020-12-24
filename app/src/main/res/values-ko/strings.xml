@@ -75,4 +75,12 @@
     <string name="failed_to_download_font">폰트 다운로드에 실패했습니다\n 네트워크 연결 상태를 확인하세요 </string>
     <string name="hangul">한글</string>
     <string name="english">영문</string>
+    <string name="cancel">취소</string>
+    <string name="done">확인</string>
+    <string name="support">지원</string>
+    <string name="official_website">공식 홈페이지</string>
+    <string name="faq">자주 묻는 질문</string>
+    <string name="share_app_with_friends">친구에게 앱 공유하기</string>
+    <string name="to_delete_all_data">모든 데이터 삭제하기</string>
+    <string name="plan_size">계획 크기</string>
 </resources>

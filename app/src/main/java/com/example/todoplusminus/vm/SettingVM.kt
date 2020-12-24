@@ -19,15 +19,18 @@ class SettingVM(val repository: SettingRepository) {
         private const val TAG_CALEDNAR_BASIC_MODE: Int = 3
         private const val TAG_FONT_STYLE: Int = 4
         private const val TAG_ALARM_AT_10: Int = 5
-        private const val TAG_APP_VERSION : Int = 6
+        private const val TAG_APP_VERSION: Int = 6
+        private const val TAG_PLAN_SIZE: Int = 7
     }
 
-    val showFontSettingEditor : MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
+    val showFontSettingEditor: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
+    val showPlanSizeEditor : MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
     val settingDataList: List<Pair<Int, SettingData>>
         get() {
             return listOf(
                 Pair(R.string.plan, ValueEmpty()),
+                Pair(R.string.plan_size, ValueString(AppConfig.planSize.toString(), TAG_PLAN_SIZE)),
                 Pair(
                     R.string.plan_recommendation_keywords,
                     ValueBoolean(AppConfig.showSuggestedKeyword, TAG_PLAN_RECOMMEND_KEYWORD)
@@ -39,8 +42,15 @@ class SettingVM(val repository: SettingRepository) {
                 Pair(R.string.plus_minus, ValueEmpty()),
                 Pair(R.string.font_style, ValueString(AppConfig.fontName, TAG_FONT_STYLE)),
                 Pair(R.string.alarm_at_10pm, ValueBoolean(AppConfig.enableAlarm, TAG_ALARM_AT_10)),
+                Pair(R.string.support, ValueEmpty()),
+                Pair(R.string.official_website, ValueString(tag = 0)),
+                Pair(R.string.faq, ValueString(tag = 0)),
+                Pair(R.string.share_app_with_friends, ValueString(tag = 0)),
                 Pair(R.string.app_info, ValueEmpty()),
-                Pair(R.string.app_version, ValueString(AppConfig.version, TAG_APP_VERSION))
+                Pair(R.string.app_version, ValueString(AppConfig.version, TAG_APP_VERSION)),
+                Pair(R.string.empty, ValueEmpty()),
+                Pair(R.string.to_delete_all_data, ValueString(tag = 0)),
+                Pair(R.string.empty, ValueEmpty())
             )
         }
 
@@ -56,12 +66,17 @@ class SettingVM(val repository: SettingRepository) {
 
     fun onClickEvent(tag: Int) {
         when (tag) {
-            TAG_FONT_STYLE -> { showFontSettingEditor() }
+            TAG_FONT_STYLE -> showFontSettingEditor()
+            TAG_PLAN_SIZE -> showPlanSizeEditor()
         }
     }
 
-    private fun showFontSettingEditor(){
+    private fun showFontSettingEditor() {
         this.showFontSettingEditor.value = Event(true)
+    }
+
+    private fun showPlanSizeEditor(){
+        this.showPlanSizeEditor.value = Event(true)
     }
 
     private fun onShowSuggestedKeyword(value: Boolean) {
@@ -81,12 +96,10 @@ class SettingVM(val repository: SettingRepository) {
     }
 
 
-
-
 }
 
 sealed class SettingData()
 
-data class ValueString(val value: String, val tag: Int) : SettingData()
+data class ValueString(val value: String = "", val tag: Int) : SettingData()
 data class ValueBoolean(val value: Boolean, val tag: Int) : SettingData()
 data class ValueEmpty(val value: Nothing? = null) : SettingData()

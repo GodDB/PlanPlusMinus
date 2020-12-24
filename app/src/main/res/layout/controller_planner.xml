@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.example.todoplusminus.ui.SquaredPaperView
+        <com.example.todoplusminus.customViews.SquaredPaperView
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -29,7 +29,7 @@
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_top" />
 
-        <com.example.todoplusminus.ui.MainWatchView
+        <com.example.todoplusminus.customViews.MainWatchView
             android:id="@+id/main_watch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             bind:font="@{vm.font}"
             />
 
-        <com.example.todoplusminus.ui.PMCalendarView
+        <com.example.todoplusminus.customViews.PMCalendarView
             android:id="@+id/calendarView"
             android:layout_width="0dp"
             android:layout_height="140dp"
@@ -124,7 +124,7 @@
             bind:editMode="@{vm.isEditMode().booleanValue()}"
             />
 
-        <com.example.todoplusminus.ui.SubWatchView
+        <com.example.todoplusminus.customViews.SubWatchView
             android:id="@+id/sub_watch"
             android:layout_width="wrap_content"
             android:layout_height="50dp"

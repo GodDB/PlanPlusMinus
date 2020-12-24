@@ -15,7 +15,7 @@ import com.example.todoplusminus.controllers.PlanHistoryChartAdapter
 import com.example.todoplusminus.controllers.PlanListAdapter
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
-import com.example.todoplusminus.ui.PMCalendarView
+import com.example.todoplusminus.customViews.PMCalendarView
 import com.example.todoplusminus.util.*
 import com.example.todoplusminus.vm.OnDoneListener
 import com.google.android.material.tabs.TabLayout

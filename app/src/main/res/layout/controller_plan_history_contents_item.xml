@@ -18,7 +18,7 @@
             android:textColor="@color/black"
             />
 
-        <com.example.todoplusminus.ui.GraphChartView
+        <com.example.todoplusminus.customViews.GraphChartView
             android:id="@+id/graph_view"
             android:layout_width="0dp"
             android:layout_height="0dp"

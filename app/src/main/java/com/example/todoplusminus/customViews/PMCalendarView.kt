@@ -1,4 +1,4 @@
-package com.example.todoplusminus.ui
+package com.example.todoplusminus.customViews
 
 import android.content.Context
 import android.graphics.Color
@@ -8,21 +8,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoplusminus.R
-import com.example.todoplusminus.bindingAdapter.setSlideEvent
 import com.example.todoplusminus.databinding.UiCalendarViewBinding
 import com.example.todoplusminus.databinding.UiCalendarViewItemBinding
 import com.example.todoplusminus.util.DateHelper
-import com.example.todoplusminus.util.DpConverter
-import com.example.todoplusminus.util.compareUntilWeek
 import java.time.LocalDate
 
 class PMCalendarView : LinearLayout {

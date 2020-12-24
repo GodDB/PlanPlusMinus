@@ -2,7 +2,6 @@ package com.example.todoplusminus.controllers
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerPlanEditBinding
-import com.example.todoplusminus.ui.CustomEditText
-import com.example.todoplusminus.util.DpConverter
+import com.example.todoplusminus.customViews.CustomEditText
 import com.example.todoplusminus.util.KeyboardDetector
 import com.example.todoplusminus.vm.PlanEditVM
 
