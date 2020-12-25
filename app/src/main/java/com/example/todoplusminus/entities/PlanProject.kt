@@ -15,11 +15,11 @@ class PlanProject private constructor() {
     companion object {
         fun create(plandataList: List<PlanData>?): PlanProject =
             PlanProject().apply {
-                setPlanDatas(plandataList ?: mutableListOf(PlanData.create()))
+                setPlanDatas(plandataList ?: mutableListOf())
             }
     }
 
-    private var mPlanDataList: MutableList<PlanData> = mutableListOf(PlanData.create())
+    private var mPlanDataList: MutableList<PlanData> = mutableListOf()
     private val dateHelper = DateHelper()
 
     fun setPlanDatas(planList: List<PlanData>) {
@@ -31,7 +31,10 @@ class PlanProject private constructor() {
         mPlanDataList.add(planData)
     }
 
-    fun getPlanDataByIndex(index: Int) = mPlanDataList[index]
+    fun getPlanDataByIndex(index: Int) : PlanData {
+        if (!checkWhetherOutOfBound(index)) return mPlanDataList[index]
+        return PlanData.create()
+    }
 
     fun getPlanDataList() = mPlanDataList.toList()
 
@@ -42,33 +45,51 @@ class PlanProject private constructor() {
         return PlanData.create()
     }
 
-    fun getPlanDataListByDate(date : LocalDate) : List<PlanData>{
-        val result : MutableList<PlanData> = mutableListOf()
+    fun getPlanDataListByDate(date: LocalDate): List<PlanData> {
+        val result: MutableList<PlanData> = mutableListOf()
 
         mPlanDataList.forEach { planData ->
-            if(planData.date == date) result.add(planData)
+            if (planData.date == date) result.add(planData)
         }
 
         return result
     }
 
     fun increasePlanDataCountByIndex(count: Int, index: Int) {
-        mPlanDataList[index].increaseCount(count)
+        if (!checkWhetherOutOfBound(index)) mPlanDataList[index].increaseCount(count)
     }
 
-    fun getPlanDataBgColorByIndex(index: Int) = mPlanDataList[index].bgColor
-    fun getPlanDataIdByIndex(index: Int) = mPlanDataList[index].id
-    fun getPlanDataTitleByIndex(index: Int) = mPlanDataList[index].title
-    fun getPlanDataCountByIndex(index: Int) = mPlanDataList[index].count
+    fun getPlanDataBgColorByIndex(index: Int): Int {
+        if (!checkWhetherOutOfBound(index)) return mPlanDataList[index].bgColor
+        return PlanData.DEFAULT_BG_COLOR
+    }
 
+    fun getPlanDataIdByIndex(index: Int): String {
+        if (!checkWhetherOutOfBound(index)) return mPlanDataList[index].id
+        return PlanData.EMPTY_ID
+    }
+
+    fun getPlanDataTitleByIndex(index: Int): String {
+        if (!checkWhetherOutOfBound(index)) return mPlanDataList[index].title
+        return ""
+    }
+
+    fun getPlanDataCountByIndex(index: Int): Int {
+        if (!checkWhetherOutOfBound(index)) return mPlanDataList[index].count
+        return 0
+    }
+
+    private fun checkWhetherOutOfBound(value: Int): Boolean {
+        return value >= mPlanDataList.size
+    }
     //todo calculate logic
 
     fun getTotalCount(): Int = sum(mPlanDataList)
 
-    private fun sum(list : List<PlanData>) : Int{
+    private fun sum(list: List<PlanData>): Int {
         var result = 0
         list.forEach {
-            result+= it.count
+            result += it.count
         }
         return result
     }
@@ -127,7 +148,7 @@ class PlanProject private constructor() {
         // starDate가 endDate와 같은 년도 일때까지 반복한다.
         while (startDate.compareUntilYear(endDate) <= 0) {
             val list = getYearDataInclude(startDate)
-            var oneYearCountList : MutableList<Int> = mutableListOf()
+            var oneYearCountList: MutableList<Int> = mutableListOf()
 
             //1년치 데이터
             list.forEachIndexed { month, planList ->
@@ -249,5 +270,5 @@ class PlanProject private constructor() {
 
         return result
     }
-    
+
 }

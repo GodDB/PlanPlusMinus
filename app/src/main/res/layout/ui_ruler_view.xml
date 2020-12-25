@@ -16,15 +16,71 @@
         />
 
     <View
+        android:id="@+id/fade_left_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="@id/ruler_view"
+        app:layout_constraintTop_toTopOf="@id/ruler_view"
+        app:layout_constraintBottom_toBottomOf="@id/ruler_view"
+        app:layout_constraintRight_toLeftOf="@id/fade_left_center_view"
+        android:background="@color/white"
+        android:alpha="0.9"
+        />
+    <View
+        android:id="@+id/fade_left_center_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/fade_left_view"
+        app:layout_constraintTop_toTopOf="@id/ruler_view"
+        app:layout_constraintBottom_toBottomOf="@id/ruler_view"
+        app:layout_constraintRight_toLeftOf="@id/fade_center_view"
+        android:background="@color/white"
+        android:alpha="0.7"
+        />
+    <View
+        android:id="@+id/fade_center_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/fade_left_center_view"
+        app:layout_constraintRight_toLeftOf="@id/fade_right_center_view"
+        app:layout_constraintTop_toTopOf="@id/ruler_view"
+        app:layout_constraintBottom_toBottomOf="@id/ruler_view"
+        />
+
+    <View
+        android:id="@+id/fade_right_center_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/fade_center_view"
+        app:layout_constraintTop_toTopOf="@id/ruler_view"
+        app:layout_constraintBottom_toBottomOf="@id/ruler_view"
+        app:layout_constraintRight_toLeftOf="@id/fade_right_view"
+        android:background="@color/white"
+        android:alpha="0.7"
+        />
+    <View
+        android:id="@+id/fade_right_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/fade_right_center_view"
+        app:layout_constraintTop_toTopOf="@id/ruler_view"
+        app:layout_constraintBottom_toBottomOf="@id/ruler_view"
+        app:layout_constraintRight_toRightOf="@id/ruler_view"
+        android:background="@color/white"
+        android:alpha="0.9"
+        />
+
+    <View
         android:id="@+id/indicator"
-        android:layout_width="3dp"
+        android:layout_width="2dp"
         android:layout_height="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/pastel_color10"
+        android:background="@color/red"
+        app:layout_constraintHeight_percent="0.8"
         />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

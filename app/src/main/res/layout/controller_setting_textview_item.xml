@@ -13,7 +13,9 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:onClick="@{() -> vm.onClickEvent(tag)}"
+        >
 
         <TextView
             android:id="@+id/title_tv"
@@ -31,7 +33,6 @@
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
             android:gravity="center"
-            android:onClick="@{() -> vm.onClickEvent(tag)}"
             />
 
     </androidx.cardview.widget.CardView>

@@ -12,6 +12,7 @@ import com.example.todoplusminus.entities.PlanMemo
 import com.example.todoplusminus.entities.PlanProject
 import com.example.todoplusminus.repository.IPlannerRepository
 import com.example.todoplusminus.util.DateHelper
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -33,8 +34,10 @@ class PlannerViewModel(
         }
     }
 
-    val font: Typeface?
-        get() = AppConfig.font
+    val font: MutableLiveData<Typeface?> = MutableLiveData(AppConfig.font)
+
+    //planner item의 tv의 텍스트 사이즈를 변경하기 위함
+    val planSize : MutableLiveData<Int> = MutableLiveData(AppConfig.planSize)
 
     private val _targetDate: MutableLiveData<LocalDate> =
         MutableLiveData<LocalDate>(DateHelper.getCurDate())
@@ -43,7 +46,7 @@ class PlannerViewModel(
         MutableLiveData(it)
     }
 
-    private val _allDatePlanData = repository.getAllPlanProject().asLiveData()
+    private var _allDatePlanData = repository.getAllPlanProject().asLiveData()
 
     private val _allDatePlanProject: LiveData<PlanProject> =
         Transformations.switchMap(_allDatePlanData) {
@@ -75,6 +78,11 @@ class PlannerViewModel(
 
     val showCalendar: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
+
+    fun reload(){
+        font.value = AppConfig.font
+        planSize.value = AppConfig.planSize
+    }
 
     fun onItemDelete(index: Int) {
         val targetDeleteObj = targetDatePlanProject.value?.getPlanDataByIndex(index)

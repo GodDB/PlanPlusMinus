@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         val vb = ActivityMainBinding.inflate(layoutInflater)
         setContentView(vb.root)
 
-        router = Conductor.attachRouter(this, vb.mainArea, savedInstanceState)
+        router = Conductor.attachRouter(this, vb.main, savedInstanceState)
 
         //todo dagger
 

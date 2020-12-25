@@ -1,28 +1,35 @@
 package com.example.todoplusminus.controllers
 
+import android.app.Activity
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
+import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.AppConfig
-import com.example.todoplusminus.MyTransitionCH
+import com.example.todoplusminus.util.ChangeHandlers.MyTransitionCH
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerPlannerBinding
-import com.example.todoplusminus.databinding.PlanListItemBinding
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.repository.PlannerRepository
 import com.example.todoplusminus.customViews.PMCalendarView
+import com.example.todoplusminus.databinding.ControllerPlannerItemBinding
 import com.example.todoplusminus.util.*
 import com.example.todoplusminus.vm.PlanEditVM
 import com.example.todoplusminus.vm.PlannerViewModel
 import com.example.todoplusminus.vm.PlannerVMFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import kotlin.math.max
 import kotlin.math.min
@@ -67,18 +74,26 @@ class PlannerController : DBControllerBase {
     }
 
     override fun onViewBound(v: View) {
-        Log.d("godgod", "onCreate")
-        binder.subWatch.start()
-        binder.mainWatch.start()
-
         addEvent()
         configureRV()
         onSubscribe()
     }
 
+    override fun onAttach(view: View) {
+        binder.subWatch.start()
+        binder.mainWatch.start()
+
+        planVM.reload()
+
+    }
+
+    override fun onDetach(view: View) {
+        binder.subWatch.stop()
+        binder.mainWatch.stop()
+    }
+
     private fun showPlanEditor(id: String) {
         //todo test
-
         val vm = PlanEditVM(repository!!).apply { setId(id) }
 
         pushController(RouterTransaction.with(
@@ -86,14 +101,13 @@ class PlannerController : DBControllerBase {
         ).apply {
             pushChangeHandler(MyTransitionCH())
             popChangeHandler(MyTransitionCH())
-            retainViewMode = RetainViewMode.RETAIN_DETACH
         })
     }
 
 
     private fun addEvent() {
         binder.calendarView.setDelegate(
-            object : PMCalendarView.Delegate{
+            object : PMCalendarView.Delegate {
                 override fun selectedDate(date: LocalDate) {
                     planVM.changeDate(date)
                 }
@@ -102,8 +116,8 @@ class PlannerController : DBControllerBase {
     }
 
     private fun configureRV() {
-        binder.planList.adapter = PlanListAdapter(planVM)
-        binder.planList.layoutManager = LinearLayoutManager(activity!!)
+        binder.planList.adapter = PlanListAdapter(planVM, this)
+        binder.planList.layoutManager = LinearLayoutManager(binder.rootView.context)
 
         itemTouchHelperCallback =
             ItemTouchHelperCallback(binder.planList.adapter as PlanListAdapter)
@@ -145,6 +159,10 @@ class PlannerController : DBControllerBase {
 
         planVM.targetDate.observe(this, Observer { date ->
             binder.calendarView.setSelectDate(date)
+        })
+
+        planVM.allDatePlanData.observe(this, Observer {
+            Log.d("godgod", "noti")
         })
     }
 
@@ -242,20 +260,20 @@ class PlannerController : DBControllerBase {
                 return false
             }
 
-            private fun onSwipe(direction : String, position: Int){
-                when(direction){
+            private fun onSwipe(direction: String, position: Int) {
+                when (direction) {
                     "right" -> {
-                        if(checkPlusDirectToRight()) planVM.updateCountByIndex(1, position)
+                        if (checkPlusDirectToRight()) planVM.updateCountByIndex(1, position)
                         else planVM.updateCountByIndex(-1, position)
                     }
                     "left" -> {
-                        if(checkPlusDirectToRight()) planVM.updateCountByIndex(-1, position)
+                        if (checkPlusDirectToRight()) planVM.updateCountByIndex(-1, position)
                         else planVM.updateCountByIndex(1, position)
                     }
                 }
             }
 
-            private fun checkPlusDirectToRight() : Boolean =
+            private fun checkPlusDirectToRight(): Boolean =
                 AppConfig.swipeDirectionToRight
 
 
@@ -274,14 +292,16 @@ class PlannerController : DBControllerBase {
  * plan list
  * recyclerView adapter
  * */
-class PlanListAdapter(private val planVM: PlannerViewModel) :
+class PlanListAdapter(
+    private val planVM: PlannerViewModel,
+    private val mLifecycleOwner: LifecycleOwner
+) :
     RecyclerView.Adapter<PlanListAdapter.PlanListVH>(),
     ItemTouchHelperCallback.ItemTouchHelperListener {
 
     private val curDataList = mutableListOf<PlanData>()
-    private var font : Typeface? = null
 
-    private lateinit var binder: PlanListItemBinding
+    private lateinit var binder: ControllerPlannerItemBinding
 
     fun updateDiffItems(newDatalist: List<PlanData>?) {
         if (newDatalist == null) return
@@ -309,10 +329,12 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlanListVH {
         binder = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
-            R.layout.plan_list_item,
+            R.layout.controller_planner_item,
             parent,
             false
         )
+        binder.lifecycleOwner = mLifecycleOwner
+        binder.vm = planVM
         return PlanListVH(binder)
     }
 
@@ -320,7 +342,7 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
 
 
     override fun onBindViewHolder(holder: PlanListVH, position: Int) {
-        holder.bind(planVM)
+        holder.bind()
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
@@ -360,14 +382,12 @@ class PlanListAdapter(private val planVM: PlannerViewModel) :
     }
 
 
-    inner class PlanListVH(private val binder: PlanListItemBinding) :
+    inner class PlanListVH(private val binder: ControllerPlannerItemBinding) :
         RecyclerView.ViewHolder(binder.root) {
 
-        fun bind(planVM: PlannerViewModel) {
-            binder.vm = planVM
+        fun bind() {
             binder.index = adapterPosition
             binder.executePendingBindings()
-
         }
     }
 }

@@ -55,6 +55,10 @@ class SubWatchView : LinearLayout {
         }
     }
 
+    fun stop(){
+        mJob.cancel()
+    }
+
     private fun customInit(){
         vb = UiSubwathviewBinding.inflate(LayoutInflater.from(context), this, true)
     }

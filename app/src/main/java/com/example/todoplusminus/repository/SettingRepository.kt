@@ -4,10 +4,12 @@ import android.graphics.Typeface
 import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.PMCoroutineSpecification
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 
 class SettingRepository(
     private val sharedPrefManager: SharedPrefManager,
     private val fontManager: FontDownloadManager,
+    private val localDataSource : ILocalDataSource,
     private val dispatcher: CoroutineDispatcher = PMCoroutineSpecification.MAIN_DISPATCHER
 ) {
 
@@ -32,6 +34,16 @@ class SettingRepository(
 
     fun setEnableAlarm(wantAlarm: Boolean) {
         sharedPrefManager.setEnableAlarm(wantAlarm)
+    }
+
+    fun setPlanSize(planSize : Int){
+        sharedPrefManager.setPlanSize(planSize)
+    }
+
+    suspend fun onDeleteAllData(){
+        withContext(dispatcher){
+            localDataSource.deleteAllData()
+        }
     }
 
     private fun registerFont(font : Typeface?, fontName : String){

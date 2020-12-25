@@ -1,6 +1,8 @@
 package com.example.todoplusminus.entities
 
 import android.graphics.Color
+import com.example.todoplusminus.R
+import com.example.todoplusminus.util.ColorManager
 import com.example.todoplusminus.util.DateHelper
 import java.time.LocalDate
 import java.util.*
@@ -16,7 +18,7 @@ class PlanData(
 ) {
 
     companion object {
-        const val DEFAULT_BG_COLOR = Color.GRAY
+        const val DEFAULT_BG_COLOR = R.color.dark_gray
         const val EMPTY_ID = "none"
 
         fun create(): PlanData {

@@ -8,15 +8,10 @@
     >
 
     <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
-        android:id="@+id/mainArea"
+        android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="More Fonts..." />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

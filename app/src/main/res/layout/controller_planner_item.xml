@@ -53,6 +53,7 @@
                     app:layout_constraintRight_toLeftOf="@id/item_count"
                     app:layout_constraintTop_toTopOf="parent"
                     bind:font="@{vm.font}"
+                    bind:planSize="@{vm.planSize}"
                     />
 
                 <TextView

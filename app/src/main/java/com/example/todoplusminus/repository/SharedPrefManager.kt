@@ -16,6 +16,7 @@ class SharedPrefManager(private val context: Context) {
         const val SHOW_CALENDAR = "show_calendar"
         const val TEXT_FONT_NAME = "text_font"
         const val ENABLE_ALARM = "enable_alarm"
+        const val PLAN_SIZE = "plan_size"
     }
 
     private var mPreference: SharedPreferences? = null
@@ -63,6 +64,13 @@ class SharedPrefManager(private val context: Context) {
         setValueToAppConfig(TEXT_FONT_NAME, fontName)
     }
 
+    fun setPlanSize(planSize : Int){
+        mEditor?.putInt(PLAN_SIZE, planSize)
+        mEditor?.commit()
+
+        setValueToAppConfig(PLAN_SIZE, planSize)
+    }
+
     fun getAllData() = mPreference?.all
 
     /**
@@ -75,6 +83,7 @@ class SharedPrefManager(private val context: Context) {
             when(dataMap[key]){
                 is String -> setValueToAppConfig(key, dataMap[key] as String)
                 is Boolean -> setValueToAppConfig(key, dataMap[key] as Boolean)
+                is Int -> setValueToAppConfig(key, dataMap[key] as Int)
             }
         }
         Log.d("godgod", "populate")
@@ -95,6 +104,12 @@ class SharedPrefManager(private val context: Context) {
     private fun setValueToAppConfig(key : String, value : String){
         when(key){
             TEXT_FONT_NAME -> AppConfig.fontName = value
+        }
+    }
+
+    private fun setValueToAppConfig(key : String, value : Int){
+        when(key){
+            PLAN_SIZE -> AppConfig.planSize = value
         }
     }
 }

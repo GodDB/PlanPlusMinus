@@ -3,15 +3,19 @@ package com.example.todoplusminus.vm
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.Event
 import com.example.todoplusminus.repository.SettingRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 //todo replace dagger -> repository 접근지정자 변경 public -> private
-class SettingVM(val repository: SettingRepository) {
+class SettingVM(val repository: SettingRepository) : ViewModel() {
 
     companion object {
         private const val TAG_PLAN_RECOMMEND_KEYWORD: Int = 1
@@ -21,39 +25,51 @@ class SettingVM(val repository: SettingRepository) {
         private const val TAG_ALARM_AT_10: Int = 5
         private const val TAG_APP_VERSION: Int = 6
         private const val TAG_PLAN_SIZE: Int = 7
+        private const val TAG_DELETE_ALL_DATA: Int = 8
     }
 
     val showFontSettingEditor: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
-    val showPlanSizeEditor : MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
+    val showPlanSizeEditor: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
+    val showWarningDialog: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
-    val settingDataList: List<Pair<Int, SettingData>>
-        get() {
-            return listOf(
-                Pair(R.string.plan, ValueEmpty()),
-                Pair(R.string.plan_size, ValueString(AppConfig.planSize.toString(), TAG_PLAN_SIZE)),
-                Pair(
-                    R.string.plan_recommendation_keywords,
-                    ValueBoolean(AppConfig.showSuggestedKeyword, TAG_PLAN_RECOMMEND_KEYWORD)
-                ),
-                Pair(
-                    R.string.push_to_the_right,
-                    ValueBoolean(AppConfig.swipeDirectionToRight, TAG_PUSH_TO_THE_RIGHT)
-                ),
-                Pair(R.string.plus_minus, ValueEmpty()),
-                Pair(R.string.font_style, ValueString(AppConfig.fontName, TAG_FONT_STYLE)),
-                Pair(R.string.alarm_at_10pm, ValueBoolean(AppConfig.enableAlarm, TAG_ALARM_AT_10)),
-                Pair(R.string.support, ValueEmpty()),
-                Pair(R.string.official_website, ValueString(tag = 0)),
-                Pair(R.string.faq, ValueString(tag = 0)),
-                Pair(R.string.share_app_with_friends, ValueString(tag = 0)),
-                Pair(R.string.app_info, ValueEmpty()),
-                Pair(R.string.app_version, ValueString(AppConfig.version, TAG_APP_VERSION)),
-                Pair(R.string.empty, ValueEmpty()),
-                Pair(R.string.to_delete_all_data, ValueString(tag = 0)),
-                Pair(R.string.empty, ValueEmpty())
-            )
-        }
+    val settingDataList: MutableLiveData<MutableList<Pair<Int, SettingData>>> = MutableLiveData()
 
+    private val _settingDataList
+        get() = mutableListOf(
+            Pair(R.string.plan, ValueEmpty()),
+            Pair(
+                R.string.plan_size,
+                ValueString(AppConfig.planSize.toString(), TAG_PLAN_SIZE)
+            ),
+            Pair(
+                R.string.plan_recommendation_keywords,
+                ValueBoolean(AppConfig.showSuggestedKeyword, TAG_PLAN_RECOMMEND_KEYWORD)
+            ),
+            Pair(
+                R.string.push_to_the_right,
+                ValueBoolean(AppConfig.swipeDirectionToRight, TAG_PUSH_TO_THE_RIGHT)
+            ),
+            Pair(R.string.plus_minus, ValueEmpty()),
+            Pair(R.string.font_style, ValueString(AppConfig.fontName, TAG_FONT_STYLE)),
+            Pair(
+                R.string.alarm_at_10pm,
+                ValueBoolean(AppConfig.enableAlarm, TAG_ALARM_AT_10)
+            ),
+            Pair(R.string.support, ValueEmpty()),
+            Pair(R.string.official_website, ValueString(tag = 0)),
+            Pair(R.string.faq, ValueString(tag = 0)),
+            Pair(R.string.share_app_with_friends, ValueString(tag = 0)),
+            Pair(R.string.app_info, ValueEmpty()),
+            Pair(R.string.app_version, ValueString(AppConfig.version, TAG_APP_VERSION)),
+            Pair(R.string.empty, ValueEmpty()),
+            Pair(R.string.to_delete_all_data, ValueString(tag = TAG_DELETE_ALL_DATA)),
+            Pair(R.string.empty, ValueEmpty())
+        )
+
+
+    fun reload() {
+        settingDataList.value = _settingDataList
+    }
 
     fun onSwitchEvent(tag: Int, value: Boolean) {
         when (tag) {
@@ -68,14 +84,31 @@ class SettingVM(val repository: SettingRepository) {
         when (tag) {
             TAG_FONT_STYLE -> showFontSettingEditor()
             TAG_PLAN_SIZE -> showPlanSizeEditor()
+            TAG_DELETE_ALL_DATA -> showWarningDialog()
         }
+    }
+
+    fun setPlanSize(value: Int) {
+        repository.setPlanSize(value)
+
+        reload()
+    }
+
+    fun onDeleteAllData() {
+        CoroutineScope(Dispatchers.Main).launch {
+            repository.onDeleteAllData()
+        }
+    }
+
+    private fun showWarningDialog() {
+        this.showWarningDialog.value = Event(true)
     }
 
     private fun showFontSettingEditor() {
         this.showFontSettingEditor.value = Event(true)
     }
 
-    private fun showPlanSizeEditor(){
+    private fun showPlanSizeEditor() {
         this.showPlanSizeEditor.value = Event(true)
     }
 
@@ -94,7 +127,6 @@ class SettingVM(val repository: SettingRepository) {
     private fun onAlarm(value: Boolean) {
         repository.setEnableAlarm(value)
     }
-
 
 }
 

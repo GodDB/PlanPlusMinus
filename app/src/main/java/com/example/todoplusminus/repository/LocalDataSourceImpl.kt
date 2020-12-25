@@ -9,6 +9,7 @@ import com.example.todoplusminus.db.PlannerItemEntity
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
@@ -27,12 +28,16 @@ class LocalDataSourceImpl(val db: PlannerDatabase) : ILocalDataSource {
     override fun getAllPlannerDataById(id: String): Flow<List<PlanData>> =
         db.userPlanDao().getAllPlannerDataById(id)
 
-    override fun getLastestIndex(): Flow<Int> {
+    override fun getLastestIndex(): Flow<Int?> {
         return db.userPlanDao().getLastIndex()
     }
 
 
     override fun getMemoByDate(date: LocalDate): Flow<PlanMemo> = db.userPlanDao().getMemoByDate(date)
+
+    override suspend fun deleteAllData() {
+        db.userPlanDao().deleteAllData()
+    }
 
 
     override suspend fun deletePlannerDataById(id: String) {

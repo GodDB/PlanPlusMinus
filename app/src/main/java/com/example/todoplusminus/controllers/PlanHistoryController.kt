@@ -61,11 +61,7 @@ class PlanHistoryController : DBControllerBase {
         val childRouter = getChildRouter(binder.containerHistoryContents)
 
         //todo test
-        val db = Room.databaseBuilder(
-            applicationContext!!,
-            PlannerDatabase::class.java,
-            "plannerDB.sqlite3"
-        ).createFromAsset("pre_planDB").build()
+        val db = PlannerDatabase.getInstance(applicationContext!!)
         val dataSource = LocalDataSourceImpl(db)
         val sharedManager =
             SharedPrefManager(

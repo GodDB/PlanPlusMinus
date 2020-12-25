@@ -1,6 +1,7 @@
 package com.example.todoplusminus.bindingAdapter
 
 import android.graphics.Typeface
+import android.util.Log
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -26,4 +27,9 @@ fun setFont(v : PMCalendarView, font: Typeface?){
     if(font == null) return
 
     v.setFont(font)
+}
+
+@BindingAdapter("bind:planSize")
+fun setTextSize(v : TextView, size : Int){
+    v.textSize = size.toFloat()
 }

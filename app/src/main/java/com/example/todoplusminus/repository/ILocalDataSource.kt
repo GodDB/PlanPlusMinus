@@ -18,9 +18,11 @@ interface ILocalDataSource {
 
     fun getAllPlannerDataById(id : String) : Flow<List<PlanData>>
 
-    fun getLastestIndex() : Flow<Int>
+    fun getLastestIndex() : Flow<Int?>
 
     fun getMemoByDate(date : LocalDate) : Flow<PlanMemo>
+
+    suspend fun deleteAllData()
 
     suspend fun deletePlannerDataById(id : String)
 

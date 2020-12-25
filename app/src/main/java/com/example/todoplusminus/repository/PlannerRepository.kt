@@ -1,16 +1,14 @@
 package com.example.todoplusminus.repository
 
+import android.util.Log
 import com.example.todoplusminus.PMCoroutineSpecification
 import com.example.todoplusminus.db.PlannerInfoEntity
 import com.example.todoplusminus.db.PlannerItemEntity
 import com.example.todoplusminus.entities.PlanData
 import com.example.todoplusminus.entities.PlanMemo
 import com.example.todoplusminus.entities.PlanProject
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 class PlannerRepository(
@@ -48,9 +46,7 @@ class PlannerRepository(
     }
 
     override fun getAllPlanProject(): Flow<PlanProject> =
-        localSource.getAllPlannerData()
-            .map { PlanProject.create(it) }
-
+        localSource.getAllPlannerData().map { PlanProject.create(it) }
 
     override fun getAllPlanMemo(): Flow<MutableList<PlanMemo>> =
         localSource.getAllPlanMemo()
@@ -62,7 +58,7 @@ class PlannerRepository(
         localSource.getAllPlannerDataById(id)
             .map { PlanProject.create(it) }
 
-    override fun getLastestIndex(): Flow<Int> = localSource.getLastestIndex()
+    override fun getLastestIndex(): Flow<Int?> = localSource.getLastestIndex()
 
     override fun getMemoByDate(date: LocalDate): Flow<PlanMemo> =
         localSource.getMemoByDate(date)

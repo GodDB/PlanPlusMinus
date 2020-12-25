@@ -90,7 +90,9 @@ fun startYMove(viewGroup: ViewGroup, isEdit: Boolean, isShowCalendar: Boolean) {
 
 
 @BindingAdapter(value = ["bind:backgroundColor", "bind:isEdit"], requireAll = true)
-fun setBackgroundColorWhenEditMode(view: CardView, data: PlanData, isEdit: Boolean) {
+fun setBackgroundColorWhenEditMode(view: CardView, data: PlanData?, isEdit: Boolean) {
+    if(data == null) return
+
     if (isEdit)
         view.setCardBackgroundColor(ContextCompat.getColor(view.context, data.bgColor))
     else {
@@ -154,7 +156,6 @@ fun setSlideEvent(v: View, onComplete: () -> Unit) {
 
 @BindingAdapter(value = ["bind:setClickEvent", "bind:dim"], requireAll = true)
 fun setClickEventAndDim(v: View, listener: OnDoneListener, content: String?) {
-    Log.d("godgod", "$content")
     if(content == null ) return
 
     if (content != "") {
@@ -242,8 +243,6 @@ fun setCalendarData(
     val sortedPlanMemoList = planMemoList.sortedBy {
         it.date
     }
-
-    Log.d("godgod", "${dateHelper.getCalendarBy3(calendarRange)}")
 
     dateHelper.getCalendarBy3(calendarRange).forEach { dateList ->
         val calendarList: MutableList<PMCalendarView.CalendarData> = mutableListOf()

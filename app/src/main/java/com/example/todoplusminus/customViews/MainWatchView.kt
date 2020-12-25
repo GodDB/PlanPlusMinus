@@ -27,6 +27,10 @@ class MainWatchView : AppCompatTextView {
         }
     }
 
+    fun stop(){
+        mJob.cancel()
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 

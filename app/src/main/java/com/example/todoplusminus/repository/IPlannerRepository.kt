@@ -19,7 +19,7 @@ interface IPlannerRepository {
 
     fun getPlanProjectById(id: String): Flow<PlanProject>
 
-    fun getLastestIndex(): Flow<Int>
+    fun getLastestIndex(): Flow<Int?>
 
     fun getMemoByDate(date: LocalDate): Flow<PlanMemo>
 

@@ -4,7 +4,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
+import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
@@ -16,8 +19,7 @@ import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.repository.*
 import com.example.todoplusminus.repository.SharedPrefManager
 import com.example.todoplusminus.util.DeviceManager
-import com.example.todoplusminus.vm.PlanHistoryVM
-import com.example.todoplusminus.vm.SettingVM
+import com.example.todoplusminus.vm.*
 
 class MainController : VBControllerBase {
 
@@ -48,11 +50,7 @@ class MainController : VBControllerBase {
         configureBottomMenu()
 
         //todo test
-        val db = Room.databaseBuilder(
-            applicationContext!!,
-            PlannerDatabase::class.java,
-            "plannerDB.sqlite3"
-        ).createFromAsset("pre_planDB").build()
+        val db = PlannerDatabase.getInstance(applicationContext!!)
 
         val dataSource = LocalDataSourceImpl(db)
         val sharedPrefManager =
@@ -65,10 +63,14 @@ class MainController : VBControllerBase {
         childRouter = getChildRouter(binder.mainArea)
         pushControllerByTag(
             childRouter,
-            RouterTransaction.with(PlannerController(plannerRepository!!, plannerDelegate)).apply {
+            RouterTransaction.with(
+                PlannerController(
+                    plannerRepository!!,
+                    plannerDelegate
+                ).apply { retainViewMode = RetainViewMode.RETAIN_DETACH }).apply {
                 tag(PlannerController.TAG)
                 SimpleSwapChangeHandler()
-                SimpleSwapChangeHandler(false)
+                SimpleSwapChangeHandler()
             },
             PlannerController.TAG
         )
@@ -81,38 +83,49 @@ class MainController : VBControllerBase {
             when (it.itemId) {
                 R.id.plannerItem -> pushControllerByTag(
                     childRouter,
-                    RouterTransaction.with(PlannerController(plannerRepository!!, plannerDelegate))
+                    RouterTransaction.with(
+                        PlannerController(
+                            plannerRepository!!,
+                            plannerDelegate
+                        ).apply { retainViewMode = RetainViewMode.RETAIN_DETACH })
                         .apply {
                             tag(PlannerController.TAG)
-                            SimpleSwapChangeHandler(false)
-                            SimpleSwapChangeHandler(false)
+                            SimpleSwapChangeHandler()
+                            SimpleSwapChangeHandler()
                         },
                     PlannerController.TAG
                 )
                 R.id.trackerItem -> pushControllerByTag(
                     childRouter,
-                    RouterTransaction.with(TrackerController()).apply {
+                    RouterTransaction.with(TrackerController().apply {
+                        retainViewMode = RetainViewMode.RETAIN_DETACH
+                    }).apply {
                         tag(TrackerController.TAG)
-                        SimpleSwapChangeHandler(false)
-                        SimpleSwapChangeHandler(false)
+                        SimpleSwapChangeHandler()
+                        SimpleSwapChangeHandler()
                     },
                     TrackerController.TAG
                 )
                 R.id.settingItem -> {
+
                     //todo replace dagger
+                    val db = PlannerDatabase.getInstance(applicationContext!!)
+
+                    val dataSource = LocalDataSourceImpl(db)
                     val sharedPrefManager =
                         SharedPrefManager(
                             applicationContext!!
                         )
                     val fontManager = FontDownloadManager(applicationContext!!)
-                    val settingRepo = SettingRepository(sharedPrefManager, fontManager)
-                    val settingVM = SettingVM(settingRepo)
+                    val settingRepo = SettingRepository(sharedPrefManager, fontManager, dataSource)
 
                     pushControllerByTag(
                         childRouter,
-                        RouterTransaction.with(SettingController(settingVM)).apply {
+                        RouterTransaction.with(SettingController(settingRepo).apply {
+                            retainViewMode = RetainViewMode.RETAIN_DETACH
+                        }).apply {
                             tag(SettingController.TAG)
-                            SimpleSwapChangeHandler(false)
+                            SimpleSwapChangeHandler()
                             SimpleSwapChangeHandler()
                         },
                         SettingController.TAG
