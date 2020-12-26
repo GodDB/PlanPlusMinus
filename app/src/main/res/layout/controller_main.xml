@@ -25,6 +25,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/menu_bottomnavigation"
         android:background="@color/white"
+        app:itemIconTint="@drawable/bottom_icon_color"
         app:labelVisibilityMode="unlabeled"
         />
 

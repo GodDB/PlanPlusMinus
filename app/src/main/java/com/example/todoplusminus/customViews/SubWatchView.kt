@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.AnimationDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.LinearLayout
 import com.example.todoplusminus.databinding.UiSubwathviewBinding
 import com.example.todoplusminus.util.DateHelper
@@ -31,6 +32,14 @@ class SubWatchView : LinearLayout {
         customInit()
     }
 
+
+    override fun setVisibility(visibility: Int) {
+        super.setVisibility(visibility)
+
+        if(visibility == View.GONE) return stop()
+        if(visibility == View.VISIBLE) return start()
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
@@ -45,6 +54,7 @@ class SubWatchView : LinearLayout {
     }
 
     fun start() {
+        stop()
         (vb.clockIv.background as AnimationDrawable).start()
 
         CoroutineScope(Dispatchers.Main + mJob).launch {
@@ -56,7 +66,10 @@ class SubWatchView : LinearLayout {
     }
 
     fun stop(){
+        (vb.clockIv.background as AnimationDrawable).stop()
+
         mJob.cancel()
+        mJob = Job()
     }
 
     private fun customInit(){

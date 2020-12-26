@@ -23,6 +23,8 @@ interface IPlannerRepository {
 
     fun getMemoByDate(date: LocalDate): Flow<PlanMemo>
 
+    suspend fun deleteMemoByDate(date : LocalDate)
+
     suspend fun deletePlannerDataById(id: String)
 
     suspend fun insertPlannerData(planData: PlanData)

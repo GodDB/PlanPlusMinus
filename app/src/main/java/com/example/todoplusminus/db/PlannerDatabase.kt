@@ -70,7 +70,10 @@ interface UserPlanDao {
 
     //planInfo는 planItem의 fk관계여서 planItem삭제시 planInfo도 삭제된다.
     @Query("delete from planneritem")
-    suspend fun deleteAllData()
+    suspend fun deleteAllPlanItem()
+    
+    @Query("delete from PlannerMemo")
+    suspend fun deleteAllPlanMemo()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlanItem(item: PlannerItemEntity)
@@ -91,6 +94,9 @@ interface UserPlanDao {
     @Delete
     suspend fun deletePlanItem(item: PlannerItemEntity)
 
+    @Query("delete from PlannerMemo where date == :date")
+    suspend fun deletePlanMemoByData(date : LocalDate)
+    
     @Delete
     suspend fun deletePlanInfo(item: PlannerInfoEntity)
 
@@ -100,11 +106,7 @@ interface UserPlanDao {
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid order by item.`index` desc")
     fun getAllPlannerData(): Flow<MutableList<PlanData>>
 
-    /*
-
-        @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid and info.date == :date order by item.`index` desc")
-        fun getAllPlannerDataByDate(date : String) : LiveData<MutableList<PlanData>>
-    */
+    
     @Query("select * from PlannerItem item left outer join PlannerInfo info on item.id = info.planId where date = :date order by item.`index` desc")
     fun getAllPlannerDataByDate(date: LocalDate): Flow<MutableList<PlanData>>
 

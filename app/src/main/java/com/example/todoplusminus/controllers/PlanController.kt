@@ -1,6 +1,7 @@
 package com.example.todoplusminus.controllers
 
 import android.app.Activity
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
@@ -30,6 +31,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import nl.dionsegijn.konfetti.models.Shape
+import nl.dionsegijn.konfetti.models.Size
 import java.time.LocalDate
 import kotlin.math.max
 import kotlin.math.min
@@ -161,14 +164,44 @@ class PlannerController : DBControllerBase {
             binder.calendarView.setSelectDate(date)
         })
 
-        planVM.allDatePlanData.observe(this, Observer {
-            Log.d("godgod", "noti")
+        planVM.showFirecrackerAnim.observe(this, Observer { event ->
+            event.getContentIfNotHandled()?.let { show ->
+                if (show) showFirecrackerAnim()
+            }
         })
     }
 
     private fun planListScrollMoveTo(index: Int) {
         binder.planList.scrollToPosition(index)
     }
+
+    private fun showFirecrackerAnim() {
+        val fireCrackerView = binder.firecrackerAnim
+
+        fireCrackerView.build()
+            .addColors(
+                getColor(R.color.lt_yellow),
+                getColor(R.color.lt_orange),
+                getColor(R.color.lt_pink),
+                getColor(R.color.dk_cyan),
+                getColor(R.color.dk_green)
+            )
+            .setDirection(0.0, 359.0)
+            .setSpeed(0f, 10f)
+            .setFadeOutEnabled(true)
+            .setTimeToLive(500L)
+            .addShapes(Shape.RECT, Shape.CIRCLE)
+            .addSizes(Size(12, 5F))
+            .setPosition(
+                fireCrackerView.x + fireCrackerView.width / 2,
+                fireCrackerView.y + fireCrackerView.height / 5
+            )
+            .burst(150)
+    }
+
+    private fun getColor(colorId: Int) =
+        binder.rootView.context.getColor(colorId)
+
 
     /**
      * 리사이클러뷰의 swipe 이벤트를 담당하는 object

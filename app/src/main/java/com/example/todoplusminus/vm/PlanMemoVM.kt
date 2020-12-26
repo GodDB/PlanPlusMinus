@@ -31,19 +31,31 @@ class PlanMemoVM(
             return field
         }
 
-    var wantEditorClose
+    val wantEditorClose
             : MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
+
+    val showWarningDeleteDialog : MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
 
     fun onDone() {
         CoroutineScope(Dispatchers.Main).launch {
             repository.insertPlanMemo(memoData.value!!)
+            onCloseEditor()
         }
-        onCloseEditor()
     }
 
     fun onCancel() {
         onCloseEditor()
+    }
+
+    fun onDelete(){
+        CoroutineScope(Dispatchers.Main).launch {
+            repository.deleteMemoByDate(targetDate)
+        }
+    }
+
+    fun showWarningDialog(){
+        this.showWarningDeleteDialog.value = Event(true)
     }
 
     private fun onCloseEditor() {

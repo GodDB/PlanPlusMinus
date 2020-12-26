@@ -1,6 +1,5 @@
 package com.example.todoplusminus.repository
 
-import android.util.Log
 import com.example.todoplusminus.PMCoroutineSpecification
 import com.example.todoplusminus.db.PlannerInfoEntity
 import com.example.todoplusminus.db.PlannerItemEntity
@@ -62,6 +61,12 @@ class PlannerRepository(
 
     override fun getMemoByDate(date: LocalDate): Flow<PlanMemo> =
         localSource.getMemoByDate(date)
+
+    override suspend fun deleteMemoByDate(date: LocalDate) {
+        withContext(dispatcher){
+            localSource.deleteMemoByDate(date)
+        }
+    }
 
     override suspend fun deletePlannerDataById(id: String) {
         localSource.deletePlannerDataById(id)

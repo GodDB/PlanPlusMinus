@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
+import com.bluelinelabs.conductor.RouterTransaction
+import com.example.todoplusminus.R
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerPlanMemoBinding
 import com.example.todoplusminus.repository.PlannerRepository
@@ -55,6 +57,30 @@ class PlanMemoController : DBControllerBase {
                 }
             }
         })
+
+        mVM?.showWarningDeleteDialog?.observe(this, Observer { event ->
+            event.getContentIfNotHandled()?.let { show ->
+                if(show) showWarningDialog()
+            }
+        })
+    }
+
+    private fun showWarningDialog() {
+        val title = binder.rootView.context.getString(R.string.delete_memo_text)
+        val dialog = CommonDialogController(
+            titleText = title,
+            delegate = object : CommonDialogController.Delegate {
+                override fun onComplete() {
+                    mVM?.onDelete()
+                    popCurrentController()
+                }
+
+                override fun onCancel() {
+                    popCurrentController()
+                }
+            })
+
+        this.pushController(RouterTransaction.with(dialog))
     }
 
     private fun hideKeypad() {

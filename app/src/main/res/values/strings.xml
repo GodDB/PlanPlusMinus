@@ -40,6 +40,10 @@
     <string name="to_delete_all_data">To delete all data</string>
     <string name="plan_size">Plan size</string>
     <string name="empty" translatable="false"></string>
+    <string name="the_plan_is_empty">The plan is Empty :(</string>
+    <string name="tap_the_button_in_the_top_right_to_add_a_plan">Tap the ± button in the top right to add a plan</string>
+    <string name="delete_memo_text">Are you sure you want to delete the recorded note?</string>
+
 
     <string name="monday">Mon</string>
     <string name="tuesday">Tue</string>

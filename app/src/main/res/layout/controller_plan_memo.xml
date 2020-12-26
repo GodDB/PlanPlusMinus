@@ -5,6 +5,7 @@
     xmlns:bind="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.example.todoplusminus.vm.PlanMemoVM" />
@@ -12,8 +13,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <com.example.todoplusminus.customViews.BackgroundView
             android:layout_width="match_parent"
@@ -25,50 +25,47 @@
             android:id="@+id/root_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:background="@drawable/card_view_border"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@drawable/card_view_border"
-            bind:setSlideEvent="@{() -> vm.onCancel()}"
-            >
+            bind:setSlideEvent="@{() -> vm.onCancel()}">
 
             <View
                 android:layout_width="40dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="3dp"
+                android:background="@color/right_gray"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/root_view"
-                android:background="@color/right_gray"
-                />
+                app:layout_constraintTop_toTopOf="@id/root_view" />
+
             <View
                 android:layout_width="40dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="6dp"
+                android:background="@color/right_gray"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/root_view"
-                android:background="@color/right_gray"
-                />
+                app:layout_constraintTop_toTopOf="@id/root_view" />
+
             <View
                 android:layout_width="40dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="9dp"
+                android:background="@color/right_gray"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/root_view"
-                android:background="@color/right_gray"
-                />
+                app:layout_constraintTop_toTopOf="@id/root_view" />
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
+                android:background="@color/dark_gray"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/guide_title_bottom"
-                android:background="@color/dark_gray"
-                />
+                app:layout_constraintTop_toTopOf="@id/guide_title_bottom" />
 
             <ImageView
                 android:id="@+id/btn_cancel"
@@ -85,14 +82,29 @@
                 android:id="@+id/memo_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
                 android:text="@string/today_memo"
+                android:textColor="@color/black"
                 android:textSize="18sp"
-
                 app:layout_constraintBottom_toBottomOf="@id/guide_title_bottom"
+                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/btn_delete"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btn_delete"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="5dp"
+                android:src="@drawable/delete"
+                app:layout_constraintBottom_toBottomOf="@id/guide_title_bottom"
+                app:layout_constraintLeft_toRightOf="@id/memo_date"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:alpha="0.6"
+                android:onClick="@{() -> vm.showWarningDialog()}"
+                />
+
 
             <ImageView
                 android:id="@+id/btn_done"
@@ -103,18 +115,17 @@
                 app:layout_constraintBottom_toBottomOf="@id/guide_title_bottom"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                bind:setClickEvent="@{vm.onDoneListener}"
                 bind:dim="@{vm.memoData.contents}"
-                />
+                bind:setClickEvent="@{vm.onDoneListener}" />
 
             <EditText
                 android:id="@+id/memo_content_tv"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:text="@={vm.memoData.contents}"
                 android:layout_margin="20dp"
                 android:gravity="left"
                 android:hint="@string/please_write_here"
+                android:text="@={vm.memoData.contents}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

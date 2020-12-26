@@ -78,6 +78,7 @@ class PlannerViewModel(
 
     val showCalendar: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
+    val showFirecrackerAnim : MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
     fun reload(){
         font.value = AppConfig.font
@@ -135,6 +136,8 @@ class PlannerViewModel(
         targetDatePlanProject.value?.increasePlanDataCountByIndex(count, index)
         updateByIndex(index)
 
+        //animation
+        if(count>0) showFirecrackerAnim()
     }
 
     fun showMemo() {
@@ -154,6 +157,10 @@ class PlannerViewModel(
 
     fun changeDate(date: LocalDate) {
         _targetDate.value = date
+    }
+
+    private fun showFirecrackerAnim(){
+        this.showFirecrackerAnim.value = Event(true)
     }
 
     private fun updateAll() {

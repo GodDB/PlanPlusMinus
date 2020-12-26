@@ -12,9 +12,11 @@
         android:layout_height="match_parent">
 
         <ImageView
+            android:id="@+id/tracker_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_baseline_monochrome_photos_24"
+            android:src="@drawable/bg_tracker"
+            android:scaleType="fitXY"
             />
 
 

@@ -60,7 +60,7 @@ class RulerView : FrameLayout {
 
         if(index == -1) return
 
-        binder.rulerView.smoothScrollToPosition(index)
+        binder.rulerList.smoothScrollToPosition(index)
     }
 
     private fun customInit(context: Context) {
@@ -70,12 +70,12 @@ class RulerView : FrameLayout {
     }
 
     private fun initRV() {
-        binder.rulerView.adapter = RulerViewAdaper()
-        binder.rulerView.layoutManager =
+        binder.rulerList.adapter = RulerViewAdaper()
+        binder.rulerList.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         val snapManager = PagerSnapManager()
-        snapManager.attachToRvAndListener(binder.rulerView, object : PagerSnapManager.SnapChangeListener{
+        snapManager.attachToRvAndListener(binder.rulerList, object : PagerSnapManager.SnapChangeListener{
             override fun onPositionChanging(position: Int) {
                 if(position != RecyclerView.NO_POSITION) listener?.onRulerChanging(mRulerData!![position])
                 VibrateHelper.start()
@@ -92,7 +92,7 @@ class RulerView : FrameLayout {
                 binder.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                 val padding = binder.indicator.x.toInt()
-                binder.rulerView.setPadding(padding, 0, padding, 0)
+                binder.rulerList.setPadding(padding, 0, padding, 0)
             }
         })
     }
@@ -106,7 +106,7 @@ class RulerView : FrameLayout {
 
 
     private fun setRulerDataToAdapter(list: List<Int>) {
-        (binder.rulerView.adapter as? RulerViewAdaper)?.setRulerRange(list)
+        (binder.rulerList.adapter as? RulerViewAdaper)?.setRulerRange(list)
     }
 }
 

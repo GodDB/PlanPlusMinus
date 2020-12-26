@@ -7,6 +7,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -44,6 +45,24 @@ fun items(rv: RecyclerView, dataList: List<PlanData>?, isEdit: Boolean) {
             (rv.adapter as? PlanListAdapter)?.updateDiffItems(it)
         }
     }
+}
+
+@BindingAdapter(value = ["bind:itemSize", "bind:isEdit"], requireAll = true)
+fun showGuideTextWhenEmpty(tv : TextView, itemSize : Int?, isEdit: Boolean?){
+    val itemSize = itemSize ?: 0
+    val isEdit = isEdit ?: false
+
+    if(itemSize == 0 && !isEdit) tv.visibility = View.VISIBLE
+    else tv.visibility = View.GONE
+}
+
+@BindingAdapter(value = ["bind:memoData", "bind:isEdit"], requireAll = true)
+fun showMemoText(tv : TextView, memo: PlanMemo?, isEdit: Boolean?){
+    val isEdit = isEdit ?: false
+
+    if(isEdit) tv.visibility = View.GONE
+    else if(!isEdit && memo == null) tv.visibility = View.GONE
+    else if(!isEdit && memo != null) tv.visibility = View.VISIBLE
 }
 
 @BindingAdapter("bind:editMode")

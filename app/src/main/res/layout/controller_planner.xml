@@ -21,6 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <nl.dionsegijn.konfetti.KonfettiView
+            android:id="@+id/firecracker_Anim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
         <com.example.todoplusminus.customViews.SquaredPaperView
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -184,7 +189,8 @@
                 app:layout_constraintLeft_toLeftOf="@id/guide_memo_left"
                 app:layout_constraintRight_toRightOf="@id/guide_memo_right"
                 app:layout_constraintTop_toTopOf="parent"
-                bind:editMode="@{!vm.isEditMode().booleanValue()}"
+                bind:isEdit="@{vm.isEditMode().booleanValue()}"
+                bind:memoData="@{vm.targetDatePlanMemo}"
                 bind:font="@{vm.font}"
                 />
 
@@ -198,6 +204,39 @@
                 app:layout_constraintTop_toBottomOf="@id/memo_view"
                 bind:isEdit="@{vm.isEditMode().booleanValue()}"
                 bind:items="@{vm.targetDatePlanProject.planDataList}" />
+
+            <TextView
+                android:id="@+id/empty_tv1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/empty_tv2"
+                android:text="@string/the_plan_is_empty"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:gravity="center"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintVertical_bias="0.4"
+                bind:itemSize="@{vm.allDatePlanData.size()}"
+                bind:isEdit="@{vm.isEditMode().booleanValue()}"
+                />
+            <TextView
+                android:id="@+id/empty_tv2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/empty_tv1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="@string/tap_the_button_in_the_top_right_to_add_a_plan"
+                android:textSize="12sp"
+                android:gravity="center"
+                bind:itemSize="@{vm.allDatePlanData.size()}"
+                bind:isEdit="@{vm.isEditMode().booleanValue()}"
+                />
+
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guide_memo_left"

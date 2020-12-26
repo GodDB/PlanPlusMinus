@@ -49,6 +49,26 @@ class MainController : VBControllerBase {
     private fun configureUI() {
         configureBottomMenu()
 
+        childRouter = getChildRouter(binder.mainArea)
+        showMainPlannerEditor()
+    }
+
+
+    private fun configureBottomMenu() {
+        binder.bottomMenu.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.plannerItem -> showMainPlannerEditor()
+                R.id.trackerItem -> showTrackerEditor()
+                R.id.settingItem -> showSettingEditor()
+            }
+            true
+        }
+        binder.bottomMenu.setOnNavigationItemReselectedListener {
+            false
+        }
+    }
+
+    private fun showMainPlannerEditor(){
         //todo test
         val db = PlannerDatabase.getInstance(applicationContext!!)
 
@@ -59,81 +79,59 @@ class MainController : VBControllerBase {
             )
         plannerRepository = PlannerRepository(dataSource, sharedPrefManager)
 
-
-        childRouter = getChildRouter(binder.mainArea)
         pushControllerByTag(
             childRouter,
             RouterTransaction.with(
                 PlannerController(
                     plannerRepository!!,
                     plannerDelegate
-                ).apply { retainViewMode = RetainViewMode.RETAIN_DETACH }).apply {
-                tag(PlannerController.TAG)
+                ).apply { retainViewMode = RetainViewMode.RETAIN_DETACH })
+                .apply {
+                    tag(PlannerController.TAG)
+                    SimpleSwapChangeHandler()
+                    SimpleSwapChangeHandler()
+                },
+            PlannerController.TAG
+        )
+    }
+
+    private fun showTrackerEditor(){
+        pushControllerByTag(
+            childRouter,
+            RouterTransaction.with(TrackerController().apply {
+                retainViewMode = RetainViewMode.RETAIN_DETACH
+            }).apply {
+                tag(TrackerController.TAG)
                 SimpleSwapChangeHandler()
                 SimpleSwapChangeHandler()
             },
-            PlannerController.TAG
+            TrackerController.TAG
         )
-
     }
 
+    private fun showSettingEditor(){
+        //todo replace dagger
+        val db = PlannerDatabase.getInstance(applicationContext!!)
 
-    private fun configureBottomMenu() {
-        binder.bottomMenu.setOnNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.plannerItem -> pushControllerByTag(
-                    childRouter,
-                    RouterTransaction.with(
-                        PlannerController(
-                            plannerRepository!!,
-                            plannerDelegate
-                        ).apply { retainViewMode = RetainViewMode.RETAIN_DETACH })
-                        .apply {
-                            tag(PlannerController.TAG)
-                            SimpleSwapChangeHandler()
-                            SimpleSwapChangeHandler()
-                        },
-                    PlannerController.TAG
-                )
-                R.id.trackerItem -> pushControllerByTag(
-                    childRouter,
-                    RouterTransaction.with(TrackerController().apply {
-                        retainViewMode = RetainViewMode.RETAIN_DETACH
-                    }).apply {
-                        tag(TrackerController.TAG)
-                        SimpleSwapChangeHandler()
-                        SimpleSwapChangeHandler()
-                    },
-                    TrackerController.TAG
-                )
-                R.id.settingItem -> {
+        val dataSource = LocalDataSourceImpl(db)
+        val sharedPrefManager =
+            SharedPrefManager(
+                applicationContext!!
+            )
+        val fontManager = FontDownloadManager(applicationContext!!)
+        val settingRepo = SettingRepository(sharedPrefManager, fontManager, dataSource)
 
-                    //todo replace dagger
-                    val db = PlannerDatabase.getInstance(applicationContext!!)
-
-                    val dataSource = LocalDataSourceImpl(db)
-                    val sharedPrefManager =
-                        SharedPrefManager(
-                            applicationContext!!
-                        )
-                    val fontManager = FontDownloadManager(applicationContext!!)
-                    val settingRepo = SettingRepository(sharedPrefManager, fontManager, dataSource)
-
-                    pushControllerByTag(
-                        childRouter,
-                        RouterTransaction.with(SettingController(settingRepo).apply {
-                            retainViewMode = RetainViewMode.RETAIN_DETACH
-                        }).apply {
-                            tag(SettingController.TAG)
-                            SimpleSwapChangeHandler()
-                            SimpleSwapChangeHandler()
-                        },
-                        SettingController.TAG
-                    )
-                }
-            }
-            true
-        }
+        pushControllerByTag(
+            childRouter,
+            RouterTransaction.with(SettingController(settingRepo).apply {
+                retainViewMode = RetainViewMode.RETAIN_DETACH
+            }).apply {
+                tag(SettingController.TAG)
+                SimpleSwapChangeHandler()
+                SimpleSwapChangeHandler()
+            },
+            SettingController.TAG
+        )
     }
 
 

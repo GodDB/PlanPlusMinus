@@ -22,6 +22,8 @@ interface ILocalDataSource {
 
     fun getMemoByDate(date : LocalDate) : Flow<PlanMemo>
 
+    suspend fun deleteMemoByDate(data : LocalDate)
+
     suspend fun deleteAllData()
 
     suspend fun deletePlannerDataById(id : String)
