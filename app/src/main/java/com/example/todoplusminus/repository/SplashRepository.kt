@@ -1,4 +1,4 @@
-package com.example.todoplusminus.vm
+package com.example.todoplusminus.repository
 
 import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.repository.FontDownloadManager

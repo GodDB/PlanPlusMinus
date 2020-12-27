@@ -48,19 +48,20 @@ class PlannerVM {
     }
 
 
-    @Before
+ /*   @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
         runBlocking {
             Mockito.`when`(repository.getAllPlanDataByDate(LocalDate.now())).thenReturn(
-                MutableLiveData(
+               MutableLiveData(
                     mutableListOf(
                         targetPlanData1,
                         targetPlanData2,
                         targetPlanData3
                     )
                 )
+
             )
 
             Mockito.`when`(repository.refreshPlannerData(LocalDate.now())).thenReturn(Unit)
@@ -73,7 +74,7 @@ class PlannerVM {
             //plan project에 대해서 옵저빙을 실시한다.
             planVM.targetDatePlanProject.getOrAwaitValue()
         }
-    }
+    }*/
 
     @Test
     fun test_onItemDelete(){

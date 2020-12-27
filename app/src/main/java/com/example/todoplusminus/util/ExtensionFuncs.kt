@@ -1,5 +1,6 @@
 package com.example.todoplusminus.util
 
+import android.util.Log
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,8 +33,8 @@ fun LocalDate.compareUntilWeek(target: LocalDate): Int {
 
     return when{
         this.compareUntilMonth(target) == 0 -> {
-            val thisWeekOfMonth = this.get(WeekFields.of(Locale.FRANCE).weekOfMonth()) // 프랑스는 1주를 월~일이다.
-            val targetWeekOfMonth = target.get(WeekFields.of(Locale.FRANCE).weekOfMonth())
+            val thisWeekOfMonth = this.get(WeekFields.ISO.weekOfMonth())
+            val targetWeekOfMonth = target.get(WeekFields.ISO.weekOfMonth())
             when{
                 thisWeekOfMonth == targetWeekOfMonth -> 0
                 thisWeekOfMonth > targetWeekOfMonth -> 1
@@ -67,8 +68,21 @@ fun LocalDate.compareUntilYear(target: LocalDate): Int {
     }
 }
 
+fun LocalDate.customPlusWeeks(value : Long) : LocalDate{
+    var date = this.plusWeeks(value)
+    //연말 전주에서 1주를 더했을 때 해가 변경된다면 2주가 더해지는 격이다. 그걸 방지하고자 만듬
+    if(this.year != date.year){
+        val endYear = LocalDate.of(this.year, 12, 31)
+        val beforeEndYearOfWeek = endYear.get(WeekFields.ISO.weekOfYear()) -1
+        //케이스는 2개가 존재,
+        // 연말 전주인데, 1주를 더한다면 해가 넘어감 -> 즉 해가 넘어가지 않고 연말 마지막날로 변경
+        // 연말이라서 1주를 더하면 해가 넘어감 -> 그대로 진행
+        date = if(beforeEndYearOfWeek == this.get(WeekFields.ISO.weekOfYear())) this.withDayOfMonth(31)
+        else this.plusWeeks(1)
+    }
+
+    return date
+}
+
 // ---------------------------------------------------------------------------------
 
-fun CardView.setColorById(id : Int){
-    this.setCardBackgroundColor(this.context.getColor(id))
-}

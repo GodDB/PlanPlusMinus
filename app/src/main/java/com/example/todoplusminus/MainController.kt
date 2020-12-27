@@ -96,9 +96,14 @@ class MainController : VBControllerBase {
     }
 
     private fun showTrackerEditor(){
+        val db = PlannerDatabase.getInstance(applicationContext!!)
+        val dataSource = LocalDataSourceImpl(db)
+        val trackerRepo = TrackerRepository(dataSource)
+        val trackerVM = TrackerVM(trackerRepo)
+
         pushControllerByTag(
             childRouter,
-            RouterTransaction.with(TrackerController().apply {
+            RouterTransaction.with(TrackerController(trackerVM).apply {
                 retainViewMode = RetainViewMode.RETAIN_DETACH
             }).apply {
                 tag(TrackerController.TAG)

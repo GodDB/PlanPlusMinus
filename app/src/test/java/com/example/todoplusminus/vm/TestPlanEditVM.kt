@@ -40,7 +40,7 @@ class TestPlanEditVM {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
 
-        planEditVM = PlanEditVM(repository, PMCoroutineSpecification.MAIN_DISPATCHER)
+        planEditVM = PlanEditVM(repository)
     }
     @Test
     fun test_setData_notEmptyId() {

@@ -59,7 +59,7 @@ class DateHelper {
             val dayList = listOf("월", "화", "수", "목", "금", "토", "일")
 
             dayOfWeekList.add(dayList)
-            startDate = startDate.plusWeeks(1)
+            startDate = startDate.customPlusWeeks(1)
         }
 
         return dayOfWeekList
@@ -124,7 +124,7 @@ class DateHelper {
             val weekRange = getWeekDayRangeBy(startDate)
 
             weekRangeList.add(weekRange)
-            startDate = startDate.plusWeeks(1)
+            startDate = startDate.customPlusWeeks(1)
         }
 
         return weekRangeList

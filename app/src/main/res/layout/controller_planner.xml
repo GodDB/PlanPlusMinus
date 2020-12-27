@@ -24,7 +24,7 @@
         <nl.dionsegijn.konfetti.KonfettiView
             android:id="@+id/firecracker_Anim"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <com.example.todoplusminus.customViews.SquaredPaperView
             android:layout_width="0dp"
@@ -43,9 +43,8 @@
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintTop_toTopOf="@id/guide_top"
             bind:editMode1="@{vm.isEditMode().booleanValue()}"
-            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}"
             bind:font="@{vm.font}"
-            />
+            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}" />
 
         <com.example.todoplusminus.customViews.PMCalendarView
             android:id="@+id/calendarView"
@@ -57,11 +56,10 @@
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_top"
             bind:editMode1="@{vm.isEditMode().booleanValue()}"
+            bind:font="@{vm.font}"
             bind:setCalendarData1="@{vm.allDatePlanData}"
             bind:setCalendarData2="@{vm.allDatePlanMemo}"
-            bind:showCalendar="@{vm.showCalendar.contentIfNotHandled}"
-            bind:font="@{vm.font}"
-            />
+            bind:showCalendar="@{vm.showCalendar.contentIfNotHandled}" />
 
         <TextView
             android:id="@+id/edit_title"
@@ -76,8 +74,7 @@
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintTop_toTopOf="@id/guide_top"
             bind:editMode="@{vm.isEditMode().booleanValue()}"
-            bind:font="@{vm.font}"
-            />
+            bind:font="@{vm.font}" />
 
         <ImageView
             android:id="@+id/btn_calendar"
@@ -126,8 +123,7 @@
             android:visibility="gone"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_top"
-            bind:editMode="@{vm.isEditMode().booleanValue()}"
-            />
+            bind:editMode="@{vm.isEditMode().booleanValue()}" />
 
         <com.example.todoplusminus.customViews.SubWatchView
             android:id="@+id/sub_watch"
@@ -136,9 +132,8 @@
             android:layout_marginTop="50dp"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toBottomOf="@id/guide_top"
-            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}"
             bind:font="@{vm.font}"
-            />
+            bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}" />
 
 
         <androidx.cardview.widget.CardView
@@ -179,9 +174,10 @@
             <TextView
                 android:id="@+id/memo_view"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:maxHeight="100dp"
+                android:ellipsize="end"
+                android:maxLines="3"
                 android:onClick="@{() -> vm.showMemo()}"
                 android:padding="5dp"
                 android:text="@{vm.targetDatePlanMemo.contents}"
@@ -189,10 +185,9 @@
                 app:layout_constraintLeft_toLeftOf="@id/guide_memo_left"
                 app:layout_constraintRight_toRightOf="@id/guide_memo_right"
                 app:layout_constraintTop_toTopOf="parent"
-                bind:isEdit="@{vm.isEditMode().booleanValue()}"
-                bind:memoData="@{vm.targetDatePlanMemo}"
                 bind:font="@{vm.font}"
-                />
+                bind:isEdit="@{vm.isEditMode().booleanValue()}"
+                bind:memoData="@{vm.targetDatePlanMemo}" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/plan_list"
@@ -209,33 +204,32 @@
                 android:id="@+id/empty_tv1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/empty_tv2"
+                android:gravity="center"
                 android:text="@string/the_plan_is_empty"
                 android:textColor="@color/black"
                 android:textSize="14sp"
-                android:gravity="center"
-                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintBottom_toTopOf="@id/empty_tv2"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.4"
-                bind:itemSize="@{vm.allDatePlanData.size()}"
+                app:layout_constraintVertical_chainStyle="packed"
                 bind:isEdit="@{vm.isEditMode().booleanValue()}"
-                />
+                bind:itemSize="@{vm.allDatePlanData.size()}" />
+
             <TextView
                 android:id="@+id/empty_tv2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/tap_the_button_in_the_top_right_to_add_a_plan"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/empty_tv1"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:text="@string/tap_the_button_in_the_top_right_to_add_a_plan"
-                android:textSize="12sp"
-                android:gravity="center"
-                bind:itemSize="@{vm.allDatePlanData.size()}"
                 bind:isEdit="@{vm.isEditMode().booleanValue()}"
-                />
+                bind:itemSize="@{vm.allDatePlanData.size()}" />
 
 
             <androidx.constraintlayout.widget.Guideline

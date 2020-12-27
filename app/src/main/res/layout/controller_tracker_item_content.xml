@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/content_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="@font/averia_gruesa_libre"
+        android:gravity="end"
+        android:maxLines="1"
+        android:textColor="@color/dark_gray"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@id/monday_box"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/guide_title"
+        app:layout_constraintTop_toTopOf="@id/monday_box" />
+
+    <View
+        android:id="@+id/monday_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/border_line_rggray"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toRightOf="@id/guide_content"
+        app:layout_constraintRight_toLeftOf="@id/tuesday_box"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/monday_check"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="3dp"
+        app:cardBackgroundColor="@color/dark_gray"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/monday_box"
+        app:layout_constraintLeft_toLeftOf="@id/monday_box"
+        app:layout_constraintRight_toRightOf="@id/monday_box"
+        app:layout_constraintTop_toTopOf="@id/monday_box" />
+
+    <View
+        android:id="@+id/tuesday_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/border_line_rggray"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toRightOf="@id/monday_box"
+        app:layout_constraintRight_toLeftOf="@id/wednesday_box"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/tuesday_check"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="3dp"
+        app:cardBackgroundColor="@color/dark_gray"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/tuesday_box"
+        app:layout_constraintLeft_toLeftOf="@id/tuesday_box"
+        app:layout_constraintRight_toRightOf="@id/tuesday_box"
+        app:layout_constraintTop_toTopOf="@id/tuesday_box" />
+
+    <View
+        android:id="@+id/wednesday_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/border_line_rggray"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toRightOf="@id/tuesday_box"
+        app:layout_constraintRight_toLeftOf="@id/thursday_box"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/wednesday_check"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="3dp"
+        app:cardBackgroundColor="@color/dark_gray"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/wednesday_box"
+        app:layout_constraintLeft_toLeftOf="@id/wednesday_box"
+        app:layout_constraintRight_toRightOf="@id/wednesday_box"
+        app:layout_constraintTop_toTopOf="@id/wednesday_box" />
+
+    <View
+        android:id="@+id/thursday_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/border_line_rggray"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toRightOf="@id/wednesday_box"
+        app:layout_constraintRight_toLeftOf="@id/friday_box"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/thursday_check"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="3dp"
+        app:cardBackgroundColor="@color/dark_gray"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/thursday_box"
+        app:layout_constraintLeft_toLeftOf="@id/thursday_box"
+        app:layout_constraintRight_toRightOf="@id/thursday_box"
+        app:layout_constraintTop_toTopOf="@id/thursday_box" />
+
+    <View
+        android:id="@+id/friday_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/border_line_rggray"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toRightOf="@id/thursday_box"
+        app:layout_constraintRight_toLeftOf="@id/saturday_box"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/friday_check"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="3dp"
+        app:cardBackgroundColor="@color/dark_gray"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/friday_box"
+        app:layout_constraintLeft_toLeftOf="@id/friday_box"
+        app:layout_constraintRight_toRightOf="@id/friday_box"
+        app:layout_constraintTop_toTopOf="@id/friday_box" />
+
+    <View
+        android:id="@+id/saturday_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/border_line_rggray"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toRightOf="@id/friday_box"
+        app:layout_constraintRight_toLeftOf="@id/sunday_box"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/saturday_check"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="3dp"
+        app:cardBackgroundColor="@color/dark_gray"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/saturday_box"
+        app:layout_constraintLeft_toLeftOf="@id/saturday_box"
+        app:layout_constraintRight_toRightOf="@id/saturday_box"
+        app:layout_constraintTop_toTopOf="@id/saturday_box" />
+
+    <View
+        android:id="@+id/sunday_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/border_line_rggray"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toRightOf="@id/saturday_box"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/sunday_check"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="3dp"
+        app:cardBackgroundColor="@color/dark_gray"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/sunday_box"
+        app:layout_constraintLeft_toLeftOf="@id/sunday_box"
+        app:layout_constraintRight_toRightOf="@id/sunday_box"
+        app:layout_constraintTop_toTopOf="@id/sunday_box" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.4" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.44" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

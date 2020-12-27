@@ -41,7 +41,7 @@
 
                 <TextView
                     android:id="@+id/item_title"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:gravity="center"
@@ -54,6 +54,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     bind:font="@{vm.font}"
                     bind:planSize="@{vm.planSize}"
+                    android:ellipsize="end"
                     />
 
                 <TextView

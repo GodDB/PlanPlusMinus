@@ -4,6 +4,7 @@ import androidx.annotation.VisibleForTesting
 import com.example.todoplusminus.util.*
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import java.util.HashSet
 
 /**
  * 모든 플랜을 관리하는 planObject
@@ -20,15 +21,22 @@ class PlanProject private constructor() {
     }
 
     private var mPlanDataList: MutableList<PlanData> = mutableListOf()
+
+    //이름순으로 planDataList 담겨있는 map
+    private var mPlanDataMapByTitle: MutableMap<String, MutableList<PlanData>> = mutableMapOf()
     private val dateHelper = DateHelper()
 
     fun setPlanDatas(planList: List<PlanData>) {
         mPlanDataList.clear()
         mPlanDataList.addAll(planList)
+
+        initializePlanDataMap()
     }
 
     fun addPlanData(planData: PlanData) {
         mPlanDataList.add(planData)
+
+        mPlanDataMapByTitle[planData.title]?.add(planData)
     }
 
     fun getPlanDataByIndex(index: Int) : PlanData {
@@ -37,6 +45,18 @@ class PlanProject private constructor() {
     }
 
     fun getPlanDataList() = mPlanDataList.toList()
+
+    fun getPlanDataListByTitle(title : String) = mPlanDataMapByTitle[title]
+
+    fun getPlanTitleSet() : Set<String>{
+        val planTitleSet : MutableSet<String> = mutableSetOf()
+
+        mPlanDataList.forEach {
+            planTitleSet.add(it.title)
+        }
+
+        return planTitleSet
+    }
 
     fun getPlanDataById(id: String): PlanData {
         mPlanDataList.forEach { planData ->
@@ -82,6 +102,21 @@ class PlanProject private constructor() {
     private fun checkWhetherOutOfBound(value: Int): Boolean {
         return value >= mPlanDataList.size
     }
+
+    private fun initializePlanDataMap(){
+        mPlanDataMapByTitle.clear()
+
+        val titleList = getPlanTitleSet().toList()
+
+        titleList.forEach { title ->
+            val planDataListBySameTitle : MutableList<PlanData> = mutableListOf()
+
+            mPlanDataList.forEach {
+                if(title == it.title) planDataListBySameTitle.add(it)
+            }
+            mPlanDataMapByTitle[title] = planDataListBySameTitle
+        }
+    }
     //todo calculate logic
 
     fun getTotalCount(): Int = sum(mPlanDataList)
@@ -106,10 +141,9 @@ class PlanProject private constructor() {
 
         // startDate가 endDate와 같은 주 일때까지 반복한다.
         while (startDate.compareUntilWeek(endDate) <= 0) {
-            println(startDate)
             val list: List<Int> = getWeekDataInclude(startDate).map { it.count }
             weekDataList.add(list)
-            startDate = startDate.plusWeeks(1)
+            startDate = startDate.customPlusWeeks(1)
         }
 
         return weekDataList

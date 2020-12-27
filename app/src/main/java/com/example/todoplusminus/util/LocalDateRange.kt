@@ -5,7 +5,7 @@ import java.time.LocalDate
 /**
  * LocalDate의 범위를 관리하는 object
  * */
-class LocalDateRange(val startDate : LocalDate, val endDate : LocalDate){
+class LocalDateRange(val startDate : LocalDate, val endDate : LocalDate) : Comparable<LocalDateRange>{
 
     /**
      * 전달받은 date가 LocalDataRange안에 포함되는지를 확인한다
@@ -21,6 +21,10 @@ class LocalDateRange(val startDate : LocalDate, val endDate : LocalDate){
         return false
     }
 
+    fun getMMDD() : String{
+        return "${startDate.monthValue}.${startDate.dayOfMonth} ~ ${endDate.monthValue}.${endDate.dayOfMonth}"
+    }
+
     override fun equals(other: Any?): Boolean {
         val other = (other as? LocalDateRange)?: return false
 
@@ -31,5 +35,9 @@ class LocalDateRange(val startDate : LocalDate, val endDate : LocalDate){
 
     override fun toString(): String {
         return "$startDate ~ $endDate"
+    }
+
+    override fun compareTo(other: LocalDateRange): Int {
+        return this.startDate.compareTo(other.startDate)
     }
 }

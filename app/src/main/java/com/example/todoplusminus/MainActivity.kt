@@ -9,7 +9,7 @@ import com.example.todoplusminus.controllers.SplashController
 import com.example.todoplusminus.databinding.ActivityMainBinding
 import com.example.todoplusminus.repository.FontDownloadManager
 import com.example.todoplusminus.repository.SharedPrefManager
-import com.example.todoplusminus.vm.SplashRepository
+import com.example.todoplusminus.repository.SplashRepository
 import com.example.todoplusminus.vm.SplashVM
 
 class MainActivity : AppCompatActivity() {
@@ -27,7 +27,10 @@ class MainActivity : AppCompatActivity() {
 
         val sharedPrefManager = SharedPrefManager(applicationContext)
         val fontManager = FontDownloadManager(applicationContext)
-        val splashRepo = SplashRepository(sharedPrefManager, fontManager)
+        val splashRepo = SplashRepository(
+            sharedPrefManager,
+            fontManager
+        )
 
         val splashVM = SplashVM(splashRepo)
 

@@ -4,6 +4,7 @@
     xmlns:bind="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.example.todoplusminus.vm.PlanHistoryVM" />
@@ -70,13 +71,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:ellipsize="end"
+                android:maxWidth="200dp"
+                android:maxLines="2"
                 android:text="@{vm.MHistoryTitle}"
                 android:textSize="22sp"
                 app:layout_constraintBottom_toBottomOf="@id/guide_scroll_area"
                 app:layout_constraintLeft_toLeftOf="@id/guide_content_left"
                 app:layout_constraintTop_toTopOf="parent"
-                bind:font="@{vm.font}"
-                />
+                bind:font="@{vm.font}" />
 
             <ImageView
                 android:id="@+id/btn_close"
