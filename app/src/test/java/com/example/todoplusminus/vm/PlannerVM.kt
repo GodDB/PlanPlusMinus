@@ -1,25 +1,20 @@
 package com.example.todoplusminus.vm
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
-import com.example.todoplusminus.PMCoroutineSpecification
 import com.example.todoplusminus.TestCoroutineRule
-import com.example.todoplusminus.entities.PlanData
-import com.example.todoplusminus.entities.PlanMemo
+import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.getOrAwaitValue
-import com.example.todoplusminus.repository.IPlannerRepository
+import com.example.todoplusminus.data.repository.IPlannerRepository
+import com.example.todoplusminus.ui.main.PlannerViewModel
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
-import java.time.LocalDate
 
 
 @ExperimentalCoroutinesApi

@@ -2,8 +2,9 @@ package com.example.todoplusminus.vm
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.todoplusminus.TestCoroutineRule
-import com.example.todoplusminus.entities.PlanData
-import com.example.todoplusminus.repository.IPlannerRepository
+import com.example.todoplusminus.data.entities.PlanData
+import com.example.todoplusminus.data.repository.IPlannerRepository
+import com.example.todoplusminus.ui.main.PlannerViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Rule
 import org.junit.runner.RunWith

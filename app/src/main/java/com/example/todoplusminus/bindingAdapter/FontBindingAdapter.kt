@@ -1,12 +1,11 @@
 package com.example.todoplusminus.bindingAdapter
 
 import android.graphics.Typeface
-import android.util.Log
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import com.example.todoplusminus.customViews.PMCalendarView
-import com.example.todoplusminus.customViews.SubWatchView
+import com.example.todoplusminus.ui.customViews.PMCalendarView
+import com.example.todoplusminus.ui.customViews.SubWatchView
 
 @BindingAdapter("bind:font")
 fun setFont(tv : TextView, font : Typeface?){

@@ -8,14 +8,14 @@
 
         <variable
             name="vm"
-            type="com.example.todoplusminus.vm.PlanMemoVM" />
+            type="com.example.todoplusminus.ui.main.memo.PlanMemoVM" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.example.todoplusminus.customViews.BackgroundView
+        <com.example.todoplusminus.ui.customViews.BackgroundView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0.2"

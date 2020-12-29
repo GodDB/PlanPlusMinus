@@ -1,18 +1,13 @@
 package com.example.todoplusminus
 
-import androidx.annotation.VisibleForTesting
-import com.example.todoplusminus.entities.PlanData
-import com.example.todoplusminus.entities.PlanProject
-import com.example.todoplusminus.util.DateHelper
-import com.example.todoplusminus.util.compareUntilWeek
+import com.example.todoplusminus.data.entities.PlanData
+import com.example.todoplusminus.data.entities.PlanProject
 import junit.framework.Assert.assertEquals
-import net.bytebuddy.asm.Advice
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import java.time.LocalDate
-import java.time.temporal.ChronoField
 import java.time.temporal.WeekFields
 import java.util.*
 

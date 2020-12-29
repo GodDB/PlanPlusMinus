@@ -9,11 +9,11 @@
 
         <variable
             name="vm"
-            type="com.example.todoplusminus.vm.PlannerViewModel" />
+            type="com.example.todoplusminus.ui.main.PlannerViewModel" />
 
         <variable
             name="vc"
-            type="com.example.todoplusminus.controllers.PlannerController" />
+            type="com.example.todoplusminus.ui.main.PlannerController" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.example.todoplusminus.customViews.SquaredPaperView
+        <com.example.todoplusminus.ui.customViews.SquaredPaperView
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +34,7 @@
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toTopOf="@id/guide_top" />
 
-        <com.example.todoplusminus.customViews.MainWatchView
+        <com.example.todoplusminus.ui.customViews.MainWatchView
             android:id="@+id/main_watch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             bind:font="@{vm.font}"
             bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}" />
 
-        <com.example.todoplusminus.customViews.PMCalendarView
+        <com.example.todoplusminus.ui.customViews.PMCalendarView
             android:id="@+id/calendarView"
             android:layout_width="0dp"
             android:layout_height="140dp"
@@ -125,7 +125,7 @@
             app:layout_constraintTop_toTopOf="@id/guide_top"
             bind:editMode="@{vm.isEditMode().booleanValue()}" />
 
-        <com.example.todoplusminus.customViews.SubWatchView
+        <com.example.todoplusminus.ui.customViews.SubWatchView
             android:id="@+id/sub_watch"
             android:layout_width="wrap_content"
             android:layout_height="50dp"

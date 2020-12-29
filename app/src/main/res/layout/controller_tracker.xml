@@ -5,7 +5,7 @@
     <data>
         <variable
             name="vm"
-            type="com.example.todoplusminus.vm.TrackerVM" />
+            type="com.example.todoplusminus.ui.tracker.TrackerVM" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,6 +39,15 @@
             app:layout_constraintTop_toTopOf="@id/guide_contents_top"
             app:layout_constraintBottom_toBottomOf="@id/guide_contents_bottom"
             app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_margin="50dp"
+            android:onClick="@{() -> vm.onCapture()}"
             />
 
         <androidx.constraintlayout.widget.Guideline

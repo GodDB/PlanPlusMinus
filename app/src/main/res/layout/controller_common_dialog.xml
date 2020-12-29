@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.example.todoplusminus.customViews.BackgroundView
+    <com.example.todoplusminus.ui.customViews.BackgroundView
         android:id="@+id/background_view"
         android:layout_width="0dp"
         android:layout_height="0dp"

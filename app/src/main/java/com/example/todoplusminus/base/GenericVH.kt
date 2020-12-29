@@ -2,7 +2,7 @@ package com.example.todoplusminus.base
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.example.todoplusminus.vm.SettingData
+import com.example.todoplusminus.ui.setting.SettingData
 
 
 abstract class GenericVH(itemView : View) : RecyclerView.ViewHolder(itemView) {

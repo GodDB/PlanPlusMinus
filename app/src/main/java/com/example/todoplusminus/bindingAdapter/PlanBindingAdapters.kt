@@ -2,7 +2,6 @@ package com.example.todoplusminus.bindingAdapter
 
 
 import android.graphics.Color
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -12,13 +11,13 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.todoplusminus.controllers.PlanHistoryChartAdapter
-import com.example.todoplusminus.controllers.PlanListAdapter
-import com.example.todoplusminus.entities.PlanData
-import com.example.todoplusminus.entities.PlanMemo
-import com.example.todoplusminus.customViews.PMCalendarView
+import com.example.todoplusminus.ui.main.history.chart.PlanHistoryChartAdapter
+import com.example.todoplusminus.ui.main.PlanListAdapter
+import com.example.todoplusminus.data.entities.PlanData
+import com.example.todoplusminus.data.entities.PlanMemo
+import com.example.todoplusminus.ui.customViews.PMCalendarView
 import com.example.todoplusminus.util.*
-import com.example.todoplusminus.vm.OnDoneListener
+import com.example.todoplusminus.ui.main.memo.OnDoneListener
 import com.google.android.material.tabs.TabLayout
 import java.time.LocalDate
 import kotlin.math.max
@@ -47,6 +46,9 @@ fun items(rv: RecyclerView, dataList: List<PlanData>?, isEdit: Boolean) {
     }
 }
 
+/**
+ * 플래너가 비었을 때 보여주기 위함, edit모드일경우엔 보여지지 않아야함
+ * */
 @BindingAdapter(value = ["bind:itemSize", "bind:isEdit"], requireAll = true)
 fun showGuideTextWhenEmpty(tv : TextView, itemSize : Int?, isEdit: Boolean?){
     val itemSize = itemSize ?: 0
@@ -56,6 +58,9 @@ fun showGuideTextWhenEmpty(tv : TextView, itemSize : Int?, isEdit: Boolean?){
     else tv.visibility = View.GONE
 }
 
+/**
+ * 사용자가 등록한 메모를 보여주기 위함, editMode일 경우엔 보여지지 않아야
+ * */
 @BindingAdapter(value = ["bind:memoData", "bind:isEdit"], requireAll = true)
 fun showMemoText(tv : TextView, memo: PlanMemo?, isEdit: Boolean?){
     val isEdit = isEdit ?: false
@@ -65,6 +70,9 @@ fun showMemoText(tv : TextView, memo: PlanMemo?, isEdit: Boolean?){
     else if(!isEdit && memo != null) tv.visibility = View.VISIBLE
 }
 
+/**
+ * editMode진입 시 보여지지 않아야 하는 ui는 fade animation로 숨긴다.
+ * */
 @BindingAdapter("bind:editMode")
 fun setEditMode(view: View, isEdit: Boolean) {
     if (isEdit) return CommonAnimationHelper.startFadeInAnimation(view)
@@ -72,13 +80,15 @@ fun setEditMode(view: View, isEdit: Boolean) {
     CommonAnimationHelper.startFadeOutAnimation(view)
 }
 
+/**
+ * 캘린더 버튼을 눌렀을 때 캘린더를 보여준
+ * */
 @BindingAdapter("bind:showCalendar")
 fun setShowCalendar(v: View, isShowCalendar: Boolean) {
     if (isShowCalendar) return CommonAnimationHelper.startFadeInAnimation(v)
 
     CommonAnimationHelper.startFadeOutAnimation(v)
 }
-
 
 @BindingAdapter(value = ["bind:editMode1", "bind:showCalendar"], requireAll = true)
 fun setShowCalendar(v: View, isEdit: Boolean, isShowCalendar: Boolean) {
@@ -107,7 +117,9 @@ fun startYMove(viewGroup: ViewGroup, isEdit: Boolean, isShowCalendar: Boolean) {
     }
 }
 
-
+/**
+ * editMode일 경우엔 count와 갯수와 관련 없이 플래너 아이템들에 bgcolor를 적용한다.
+ * */
 @BindingAdapter(value = ["bind:backgroundColor", "bind:isEdit"], requireAll = true)
 fun setBackgroundColorWhenEditMode(view: CardView, data: PlanData?, isEdit: Boolean) {
     if(data == null) return
@@ -126,17 +138,10 @@ fun setBackgroundColorWhenEditMode(view: CardView, data: PlanData?, isEdit: Bool
 }
 
 
-@BindingAdapter("bind:animation")
-fun setAnimation(v: View, isEdit: Boolean) {
-    if (isEdit)
-        CommonAnimationHelper.startVibrateAnimation(v)
-    else
-        CommonAnimationHelper.stop(v)
-}
 
 /**
  * 세로 slide 이벤트를 통해
- * 사용자가 편하게 메모 컨트롤러를 종료시킬 수 있게 해주는 리스너
+ * 사용자가 편하게 컨트롤러를 종료시킬 수 있게 해주는 리스너
  * */
 @BindingAdapter("bind:setSlideEvent")
 fun setSlideEvent(v: View, onComplete: () -> Unit) {

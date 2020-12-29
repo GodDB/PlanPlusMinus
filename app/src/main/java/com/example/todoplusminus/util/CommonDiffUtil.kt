@@ -1,9 +1,7 @@
 package com.example.todoplusminus.util
 
-import android.graphics.Color
-import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
-import com.example.todoplusminus.entities.PlanData
+import com.example.todoplusminus.data.entities.PlanData
 
 class CommonDiffUtil(private val oldItems: List<Any>, private val newItems: List<Any>) :
     DiffUtil.Callback() {

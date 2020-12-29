@@ -3,8 +3,8 @@ package com.example.todoplusminus.db
 import android.content.Context
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import com.example.todoplusminus.entities.PlanData
-import com.example.todoplusminus.entities.PlanMemo
+import com.example.todoplusminus.data.entities.PlanData
+import com.example.todoplusminus.data.entities.PlanMemo
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 

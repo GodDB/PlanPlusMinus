@@ -2,14 +2,12 @@ package com.example.todoplusminus.bindingAdapter
 
 import android.util.Log
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoplusminus.AppConfig
-import com.example.todoplusminus.controllers.FontListAdapter
-import com.example.todoplusminus.controllers.SettingListAdapter
-import com.example.todoplusminus.vm.FontItemData
-import com.example.todoplusminus.vm.SettingData
-import com.example.todoplusminus.vm.ValueString
+import com.example.todoplusminus.ui.setting.fontSetting.FontListAdapter
+import com.example.todoplusminus.ui.setting.SettingListAdapter
+import com.example.todoplusminus.ui.setting.fontSetting.FontItemData
+import com.example.todoplusminus.ui.setting.SettingData
 
 
 // -- setting vm

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="vm"
-            type="com.example.todoplusminus.vm.PlanEditVM" />
+            type="com.example.todoplusminus.ui.main.edit.PlanEditVM" />
 
         <variable
             name="title"

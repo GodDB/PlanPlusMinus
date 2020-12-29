@@ -1,11 +1,11 @@
 package com.example.todoplusminus.vm
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.todoplusminus.PMCoroutineSpecification
 import com.example.todoplusminus.TestCoroutineRule
-import com.example.todoplusminus.entities.PlanData
+import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.getOrAwaitValue
-import com.example.todoplusminus.repository.IPlannerRepository
+import com.example.todoplusminus.data.repository.IPlannerRepository
+import com.example.todoplusminus.ui.main.edit.PlanEditVM
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.*
 import org.junit.Before
@@ -40,7 +40,8 @@ class TestPlanEditVM {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
 
-        planEditVM = PlanEditVM(repository)
+        planEditVM =
+            PlanEditVM(repository)
     }
     @Test
     fun test_setData_notEmptyId() {
@@ -68,7 +69,7 @@ class TestPlanEditVM {
             planEditVM.setId(targetData.id)
             planEditVM.onComplete()
 
-            assertEquals(planEditVM.isEditEnd.getOrAwaitValue().peekContent(), true)
+            assertEquals(planEditVM.isEditClose.getOrAwaitValue().peekContent(), true)
         }
     }
     @Test
@@ -84,7 +85,7 @@ class TestPlanEditVM {
 
             planEditVM.onComplete()
 
-            assertEquals(planEditVM.isEditEnd.getOrAwaitValue().peekContent(), true)
+            assertEquals(planEditVM.isEditClose.getOrAwaitValue().peekContent(), true)
         }
     }
 

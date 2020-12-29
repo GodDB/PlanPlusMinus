@@ -5,7 +5,7 @@
 
     android:layout_height="match_parent">
 
-    <com.example.todoplusminus.customViews.BackgroundView
+    <com.example.todoplusminus.ui.customViews.BackgroundView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:alpha="0.4"
@@ -37,7 +37,7 @@
             android:textColor="@color/black"
             />
 
-        <com.example.todoplusminus.customViews.RulerView
+        <com.example.todoplusminus.ui.customViews.RulerView
             android:id="@+id/ruler_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
