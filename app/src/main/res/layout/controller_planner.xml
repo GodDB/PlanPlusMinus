@@ -6,7 +6,7 @@
     <data>
 
         <import type="android.view.View" />
-
+        <import type="com.example.todoplusminus.data.entities.BaseID"/>
         <variable
             name="vm"
             type="com.example.todoplusminus.ui.main.PlannerViewModel" />
@@ -144,7 +144,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
             android:alpha="0.7"
-            android:onClick="@{() -> vm.showEditEditor(``)}"
+            android:onClick="@{() -> vm.onCreateItemClick()}"
             android:transitionName="@{`none`}"
             android:visibility="gone"
             app:cardBackgroundColor="@color/right_gray"

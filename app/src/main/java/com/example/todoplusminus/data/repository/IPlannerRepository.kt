@@ -1,5 +1,6 @@
 package com.example.todoplusminus.data.repository
 
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.entities.PlanMemo
 import com.example.todoplusminus.data.entities.PlanProject
@@ -16,7 +17,7 @@ interface IPlannerRepository {
 
     fun getAllPlanDataByDate(date: LocalDate): Flow<MutableList<PlanData>>
 
-    fun getPlanProjectById(id: String): Flow<PlanProject>
+    fun getPlanProjectById(id: BaseID): Flow<PlanProject>
 
     fun getLastestIndex(): Flow<Int?>
 
@@ -24,7 +25,7 @@ interface IPlannerRepository {
 
     suspend fun deleteMemoByDate(date : LocalDate)
 
-    suspend fun deletePlannerDataById(id: String)
+    suspend fun deletePlannerDataById(id: BaseID)
 
     suspend fun insertPlannerData(planData: PlanData)
 
@@ -32,11 +33,11 @@ interface IPlannerRepository {
 
     suspend fun updatePlannerData(data: PlanData)
 
-    suspend fun getPlannerDataById(id: String): PlanData
+    suspend fun getPlannerDataById(id: BaseID): PlanData
 
     suspend fun deleteAndUpdateAll(deleteTarget: PlanData, updateTarget: List<PlanData>)
 
-    suspend fun updateTitleBgById(id: String, title: String, bgColor: Int)
+    suspend fun updateTitleBgById(id: BaseID, title: String, bgColor: Int)
 
     suspend fun updatePlanMemo(memo: PlanMemo)
 

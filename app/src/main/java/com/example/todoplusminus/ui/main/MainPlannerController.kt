@@ -15,6 +15,7 @@ import com.example.todoplusminus.util.ChangeHandlers.MyTransitionCH
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.BaseApplication
 import com.example.todoplusminus.base.DBControllerBase
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.databinding.ControllerPlannerBinding
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.repository.PlannerRepository
@@ -36,7 +37,7 @@ class PlannerController : DBControllerBase {
 
     interface Delegate {
         fun showMemoEditor()
-        fun showHistoryEditor(id: String)
+        fun showHistoryEditor(id: BaseID)
     }
 
     companion object {
@@ -90,7 +91,7 @@ class PlannerController : DBControllerBase {
         binder.mainWatch.stop()
     }
 
-    private fun showPlanEditor(id: String) {
+    private fun showPlanEditor(id: BaseID) {
         //todo test
         pushController(RouterTransaction.with(
             PlanEditController(id)

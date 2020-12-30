@@ -7,8 +7,12 @@ import com.example.todoplusminus.data.source.local.LocalDataSourceImpl
 import com.example.todoplusminus.data.source.remote.FontDownloadManager
 import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.ui.main.di.MainPlannerComponent
+import com.example.todoplusminus.ui.setting.di.SettingComponent
 import com.example.todoplusminus.ui.splash.di.SplashComponent
+import com.example.todoplusminus.ui.tracker.di.TrackerComponent
 import dagger.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 
@@ -22,12 +26,14 @@ interface AppComponent {
     }
 
     fun splashComponent(): SplashComponent.Factory
-    fun planComponent() : MainPlannerComponent.Factory
+    fun planComponent(): MainPlannerComponent.Factory
+    fun settingComponent(): SettingComponent.Factory
+    fun trackerComponent(): TrackerComponent.Factory
 
 }
 
 
-@Module(subcomponents = [SplashComponent::class, MainPlannerComponent::class])
+@Module(subcomponents = [SplashComponent::class, MainPlannerComponent::class, SettingComponent::class, TrackerComponent::class])
 class SubcomponentModule()
 
 @Module
@@ -54,4 +60,8 @@ class CommonModule {
     @Singleton
     @Provides
     fun provideLocalSource(db: PlannerDatabase): ILocalDataSource = LocalDataSourceImpl(db)
+
+    @Singleton
+    @Provides
+    fun provideDispatcher(): CoroutineDispatcher = Dispatchers.IO
 }

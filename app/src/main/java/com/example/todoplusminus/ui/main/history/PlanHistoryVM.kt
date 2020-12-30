@@ -6,12 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.switchMap
 import com.example.todoplusminus.AppConfig
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.util.livedata.Event
 import com.example.todoplusminus.data.entities.PlanProject
 import com.example.todoplusminus.data.repository.IPlannerRepository
 import javax.inject.Inject
 
-class PlanHistoryVM @Inject constructor(val targetId: String, private val repository: IPlannerRepository) {
+class PlanHistoryVM @Inject constructor(val targetId: BaseID, private val repository: IPlannerRepository) {
 
     val font: Typeface?
         get() = AppConfig.font

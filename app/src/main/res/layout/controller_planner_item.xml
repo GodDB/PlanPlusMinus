@@ -31,7 +31,7 @@
             app:cardCornerRadius="50dp"
             bind:backgroundColor="@{vm.targetDatePlanProject.getPlanDataByIndex(index)}"
             bind:isEdit="@{vm.isEditMode().booleanValue()}"
-            android:transitionName="@{vm.targetDatePlanProject.getPlanDataIdByIndex(index)}"
+            android:transitionName="@{vm.targetDatePlanProject.getPlanDataIdByIndex(index).id}"
             bind:setItemClickListener="@{() -> vm.onItemClick(vm.targetDatePlanProject.getPlanDataIdByIndex(index))}"
             >
 

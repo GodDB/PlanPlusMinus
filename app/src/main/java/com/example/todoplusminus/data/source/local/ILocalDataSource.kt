@@ -1,5 +1,6 @@
 package com.example.todoplusminus.data.source.local
 
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.db.PlannerInfoEntity
 import com.example.todoplusminus.db.PlannerItemEntity
 import com.example.todoplusminus.db.PlannerItemInfoEntity
@@ -16,7 +17,7 @@ interface ILocalDataSource {
 
     fun getAllPlannerDataByDate(date : LocalDate) : Flow<MutableList<PlanData>>
 
-    fun getAllPlannerDataById(id : String) : Flow<List<PlanData>>
+    fun getAllPlannerDataById(id : BaseID) : Flow<List<PlanData>>
 
     fun getLastestIndex() : Flow<Int?>
 
@@ -26,7 +27,7 @@ interface ILocalDataSource {
 
     suspend fun deleteAllData()
 
-    suspend fun deletePlannerDataById(id : String)
+    suspend fun deletePlannerDataById(id : BaseID)
 
     suspend fun insertPlannerData(planData: PlanData)
 
@@ -36,13 +37,13 @@ interface ILocalDataSource {
 
     suspend fun deleteAndUpdateAll(deleteTarget : PlanData, updateTarget : List<PlanData>)
 
-    suspend fun getPlannerDataById(id : String) : PlanData
+    suspend fun getPlannerDataById(id : BaseID) : PlanData
 
     suspend fun getAllPlanItem() : List<PlannerItemEntity>
 
     suspend fun getAllPlanInfoByDate(date : LocalDate) : List<PlannerInfoEntity>
 
-    suspend fun updateTitleBgById(id : String, title : String, bgColor : Int)
+    suspend fun updateTitleBgById(id : BaseID, title : String, bgColor : Int)
 
     suspend fun updatePlanMemo(memo : PlanMemo)
 

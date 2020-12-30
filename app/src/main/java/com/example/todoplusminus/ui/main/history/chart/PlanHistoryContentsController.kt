@@ -10,6 +10,7 @@ import com.example.todoplusminus.R
 import com.example.todoplusminus.base.BaseApplication
 
 import com.example.todoplusminus.base.DBControllerBase
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.databinding.ControllerPlanHistoryContentsBinding
 import com.example.todoplusminus.databinding.ControllerPlanHistoryContentsItemBinding
 import com.example.todoplusminus.util.ColorManager
@@ -22,13 +23,13 @@ class PlanHistoryContentsController : DBControllerBase {
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    constructor(_mode: String, _targetId: String) : super() {
+    constructor(_mode: PlanHistoryContentVM.Mode, _targetId: BaseID) : super() {
         this._mode = _mode
         this._targetId = _targetId
     }
 
-    private lateinit var _mode: String
-    private lateinit var _targetId: String
+    private lateinit var _mode: PlanHistoryContentVM.Mode
+    private lateinit var _targetId: BaseID
 
     @Inject
     lateinit var mPlanHistoryContentVM: PlanHistoryContentVM
@@ -37,7 +38,7 @@ class PlanHistoryContentsController : DBControllerBase {
     override fun connectDagger() {
         super.connectDagger()
         (activity?.application as BaseApplication).appComponent.planComponent().create()
-            .historyComponent().create(_targetId).historyContentComponent().create(1).inject(this)
+            .historyComponent().create(_targetId).historyContentComponent().create(_mode).inject(this)
     }
 
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
@@ -62,22 +63,22 @@ class PlanHistoryContentsController : DBControllerBase {
     }
 
     private fun onSubscribe() {
-        mPlanHistoryContentVM?.mode?.observe(this, Observer { event ->
+        mPlanHistoryContentVM.mode.observe(this, Observer { event ->
             event.getContentIfNotHandled()?.let { mode ->
-                when (mode) {
-                    PlanHistoryContentVM.MODE_WEEK -> {
+                when (mode.toString()) {
+                    PlanHistoryContentVM.Mode.MODE_WEEK -> {
                         setTextAverageTv(resources?.getString(R.string.week_average) ?: "")
                         setTextAccumalationTv(
                             resources?.getString(R.string.week_accumulation) ?: ""
                         )
                     }
-                    PlanHistoryContentVM.MODE_MONTH -> {
+                    PlanHistoryContentVM.Mode.MODE_MONTH -> {
                         setTextAverageTv(resources?.getString(R.string.month_average) ?: "")
                         setTextAccumalationTv(
                             resources?.getString(R.string.month_accumulation) ?: ""
                         )
                     }
-                    PlanHistoryContentVM.MODE_YEAR -> {
+                    PlanHistoryContentVM.Mode.MODE_YEAR -> {
                         setTextAverageTv(resources?.getString(R.string.year_average) ?: "")
                         setTextAccumalationTv(
                             resources?.getString(R.string.year_accumulation) ?: ""
@@ -103,7 +104,7 @@ class PlanHistoryContentsController : DBControllerBase {
             velocityX: Int,
             velocityY: Int
         ): Int {
-            mPlanHistoryContentVM?.summaryTargetIndex?.value =
+            mPlanHistoryContentVM.summaryTargetIndex.value =
                 super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
 
             return super.findTargetSnapPosition(layoutManager, velocityX, velocityY)

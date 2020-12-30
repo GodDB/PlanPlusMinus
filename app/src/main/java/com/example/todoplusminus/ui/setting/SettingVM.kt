@@ -9,10 +9,10 @@ import com.example.todoplusminus.data.repository.SettingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
-//todo replace dagger -> repository 접근지정자 변경 public -> private
-class SettingVM(val repository: SettingRepository) : ViewModel() {
+class SettingVM @Inject constructor(private val repository: SettingRepository) : ViewModel() {
 
     companion object {
         private const val TAG_PLAN_RECOMMEND_KEYWORD: Int = 1
@@ -39,7 +39,8 @@ class SettingVM(val repository: SettingRepository) : ViewModel() {
 
     private val _settingDataList
         get() = mutableListOf(
-            Pair(R.string.plan,
+            Pair(
+                R.string.plan,
                 ValueEmpty()
             ),
             Pair(
@@ -63,10 +64,12 @@ class SettingVM(val repository: SettingRepository) : ViewModel() {
                     TAG_PUSH_TO_THE_RIGHT
                 )
             ),
-            Pair(R.string.plus_minus,
+            Pair(
+                R.string.plus_minus,
                 ValueEmpty()
             ),
-            Pair(R.string.font_style,
+            Pair(
+                R.string.font_style,
                 ValueString(
                     AppConfig.fontName,
                     TAG_FONT_STYLE
@@ -79,34 +82,43 @@ class SettingVM(val repository: SettingRepository) : ViewModel() {
                     TAG_ALARM_AT_10
                 )
             ),
-            Pair(R.string.support,
+            Pair(
+                R.string.support,
                 ValueEmpty()
             ),
-            Pair(R.string.official_website,
+            Pair(
+                R.string.official_website,
                 ValueString(tag = 0)
             ),
-            Pair(R.string.faq,
+            Pair(
+                R.string.faq,
                 ValueString(tag = 0)
             ),
-            Pair(R.string.share_app_with_friends,
+            Pair(
+                R.string.share_app_with_friends,
                 ValueString(tag = 0)
             ),
-            Pair(R.string.app_info,
+            Pair(
+                R.string.app_info,
                 ValueEmpty()
             ),
-            Pair(R.string.app_version,
+            Pair(
+                R.string.app_version,
                 ValueString(
                     AppConfig.version,
                     TAG_APP_VERSION
                 )
             ),
-            Pair(R.string.empty,
+            Pair(
+                R.string.empty,
                 ValueEmpty()
             ),
-            Pair(R.string.to_delete_all_data,
+            Pair(
+                R.string.to_delete_all_data,
                 ValueString(tag = TAG_DELETE_ALL_DATA)
             ),
-            Pair(R.string.empty,
+            Pair(
+                R.string.empty,
                 ValueEmpty()
             )
         )

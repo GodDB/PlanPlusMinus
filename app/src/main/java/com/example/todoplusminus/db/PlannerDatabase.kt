@@ -3,6 +3,7 @@ package com.example.todoplusminus.db
 import android.content.Context
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.entities.PlanMemo
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +37,7 @@ abstract class PlannerDatabase : RoomDatabase() {
 
 @Entity(tableName = "PlannerItem")
 data class PlannerItemEntity(
-    @PrimaryKey var id: String,
+    @PrimaryKey var id: BaseID,
     var title: String,
     var bgColor: Int,
     var index: Int
@@ -56,7 +57,7 @@ data class PlannerInfoEntity(
     var infoId: Int,
     var date: LocalDate,
     var count: Int,
-    var planId: String
+    var planId: BaseID
 )
 
 data class PlannerItemInfoEntity(
@@ -101,7 +102,7 @@ interface UserPlanDao {
     suspend fun deletePlanInfo(item: PlannerInfoEntity)
 
     @Query("delete from PlannerItem where id == :id")
-    suspend fun deletePlannerDataById(id: String)
+    suspend fun deletePlannerDataById(id: BaseID)
 
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid order by item.`index` desc")
     fun getAllPlannerData(): Flow<MutableList<PlanData>>
@@ -112,14 +113,14 @@ interface UserPlanDao {
 
 
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planId and info.planId == :id")
-    fun getAllPlannerDataById(id: String): Flow<List<PlanData>>
+    fun getAllPlannerDataById(id: BaseID): Flow<List<PlanData>>
 
     //가장 최신의 인덱스를 가져온다.
     @Query("select `index` from PlannerItem order by `index` DESC LIMIT 1")
     fun getLastIndex(): Flow<Int?>
 
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid and item.id == :id")
-    fun getPlannerDataById(id: String): PlanData
+    fun getPlannerDataById(id: BaseID): PlanData
 
     @Query("select * from PlannerItem")
     fun getAllPlanItem(): List<PlannerItemEntity>
@@ -128,7 +129,7 @@ interface UserPlanDao {
     fun getAllPlanInfoByDate(date: LocalDate): List<PlannerInfoEntity>
 
     @Query("update PlannerItem set title = :title, bgColor = :bgColor where id = :id")
-    fun updateTitleBgById(id: String, title: String, bgColor: Int)
+    fun updateTitleBgById(id: BaseID, title: String, bgColor: Int)
 
     @Query("select * from PlannerMemo")
     fun getAllPlanMemo(): Flow<MutableList<PlanMemo>>
@@ -152,6 +153,15 @@ class Converters {
 
     @TypeConverter
     fun calendarToString(value: LocalDate): String {
+        return value.toString()
+    }
+
+    @TypeConverter
+    fun stringToBaseId(value : String) : BaseID {
+        return BaseID.fromString(value)
+    }
+    @TypeConverter
+    fun baseIdToString(value : BaseID) : String{
         return value.toString()
     }
 }

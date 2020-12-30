@@ -8,12 +8,13 @@ import com.example.todoplusminus.data.source.remote.FontDownloadManager
 import com.example.todoplusminus.util.PMCoroutineSpecification
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class SettingRepository(
+class SettingRepository @Inject constructor(
     private val sharedPrefManager: SharedPrefManager,
     private val fontManager: FontDownloadManager,
     private val localDataSource : ILocalDataSource,
-    private val dispatcher: CoroutineDispatcher = PMCoroutineSpecification.MAIN_DISPATCHER
+    private val dispatcher: CoroutineDispatcher
 ) {
 
     suspend fun getFont(fontName: String) : Typeface? {

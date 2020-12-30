@@ -7,7 +7,7 @@ import java.time.LocalDate
 import java.util.*
 
 class PlanData(
-    var id: String,
+    var id: BaseID,
     var index: Int,
     var title: String,
     var bgColor: Int,
@@ -18,11 +18,22 @@ class PlanData(
 
     companion object {
         const val DEFAULT_BG_COLOR = R.color.dark_gray
-        const val EMPTY_ID = "none"
 
         fun create(): PlanData {
             return PlanData(
-                UUID.randomUUID().toString(),
+                BaseID.randomID(),
+                0,
+                "",
+                DEFAULT_BG_COLOR,
+                DateHelper.getCurDate(),
+                0,
+                0
+            )
+        }
+
+        fun createEmptyId(): PlanData {
+            return PlanData(
+                BaseID.createEmpty(),
                 0,
                 "",
                 DEFAULT_BG_COLOR,
@@ -43,7 +54,7 @@ class PlanData(
     fun copy(): PlanData = PlanData(id, index, title, bgColor, date, count, infoId)
 
     override fun toString(): String {
-        return "id : $id, " +
+        return "id : ${id}, " +
                 "index : $index, " +
                 "bgColor : $bgColor, " +
                 "date : $date ," +
@@ -54,23 +65,25 @@ class PlanData(
 }
 
 
-class BaseID(val id : String){
+class BaseID(val id: String) {
 
-    companion object{
-        private val EMPTY_ID = "none"
+    companion object {
+        const val EMPTY_ID = "none"
 
-        fun randomID() : BaseID{
+        fun randomID(): BaseID {
             return BaseID(UUID.randomUUID().toString())
         }
 
-        fun fromString(str : String) : BaseID{
+        fun fromString(str: String): BaseID {
             return BaseID(str)
         }
 
-        fun createEmpty() : BaseID{
+        fun createEmpty(): BaseID {
             return BaseID(EMPTY_ID)
         }
     }
+
+    fun isEmpty(): Boolean = this.id == EMPTY_ID || this.id == ""
 
     override fun equals(other: Any?): Boolean {
         val otherID = other as? BaseID ?: return false
@@ -79,5 +92,9 @@ class BaseID(val id : String){
 
     override fun toString(): String {
         return id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
     }
 }

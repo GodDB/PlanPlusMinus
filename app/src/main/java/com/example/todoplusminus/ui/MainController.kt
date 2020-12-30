@@ -10,6 +10,7 @@ import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.VBControllerBase
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.databinding.ControllerMainBinding
 import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.data.repository.PlannerRepository
@@ -32,9 +33,6 @@ class MainController : VBControllerBase {
 
     private var auxRouter: Router? = null
     private lateinit var childRouter: Router
-
-    //todo test ... 추후에 dagger로 교체
-    private var plannerRepository: PlannerRepository? = null
 
     constructor() : super()
 
@@ -90,22 +88,10 @@ class MainController : VBControllerBase {
     }
 
     private fun showTrackerEditor() {
-        val db = PlannerDatabase.getInstance(applicationContext!!)
-        val dataSource =
-            LocalDataSourceImpl(db)
-        val trackerRepo =
-            TrackerRepository(
-                dataSource
-            )
-        val trackerVM =
-            TrackerVM(trackerRepo)
-
         pushControllerByTag(
             childRouter,
             RouterTransaction.with(
-                TrackerController(
-                    trackerVM
-                ).apply {
+                TrackerController().apply {
                     retainViewMode = RetainViewMode.RETAIN_DETACH
                 }).apply {
                 tag(TrackerController.TAG)
@@ -117,32 +103,10 @@ class MainController : VBControllerBase {
     }
 
     private fun showSettingEditor() {
-        //todo replace dagger
-        val db = PlannerDatabase.getInstance(applicationContext!!)
-
-        val dataSource =
-            LocalDataSourceImpl(db)
-        val sharedPrefManager =
-            SharedPrefManager(
-                applicationContext!!
-            )
-        val fontManager =
-            FontDownloadManager(
-                applicationContext!!
-            )
-        val settingRepo =
-            SettingRepository(
-                sharedPrefManager,
-                fontManager,
-                dataSource
-            )
-
         pushControllerByTag(
             childRouter,
             RouterTransaction.with(
-                SettingController(
-                    settingRepo
-                ).apply {
+                SettingController().apply {
                     retainViewMode = RetainViewMode.RETAIN_DETACH
                 }).apply {
                 tag(SettingController.TAG)
@@ -166,7 +130,7 @@ class MainController : VBControllerBase {
                 })
         }
 
-        override fun showHistoryEditor(id: String) {
+        override fun showHistoryEditor(id: BaseID) {
             Log.d("godgod", "showHistoryEditor()")
             auxRouter?.setRoot(RouterTransaction.with(
                 PlanHistoryController(id)

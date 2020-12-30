@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoplusminus.R
+import com.example.todoplusminus.base.BaseApplication
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerTrackerBinding
 import com.example.todoplusminus.databinding.ControllerTrackerItemBinding
 import com.example.todoplusminus.databinding.ControllerTrackerItemContentBinding
 import com.example.todoplusminus.util.LocalDateRange
+import javax.inject.Inject
 
 class TrackerController : DBControllerBase {
 
@@ -22,13 +24,17 @@ class TrackerController : DBControllerBase {
         const val TAG = "tracker_controller"
     }
 
+    @Inject
+    lateinit var mTrackerVM : TrackerVM
     private lateinit var binder: ControllerTrackerBinding
-    private var mTrackerVM : TrackerVM? = null
+
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    constructor(trackerVM : TrackerVM){
-        mTrackerVM = trackerVM
+
+    override fun connectDagger() {
+        super.connectDagger()
+        (activity?.application as BaseApplication).appComponent.trackerComponent().create().inject(this)
     }
 
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
@@ -55,12 +61,8 @@ class TrackerController : DBControllerBase {
     }
 
     private fun onSubScribe() {
-        mTrackerVM?.trackerDataMap?.observe(this, androidx.lifecycle.Observer {
+        mTrackerVM.trackerDataMap.observe(this, androidx.lifecycle.Observer {
             (binder.trackerList.adapter as? TrackerListAdapter)?.setTrackerDataMap(it)
-        })
-        
-        mTrackerVM?.startCapture?.observe(this, androidx.lifecycle.Observer {
-            getCaptureBitmap()
         })
     }
 

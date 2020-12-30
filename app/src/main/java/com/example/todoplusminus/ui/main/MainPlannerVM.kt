@@ -4,6 +4,7 @@ package com.example.todoplusminus.ui.main
 import android.graphics.Typeface
 import androidx.lifecycle.*
 import com.example.todoplusminus.AppConfig
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.util.livedata.TwoCombinedLiveData
 import com.example.todoplusminus.util.livedata.Event
 import com.example.todoplusminus.data.entities.PlanData
@@ -72,14 +73,14 @@ class PlannerViewModel @Inject constructor(
 
     val isEditMode: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val showEditPlanDataID: MutableLiveData<Event<String>?> = MutableLiveData()
+    val showEditPlanDataID: MutableLiveData<Event<BaseID>?> = MutableLiveData()
 
     val showMemoEditor: MutableLiveData<Event<Boolean>> = MutableLiveData(
         Event(false)
     )
 
-    val showHistoryId: MutableLiveData<Event<String>> = MutableLiveData(
-        Event("")
+    val showHistoryId: MutableLiveData<Event<BaseID>> = MutableLiveData(
+        Event(BaseID.createEmpty())
     )
 
     val showCalendar: MutableLiveData<Event<Boolean>> = MutableLiveData(
@@ -113,25 +114,27 @@ class PlannerViewModel @Inject constructor(
         isEditMode.value = true
     }
 
-    fun onItemClick(id: String?) {
+
+    //creteView 클릭 이벤트
+    fun onCreateItemClick(){
+        val id = BaseID.createEmpty()
+        showEditEditor(id)
+    }
+
+    // plan list item 클릭 이벤트
+    fun onItemClick(id: BaseID) {
         //editmode면 item클릭 시에 수정화면이 등장한다.
         if (checkWhetherEditMode()) return showEditEditor(id)
         //editmode가 아니라면 history화면이 등장한다.
         showHistory(id)
     }
 
-    fun showEditEditor(id: String?) {
+    fun showEditEditor(id: BaseID) {
         //edit mode가 아니라면 실행하지 않는다.
         if (!checkWhetherEditMode()) return
 
-        if (checkIdEmpty(id)) {
-            this.showEditPlanDataID.value =
-                Event(PlanData.EMPTY_ID)
-            return
-        }
-
         this.showEditPlanDataID.value =
-            Event(id!!)
+            Event(id)
     }
 
     fun showCalendar() {
@@ -160,9 +163,9 @@ class PlannerViewModel @Inject constructor(
             Event(true)
     }
 
-    fun showHistory(id: String?) {
+    fun showHistory(id: BaseID) {
         if (checkIdEmpty(id)) return
-        showHistoryId.value = Event(id!!)
+        showHistoryId.value = Event(id)
     }
 
     fun changeDate(year: Int, month: Int, day: Int) {
@@ -204,7 +207,7 @@ class PlannerViewModel @Inject constructor(
 
     private fun checkWhetherEditMode(): Boolean = isEditMode.value!!
 
-    private fun checkIdEmpty(id: String?): Boolean = (id == "" || id == null)
+    private fun checkIdEmpty(id: BaseID): Boolean = id.isEmpty()
 }
 
 

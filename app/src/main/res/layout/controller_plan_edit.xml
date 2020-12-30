@@ -46,7 +46,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
-            android:transitionName="@{vm.MId}"
+            android:transitionName="@{vm.MId.id}"
             bind:setCardViewColorById="@{vm.MBgColor}"
             app:cardCornerRadius="50dp"
             app:layout_constraintLeft_toLeftOf="parent"

@@ -1,5 +1,6 @@
 package com.example.todoplusminus.data.repository
 
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.util.PMCoroutineSpecification
 import com.example.todoplusminus.db.PlannerInfoEntity
 import com.example.todoplusminus.db.PlannerItemEntity
@@ -56,7 +57,7 @@ class PlannerRepository @Inject constructor(
     override fun getAllPlanDataByDate(date: LocalDate): Flow<MutableList<PlanData>> =
         localSource.getAllPlannerDataByDate(date)
 
-    override fun getPlanProjectById(id: String): Flow<PlanProject> =
+    override fun getPlanProjectById(id: BaseID): Flow<PlanProject> =
         localSource.getAllPlannerDataById(id)
             .map { PlanProject.create(it) }
 
@@ -71,7 +72,7 @@ class PlannerRepository @Inject constructor(
         }
     }
 
-    override suspend fun deletePlannerDataById(id: String) {
+    override suspend fun deletePlannerDataById(id: BaseID) {
         localSource.deletePlannerDataById(id)
     }
 
@@ -91,7 +92,7 @@ class PlannerRepository @Inject constructor(
         localSource.updatePlannerData(data)
     }
 
-    override suspend fun getPlannerDataById(id: String): PlanData =
+    override suspend fun getPlannerDataById(id: BaseID): PlanData =
         withContext(dispatcher) {
             localSource.getPlannerDataById(id)
         }
@@ -100,7 +101,7 @@ class PlannerRepository @Inject constructor(
         localSource.deleteAndUpdateAll(deleteTarget, updateTarget)
     }
 
-    override suspend fun updateTitleBgById(id: String, title: String, bgColor: Int) {
+    override suspend fun updateTitleBgById(id: BaseID, title: String, bgColor: Int) {
         coroutineScope {
             launch(dispatcher) {
                 localSource.updateTitleBgById(id, title, bgColor)
@@ -145,6 +146,6 @@ class PlannerRepository @Inject constructor(
         localSource.getAllPlanItem()
 
 
-    private fun generateInfoData(id: String, date: LocalDate) =
+    private fun generateInfoData(id: BaseID, date: LocalDate) =
         PlannerInfoEntity(0, date, 0, id)
 }

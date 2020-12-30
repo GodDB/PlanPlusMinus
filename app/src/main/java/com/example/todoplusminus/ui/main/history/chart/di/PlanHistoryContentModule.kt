@@ -1,5 +1,6 @@
 package com.example.todoplusminus.ui.main.history.chart.di
 
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.data.repository.IPlannerRepository
 import com.example.todoplusminus.data.repository.PlannerRepository
 import com.example.todoplusminus.data.source.file.SharedPrefManager
@@ -15,10 +16,7 @@ import kotlinx.coroutines.Dispatchers
 class PlanHistoryContentModule {
 
     @Provides
-  /*  fun providePlanHistoryContentVM(mode : String, targetId : String, repo : IPlannerRepository) : PlanHistoryContentVM{
+    fun providePlanHistoryContentVM(mode : PlanHistoryContentVM.Mode, targetId : BaseID, repo : IPlannerRepository) : PlanHistoryContentVM{
         return PlanHistoryContentVM(mode, targetId, repo)
-    }*/
-    fun providePlanHistoryContentVM(targetId : String, repo : IPlannerRepository) : PlanHistoryContentVM{
-        return PlanHistoryContentVM(targetId = targetId, repository = repo)
     }
 }

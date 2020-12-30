@@ -4,10 +4,11 @@ import com.example.todoplusminus.data.entities.PlanProject
 import com.example.todoplusminus.data.source.local.ILocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class TrackerRepository(private val dataSource: ILocalDataSource) {
+class TrackerRepository @Inject constructor(private val dataSource: ILocalDataSource) {
 
-    fun getAllDatePlanProject() : Flow<PlanProject> {
+    fun getAllDatePlanProject(): Flow<PlanProject> {
         return dataSource.getAllPlannerData().map {
             PlanProject.create(it)
         }

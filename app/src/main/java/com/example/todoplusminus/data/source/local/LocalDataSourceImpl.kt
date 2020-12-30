@@ -1,6 +1,7 @@
 package com.example.todoplusminus.data.source.local
 
 import androidx.room.withTransaction
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.db.PlannerDatabase
 import com.example.todoplusminus.db.PlannerInfoEntity
 import com.example.todoplusminus.db.PlannerItemEntity
@@ -24,7 +25,7 @@ class LocalDataSourceImpl @Inject constructor(val db: PlannerDatabase) :
     override fun getAllPlannerDataByDate(date: LocalDate): Flow<MutableList<PlanData>> =
         db.userPlanDao().getAllPlannerDataByDate(date)
 
-    override fun getAllPlannerDataById(id: String): Flow<List<PlanData>> =
+    override fun getAllPlannerDataById(id: BaseID): Flow<List<PlanData>> =
         db.userPlanDao().getAllPlannerDataById(id)
 
     override fun getLastestIndex(): Flow<Int?> {
@@ -46,7 +47,7 @@ class LocalDataSourceImpl @Inject constructor(val db: PlannerDatabase) :
     }
 
 
-    override suspend fun deletePlannerDataById(id: String) {
+    override suspend fun deletePlannerDataById(id: BaseID) {
         db.userPlanDao().deletePlannerDataById(id)
     }
 
@@ -95,7 +96,7 @@ class LocalDataSourceImpl @Inject constructor(val db: PlannerDatabase) :
         }
     }
 
-    override suspend fun getPlannerDataById(id: String): PlanData =
+    override suspend fun getPlannerDataById(id: BaseID): PlanData =
         db.userPlanDao().getPlannerDataById(id)
 
     override suspend fun getAllPlanItem(): List<PlannerItemEntity> =
@@ -104,7 +105,7 @@ class LocalDataSourceImpl @Inject constructor(val db: PlannerDatabase) :
     override suspend fun getAllPlanInfoByDate(date: LocalDate): List<PlannerInfoEntity> =
         db.userPlanDao().getAllPlanInfoByDate(date)
 
-    override suspend fun updateTitleBgById(id: String, title: String, bgColor: Int) {
+    override suspend fun updateTitleBgById(id: BaseID, title: String, bgColor: Int) {
         db.userPlanDao().updateTitleBgById(id, title, bgColor)
     }
 

@@ -25,9 +25,6 @@ class MainPlannerModule() {
     ) : IPlannerRepository {
         return PlannerRepository(localSource, sharedPrefManager, dispatcher)
     }
-
-    @Provides
-    fun provideDispatcher(): CoroutineDispatcher = Dispatchers.IO
 }
 
 

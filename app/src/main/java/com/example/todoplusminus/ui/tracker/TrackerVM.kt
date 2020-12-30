@@ -14,8 +14,9 @@ import kotlinx.coroutines.*
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.util.*
+import javax.inject.Inject
 
-class TrackerVM(trackerRepo : TrackerRepository) : ViewModel(){
+class TrackerVM @Inject constructor(trackerRepo : TrackerRepository) : ViewModel(){
 
     companion object{
 
@@ -54,7 +55,7 @@ class TrackerVM(trackerRepo : TrackerRepository) : ViewModel(){
                 resultMap[weekRange] = weekTrackerList
                 startDate = startDate.customPlusWeeks(1)
             }
-            return TreeMap<LocalDateRange, List<TrackerData>>().apply{ putAll(resultMap) }
+            return TreeMap<LocalDateRange, List<TrackerData>>(Collections.reverseOrder()).apply{ putAll(resultMap) }
         }
 
         private fun getTrackerDataByWeekRange(_sameTitlePlanList : List<PlanData>, weekRange : LocalDateRange, trackerData : TrackerData) : TrackerData {
@@ -80,10 +81,6 @@ class TrackerVM(trackerRepo : TrackerRepository) : ViewModel(){
     val trackerDataMap : LiveData<TreeMap<LocalDateRange, List<TrackerData>>> = _allDatePlanProject.switchMap {
         val dateRange = LocalDateRange(it.getOldDate(), LocalDate.now())
         liveData(Dispatchers.Default){
-            Log.d("godgod", "${convertTrackerDataMap(
-                it,
-                dateRange
-            )}")
             emit(
                 convertTrackerDataMap(
                     it,
@@ -91,14 +88,6 @@ class TrackerVM(trackerRepo : TrackerRepository) : ViewModel(){
                 )
             )
         }
-    }
-
-    val startCapture : MutableLiveData<Event<Boolean>> = MutableLiveData()
-
-
-    fun onCapture(){
-        this.startCapture.value =
-            Event(true)
     }
 }
 

@@ -57,7 +57,7 @@ class PlanProject private constructor() {
         return planTitleSet
     }
 
-    fun getPlanDataById(id: String): PlanData {
+    fun getPlanDataById(id: BaseID): PlanData {
         mPlanDataList.forEach { planData ->
             if (planData.id == id) return planData
         }
@@ -83,9 +83,9 @@ class PlanProject private constructor() {
         return PlanData.DEFAULT_BG_COLOR
     }
 
-    fun getPlanDataIdByIndex(index: Int): String {
+    fun getPlanDataIdByIndex(index: Int): BaseID {
         if (!checkWhetherOutOfBound(index)) return mPlanDataList[index].id
-        return PlanData.EMPTY_ID
+        return BaseID.createEmpty()
     }
 
     fun getPlanDataTitleByIndex(index: Int): String {

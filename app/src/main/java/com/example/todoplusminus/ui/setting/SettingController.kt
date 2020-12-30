@@ -9,12 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 import com.example.todoplusminus.R
+import com.example.todoplusminus.base.BaseApplication
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.base.GenericVH
 import com.example.todoplusminus.ui.common.CommonDialogController
@@ -26,8 +28,10 @@ import com.example.todoplusminus.databinding.ControllerSettingTitleItemBinding
 import com.example.todoplusminus.databinding.ControllerSettingToggleItemBinding
 import com.example.todoplusminus.di.SettingVMFactory
 import com.example.todoplusminus.data.repository.SettingRepository
+import com.example.todoplusminus.ui.main.PlannerViewModel
 import com.example.todoplusminus.ui.setting.fontSetting.FontSettingVM
 import com.example.todoplusminus.util.ChangeHandlers.VerticalSlideDownCH
+import javax.inject.Inject
 
 class SettingController : DBControllerBase {
 
@@ -35,27 +39,28 @@ class SettingController : DBControllerBase {
         const val TAG = "setting_controller"
     }
 
-    private lateinit var binder: ControllerSettingBinding
-
-    lateinit var mSettingVM: SettingVM
-
-    //todo 임시 ... dagger 적용할 경우엔 controller에선 repo를 주입하지 않을 것임.
-    private lateinit var mSettingRepo : SettingRepository
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    //todo dagger 주입 -> vm
-    constructor(repo : SettingRepository) {
-        mSettingRepo = repo
+
+    private lateinit var binder: ControllerSettingBinding
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val mSettingVM by lazy {
+        ViewModelProvider(activity as AppCompatActivity, viewModelFactory)
+            .get(SettingVM::class.java)
+    }
+
+
+    override fun connectDagger() {
+        super.connectDagger()
+        (activity?.application as BaseApplication).appComponent.settingComponent().create()
+            .inject(this)
     }
 
 
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
-        val factory = SettingVMFactory(mSettingRepo)
-        this.mSettingVM = ViewModelProvider(
-            activity as AppCompatActivity,
-            factory
-        ).get(SettingVM::class.java)
-
         binder = DataBindingUtil.inflate(inflater, R.layout.controller_setting, container, false)
         binder.vm = mSettingVM
         binder.lifecycleOwner = this
@@ -106,7 +111,7 @@ class SettingController : DBControllerBase {
         })
     }
 
-    private fun showWarningDialog(){
+    private fun showWarningDialog() {
         val delegate = object :
             CommonDialogController.Delegate {
             override fun onComplete() {
@@ -132,16 +137,7 @@ class SettingController : DBControllerBase {
     }
 
     private fun showFontEditor() {
-        //todo replace dagger
-        val fontSettingVM =
-            FontSettingVM(
-                mSettingVM.repository
-            )
-        val fontController =
-            FontSettingController(
-                fontSettingVM
-            )
-        this.pushController(RouterTransaction.with(fontController).apply {
+        this.pushController(RouterTransaction.with(FontSettingController()).apply {
             pushChangeHandler(FadeChangeHandler())
             popChangeHandler(FadeChangeHandler())
         })
@@ -152,7 +148,6 @@ class SettingController : DBControllerBase {
             PlanSizeEditorController.Delegate {
             override fun onComplete(value: Int) {
                 mSettingVM.setPlanSize(value)
-
                 popCurrentController()
             }
 
@@ -172,7 +167,10 @@ class SettingController : DBControllerBase {
     }
 }
 
-class SettingListAdapter(private val settingVM: SettingVM, private val mLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<GenericVH>() {
+class SettingListAdapter(
+    private val settingVM: SettingVM,
+    private val mLifecycleOwner: LifecycleOwner
+) : RecyclerView.Adapter<GenericVH>() {
 
     class SettingTitleVH(
         private val vb: ControllerSettingTitleItemBinding

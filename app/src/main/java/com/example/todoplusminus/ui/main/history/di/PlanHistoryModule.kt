@@ -1,5 +1,6 @@
 package com.example.todoplusminus.ui.main.history.di
 
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.data.repository.IPlannerRepository
 import com.example.todoplusminus.ui.main.history.PlanHistoryVM
 import com.example.todoplusminus.ui.main.history.chart.PlanHistoryChartAdapter
@@ -10,7 +11,7 @@ import dagger.Provides
 class PlanHistoryModule {
 
     @Provides
-    fun provideHistoryVM(targetId : String, repo : IPlannerRepository) : PlanHistoryVM{
+    fun provideHistoryVM(targetId : BaseID, repo : IPlannerRepository) : PlanHistoryVM{
         return PlanHistoryVM(targetId, repo)
     }
 }

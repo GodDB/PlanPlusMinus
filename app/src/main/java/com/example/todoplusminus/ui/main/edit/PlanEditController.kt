@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import com.example.todoplusminus.base.BaseApplication
 import com.example.todoplusminus.base.DBControllerBase
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.databinding.ControllerPlanEditBinding
 import com.example.todoplusminus.ui.customViews.CustomEditText
 import com.example.todoplusminus.util.KeyboardDetector
@@ -18,22 +19,25 @@ class PlanEditController : DBControllerBase {
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    constructor(targetId: String) {
+    constructor(targetId: BaseID) {
         this.mTargetId = targetId
     }
 
     @Inject
     lateinit var mPlanEditVM: PlanEditVM
 
-    private lateinit var mTargetId: String
+    private lateinit var mTargetId: BaseID
     private lateinit var binder: ControllerPlanEditBinding
     private lateinit var mKeyboardDetector: KeyboardDetector
 
+    override fun connectDagger() {
+        super.connectDagger()
 
-    override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
         (activity?.application as BaseApplication).appComponent.planComponent().create()
             .editComponent().create(mTargetId).inject(this)
+    }
 
+    override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
         binder = ControllerPlanEditBinding.inflate(inflater, container, false)
         binder.lifecycleOwner = this
         binder.vm = mPlanEditVM
@@ -41,7 +45,7 @@ class PlanEditController : DBControllerBase {
     }
 
     override fun onViewBound(v: View) {
-        mPlanEditVM?.let {
+        mPlanEditVM.let {
             binder.colorSelectorView.setVM(it)
             binder.titleSelectorView.setVM(it)
         }
@@ -72,7 +76,7 @@ class PlanEditController : DBControllerBase {
     }
 
     private fun onSubscribe() {
-        mPlanEditVM?.isEditClose?.observe(this, Observer { event ->
+        mPlanEditVM.isEditClose.observe(this, Observer { event ->
             event.getContentIfNotHandled()?.let { isEnd ->
                 if (isEnd) closePlanEditor()
             }

@@ -11,6 +11,7 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.BaseApplication
 import com.example.todoplusminus.base.DBControllerBase
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.ui.main.history.chart.PlanHistoryContentsController
 import com.example.todoplusminus.databinding.ControllerPlanHistoryBinding
 import com.example.todoplusminus.ui.main.history.chart.PlanHistoryContentVM
@@ -21,14 +22,14 @@ class PlanHistoryController : DBControllerBase {
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    constructor(targetId: String) {
+    constructor(targetId: BaseID) {
         this._targetId = targetId
     }
 
     @Inject
     lateinit var mPlanHistoryVM: PlanHistoryVM
 
-    private lateinit var _targetId: String
+    private lateinit var _targetId: BaseID
     private lateinit var binder: ControllerPlanHistoryBinding
 
 
@@ -82,8 +83,6 @@ class PlanHistoryController : DBControllerBase {
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
 
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    //todo tab ui 변경 로직
-
                     when (tab.position) {
                         //주별
                         0 -> showWeekChart(childRouter)
@@ -100,7 +99,7 @@ class PlanHistoryController : DBControllerBase {
     }
 
     private fun showWeekChart(childRouter: Router) {
-        val mode = PlanHistoryContentVM.MODE_WEEK
+        val mode = PlanHistoryContentVM.Mode.createWeekMode()
 
         childRouter.setRoot(
             RouterTransaction.with(
@@ -112,7 +111,7 @@ class PlanHistoryController : DBControllerBase {
     }
 
     private fun showMonthChart(childRouter: Router) {
-        val mode = PlanHistoryContentVM.MODE_MONTH
+        val mode = PlanHistoryContentVM.Mode.createMonthMode()
 
         childRouter.setRoot(
             RouterTransaction.with(
@@ -124,7 +123,7 @@ class PlanHistoryController : DBControllerBase {
     }
 
     private fun showYearChart(childRouter: Router) {
-        val mode = PlanHistoryContentVM.MODE_YEAR
+        val mode = PlanHistoryContentVM.Mode.createYearMode()
 
         childRouter.setRoot(
             RouterTransaction.with(

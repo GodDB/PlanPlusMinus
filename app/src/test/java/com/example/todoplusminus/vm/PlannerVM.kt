@@ -2,6 +2,7 @@ package com.example.todoplusminus.vm
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.todoplusminus.TestCoroutineRule
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.getOrAwaitValue
 import com.example.todoplusminus.data.repository.IPlannerRepository
@@ -117,8 +118,8 @@ class PlannerVM {
             assertEquals(planVM.showEditPlanDataID.getOrAwaitValue()?.peekContent(), targetPlanData2.id)
 
             //empty id
-            planVM.onItemClick(null)
-            assertEquals(planVM.showEditPlanDataID.getOrAwaitValue()?.peekContent(), PlanData.EMPTY_ID)
+            planVM.onCreateItemClick()
+            assertEquals(planVM.showEditPlanDataID.getOrAwaitValue()?.peekContent(), BaseID.createEmpty())
         }
     }
 

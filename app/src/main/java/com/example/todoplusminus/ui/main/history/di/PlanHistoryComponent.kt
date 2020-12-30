@@ -1,5 +1,6 @@
 package com.example.todoplusminus.ui.main.history.di
 
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.ui.main.history.PlanHistoryController
 import com.example.todoplusminus.ui.main.history.PlanHistoryVM
 import com.example.todoplusminus.ui.main.history.chart.di.PlanHistoryContentComponent
@@ -14,7 +15,7 @@ interface PlanHistoryComponent {
 
     @Subcomponent.Factory
     interface Factory{
-        fun create(@BindsInstance targetId : String) : PlanHistoryComponent
+        fun create(@BindsInstance targetId : BaseID) : PlanHistoryComponent
     }
 
     fun historyContentComponent() : PlanHistoryContentComponent.Factory

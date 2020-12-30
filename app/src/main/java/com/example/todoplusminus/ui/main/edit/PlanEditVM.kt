@@ -1,9 +1,11 @@
 package com.example.todoplusminus.ui.main.edit
 
 import android.graphics.Typeface
+import android.renderscript.BaseObj
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.todoplusminus.AppConfig
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.util.livedata.Event
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.repository.IPlannerRepository
@@ -19,7 +21,7 @@ class PlanEditVM @Inject constructor(
     val font: Typeface?
         get() = AppConfig.font
 
-    var mId: String = PlanData.EMPTY_ID
+    var mId: BaseID = BaseID.createEmpty()
     val mBgColor: MutableLiveData<Int> = MutableLiveData(ColorManager.getRandomColor())
     val mTitle: MutableLiveData<String> = MutableLiveData("")
 
@@ -40,10 +42,10 @@ class PlanEditVM @Inject constructor(
     )
 
 
-    fun setId(id: String) {
+    fun setId(id: BaseID) {
         mId = id
 
-        if (!checkIsEmptyId())
+        if (!checkIsEmptyId(mId))
             CoroutineScope(Dispatchers.Main).launch {
                 val data = repository.getPlannerDataById(id)
                 setTitle(data.title)
@@ -53,12 +55,12 @@ class PlanEditVM @Inject constructor(
 
 
     fun onComplete() {
-        if (checkIsEmptyId()) return onCreateItem()
+        if (checkIsEmptyId(mId)) return onCreateItem()
         onUpdatePlanData()
     }
 
     private fun onCreateItem() {
-        if (!checkIsEmptyId() && checkIsEmptyContent()) return
+        if (!checkIsEmptyId(mId) && checkIsEmptyContent()) return
         val newData = PlanData.create().apply {
             this.index = mLastestIndex.value?.plus(1) ?: 0
             this.title = mTitle.value ?: ""
@@ -75,7 +77,7 @@ class PlanEditVM @Inject constructor(
     }
 
     private fun onUpdatePlanData() {
-        if (!checkIsEmptyId() || !checkIsEmptyContent()) {
+        if (!checkIsEmptyId(mId) || !checkIsEmptyContent()) {
             updateTitleBgById(mId, mTitle.value!!, mBgColor.value!!)
 
             onClose()
@@ -96,7 +98,7 @@ class PlanEditVM @Inject constructor(
         }
     }
 
-    private fun updateTitleBgById(id: String, title: String, bgColor: Int) {
+    private fun updateTitleBgById(id: BaseID, title: String, bgColor: Int) {
         CoroutineScope(Dispatchers.Main).launch {
             repository.updateTitleBgById(id, title, bgColor)
         }
@@ -111,7 +113,7 @@ class PlanEditVM @Inject constructor(
     private fun checkIsEmptyContent(): Boolean =
         (mBgColor.value == 0 || mTitle.value == "" || mTitle.value == null)
 
-    private fun checkIsEmptyId(): Boolean =
-        mId == PlanData.EMPTY_ID || mId == ""
+    private fun checkIsEmptyId(id : BaseID): Boolean =
+        id.isEmpty()
 }
 

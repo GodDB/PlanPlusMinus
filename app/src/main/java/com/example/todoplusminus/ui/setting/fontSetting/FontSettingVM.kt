@@ -9,8 +9,9 @@ import com.example.todoplusminus.data.repository.SettingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FontSettingVM (private val repository: SettingRepository) {
+class FontSettingVM @Inject constructor(private val repository: SettingRepository) {
 
     val downloadingFontName : MutableLiveData<Event<String>> = MutableLiveData()
     val allowDownload : MutableLiveData<Event<Boolean>> = MutableLiveData(

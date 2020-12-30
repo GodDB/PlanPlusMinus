@@ -72,7 +72,7 @@ class PlanMemoController : DBControllerBase {
             delegate = object :
                 CommonDialogController.Delegate {
                 override fun onComplete() {
-                    mPlanMemoVM?.onDelete()
+                    mPlanMemoVM.onDelete()
                     popCurrentController()
                 }
 

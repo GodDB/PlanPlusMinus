@@ -7,20 +7,25 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.todoplusminus.base.BaseApplication
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerFontSettingBinding
 import com.example.todoplusminus.databinding.ControllerFontSettingItemBinding
+import javax.inject.Inject
 
 class FontSettingController : DBControllerBase {
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    constructor(fontSettingVM: FontSettingVM) {
-        this.mFontSettingVM = fontSettingVM
-    }
 
-    private lateinit var mFontSettingVM: FontSettingVM
+    @Inject
+    lateinit var mFontSettingVM: FontSettingVM
     private lateinit var binder: ControllerFontSettingBinding
 
+    override fun connectDagger() {
+        super.connectDagger()
+        (activity?.application as BaseApplication).appComponent.settingComponent().create()
+            .fontSettingComponent().create().inject(this)
+    }
 
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
         binder = ControllerFontSettingBinding.inflate(inflater, container, false)
@@ -63,7 +68,7 @@ class FontSettingController : DBControllerBase {
 
         mFontSettingVM.closeFontSettingEditor.observe(this, Observer { event ->
             event.getContentIfNotHandled()?.let { isClose ->
-                if(isClose) popCurrentController()
+                if (isClose) popCurrentController()
             }
         })
     }
@@ -75,7 +80,7 @@ class FontListAdapter(private val fontSettingVM: FontSettingVM) :
     private val fontListData: MutableList<FontItemData> = mutableListOf()
     private var isAllowDownload: Boolean = true
     private var downloadingFontName: String = ""
-    private var completeDownloadFontName : String = ""
+    private var completeDownloadFontName: String = ""
 
     fun setDataList(fontList: List<FontItemData>) {
         this.fontListData.clear()
@@ -92,7 +97,7 @@ class FontListAdapter(private val fontSettingVM: FontSettingVM) :
         notifyDataSetChanged()
     }
 
-    fun setCompleteDownladFontName(fontName: String){
+    fun setCompleteDownladFontName(fontName: String) {
         this.completeDownloadFontName = fontName
         notifyDataSetChanged()
     }
@@ -133,7 +138,7 @@ class FontListAdapter(private val fontSettingVM: FontSettingVM) :
             else vb.completeIndicator.visibility = View.GONE
 
             vb.root.setOnClickListener {
-                if(isAllowDownload) fontSettingVM.onFontSelect(fontName)
+                if (isAllowDownload) fontSettingVM.onFontSelect(fontName)
             }
         }
     }
