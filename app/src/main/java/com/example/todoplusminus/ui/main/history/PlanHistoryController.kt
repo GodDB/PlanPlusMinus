@@ -6,34 +6,43 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.R
+import com.example.todoplusminus.base.BaseApplication
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.ui.main.history.chart.PlanHistoryContentsController
 import com.example.todoplusminus.databinding.ControllerPlanHistoryBinding
-import com.example.todoplusminus.db.PlannerDatabase
-import com.example.todoplusminus.data.source.local.LocalDataSourceImpl
-import com.example.todoplusminus.data.repository.PlannerRepository
-import com.example.todoplusminus.data.source.file.SharedPrefManager
 import com.example.todoplusminus.ui.main.history.chart.PlanHistoryContentVM
 import com.google.android.material.tabs.TabLayout
+import javax.inject.Inject
 
 class PlanHistoryController : DBControllerBase {
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    constructor(vm: PlanHistoryVM) {
-        this.mVM = vm
+    constructor(targetId: String) {
+        this._targetId = targetId
     }
 
-    private lateinit var binder: ControllerPlanHistoryBinding
-    private var mVM: PlanHistoryVM? = null
+    @Inject
+    lateinit var mPlanHistoryVM: PlanHistoryVM
 
+    private lateinit var _targetId: String
+    private lateinit var binder: ControllerPlanHistoryBinding
+
+
+    override fun connectDagger() {
+        super.connectDagger()
+
+        (activity?.application as BaseApplication).appComponent.planComponent().create()
+            .historyComponent().create(_targetId).inject(this)
+    }
 
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
         binder = ControllerPlanHistoryBinding.inflate(inflater, container, false)
         binder.lifecycleOwner = this
-        binder.vm = mVM
+        binder.vm = mPlanHistoryVM
 
         return binder.root
     }
@@ -48,7 +57,7 @@ class PlanHistoryController : DBControllerBase {
     }
 
     private fun onSubscribe() {
-        mVM?.wantEditorClose?.observe(this, Observer { event ->
+        mPlanHistoryVM.wantEditorClose.observe(this, Observer { event ->
             event.getContentIfNotHandled()?.let { isEnd ->
                 if (isEnd) popCurrentController()
             }
@@ -59,103 +68,70 @@ class PlanHistoryController : DBControllerBase {
     private fun configureTabLayout() {
         val childRouter = getChildRouter(binder.containerHistoryContents)
 
-        //todo test
-        val db = PlannerDatabase.getInstance(applicationContext!!)
-        val dataSource =
-            LocalDataSourceImpl(db)
-        val sharedManager =
-            SharedPrefManager(
-                applicationContext!!
-            )
-        val plannerRepository =
-            PlannerRepository(
-                dataSource,
-                sharedManager
-            )
-
-        val mode = PlanHistoryContentVM.MODE_WEEK
-        val vm =
-            PlanHistoryContentVM(
-                mode,
-                mVM?.targetId ?: return,
-                plannerRepository
-            )
-        childRouter.setRoot(RouterTransaction.with(
-            PlanHistoryContentsController(
-                vm
-            )
-        ))
-
+        showWeekChart(childRouter)
 
 
         binder.historyTab.apply {
             addTab(newTab().setText(R.string.week), true)
             addTab(newTab().setText(R.string.month))
-            addTab(newTab().setText(R.string.year) )
+            addTab(newTab().setText(R.string.year))
 
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabReselected(tab: TabLayout.Tab) {
-                }
+                override fun onTabReselected(tab: TabLayout.Tab) {}
 
-                override fun onTabUnselected(tab: TabLayout.Tab) {
-                }
+                override fun onTabUnselected(tab: TabLayout.Tab) {}
 
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     //todo tab ui 변경 로직
 
                     when (tab.position) {
                         //주별
-                        0 -> {
-                            Log.d("godgod", "주별")
-                            val mode = PlanHistoryContentVM.MODE_WEEK
-                            val vm =
-                                PlanHistoryContentVM(
-                                    mode,
-                                    mVM?.targetId ?: return,
-                                    plannerRepository
-                                )
-                            childRouter.setRoot(RouterTransaction.with(
-                                PlanHistoryContentsController(
-                                    vm
-                                )
-                            ))
-                        }
+                        0 -> showWeekChart(childRouter)
                         //월별
-                        1 -> {
-                            Log.d("godgod", "별")
-                            val mode = PlanHistoryContentVM.MODE_MONTH
-                            val vm =
-                                PlanHistoryContentVM(
-                                    mode,
-                                    mVM?.targetId ?: return,
-                                    plannerRepository
-                                )
-                            childRouter.setRoot(RouterTransaction.with(
-                                PlanHistoryContentsController(
-                                    vm
-                                )
-                            ))
-                        }
+                        1 -> showMonthChart(childRouter)
                         //년별
-                        2 -> {
-                            Log.d("godgod", "연별")
-                            val mode = PlanHistoryContentVM.MODE_YEAR
-                            val vm =
-                                PlanHistoryContentVM(
-                                    mode,
-                                    mVM?.targetId ?: return,
-                                    plannerRepository
-                                )
-                            childRouter.setRoot(RouterTransaction.with(
-                                PlanHistoryContentsController(
-                                    vm
-                                )
-                            ))
-                        }
+                        2 -> showYearChart(childRouter)
                     }
                 }
-
             })
         }
+
+
+    }
+
+    private fun showWeekChart(childRouter: Router) {
+        val mode = PlanHistoryContentVM.MODE_WEEK
+
+        childRouter.setRoot(
+            RouterTransaction.with(
+                PlanHistoryContentsController(
+                    mode, _targetId
+                )
+            )
+        )
+    }
+
+    private fun showMonthChart(childRouter: Router) {
+        val mode = PlanHistoryContentVM.MODE_MONTH
+
+        childRouter.setRoot(
+            RouterTransaction.with(
+                PlanHistoryContentsController(
+                    mode, _targetId
+                )
+            )
+        )
+    }
+
+    private fun showYearChart(childRouter: Router) {
+        val mode = PlanHistoryContentVM.MODE_YEAR
+
+        childRouter.setRoot(
+            RouterTransaction.with(
+                PlanHistoryContentsController(
+                    mode, _targetId
+                )
+            )
+        )
     }
 }

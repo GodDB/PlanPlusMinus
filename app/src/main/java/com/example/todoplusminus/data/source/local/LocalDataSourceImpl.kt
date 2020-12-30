@@ -8,8 +8,9 @@ import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.entities.PlanMemo
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
+import javax.inject.Inject
 
-class LocalDataSourceImpl(val db: PlannerDatabase) :
+class LocalDataSourceImpl @Inject constructor(val db: PlannerDatabase) :
     ILocalDataSource {
 
     val mapper = PlannerMapper()

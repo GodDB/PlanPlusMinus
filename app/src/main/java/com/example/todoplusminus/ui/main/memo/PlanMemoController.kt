@@ -9,26 +9,31 @@ import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.R
+import com.example.todoplusminus.base.BaseApplication
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerPlanMemoBinding
-import com.example.todoplusminus.data.repository.PlannerRepository
 import com.example.todoplusminus.ui.common.CommonDialogController
+import java.time.LocalDate
+import javax.inject.Inject
 
 class PlanMemoController : DBControllerBase {
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    constructor(repository: PlannerRepository) {
+/*    constructor(repository: PlannerRepository) {
         mRepository = repository
-    }
+    }*/
 
-    private var mRepository: PlannerRepository? = null
-    private var mVM: PlanMemoVM? = null
+    @Inject
+    lateinit var mPlanMemoVM : PlanMemoVM
     private lateinit var binder: ControllerPlanMemoBinding
 
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
+        (activity?.application as BaseApplication).appComponent.planComponent().create().memoComponent().create(
+            LocalDate.now()).inject(this)
+
         binder = ControllerPlanMemoBinding.inflate(inflater, container, false)
-        mVM = PlanMemoVM(mRepository!!)
-        binder.vm = mVM
+/*        mVM = PlanMemoVM(mRepository!!)*/
+        binder.vm = mPlanMemoVM
         binder.lifecycleOwner = this
 
         return binder.root
@@ -44,7 +49,7 @@ class PlanMemoController : DBControllerBase {
     }
 
     private fun onSubscribe() {
-        mVM?.wantEditorClose?.observe(this, Observer { event ->
+        mPlanMemoVM.wantEditorClose.observe(this, Observer { event ->
             event.getContentIfNotHandled()?.let { wantEditorClose ->
                 if (wantEditorClose) {
                     hideKeypad()
@@ -53,7 +58,7 @@ class PlanMemoController : DBControllerBase {
             }
         })
 
-        mVM?.showWarningDeleteDialog?.observe(this, Observer { event ->
+        mPlanMemoVM.showWarningDeleteDialog.observe(this, Observer { event ->
             event.getContentIfNotHandled()?.let { show ->
                 if(show) showWarningDialog()
             }
@@ -67,7 +72,7 @@ class PlanMemoController : DBControllerBase {
             delegate = object :
                 CommonDialogController.Delegate {
                 override fun onComplete() {
-                    mVM?.onDelete()
+                    mPlanMemoVM?.onDelete()
                     popCurrentController()
                 }
 

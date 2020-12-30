@@ -13,6 +13,7 @@ import com.example.todoplusminus.data.repository.IPlannerRepository
 import com.example.todoplusminus.util.DateHelper
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import javax.inject.Inject
 
 
 /**
@@ -22,7 +23,7 @@ import java.time.LocalDate
  * 이번 프로젝트에서는 livedata를 사용했기 때문에 참조 대상인 controller가 deActive 상황일 때 livedata에 의해 controller가가 향받게 된다.
  *  그래서 viewModel()을 사용한다.
  * */
-class PlannerViewModel(
+class PlannerViewModel @Inject constructor(
     private val repository: IPlannerRepository
 ) : ViewModel() {
 

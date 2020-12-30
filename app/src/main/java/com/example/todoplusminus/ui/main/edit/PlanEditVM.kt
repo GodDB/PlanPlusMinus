@@ -10,8 +10,9 @@ import com.example.todoplusminus.data.repository.IPlannerRepository
 import com.example.todoplusminus.util.ColorManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
-class PlanEditVM(
+class PlanEditVM @Inject constructor(
     private val repository: IPlannerRepository
 ) {
 

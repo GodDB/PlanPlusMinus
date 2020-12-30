@@ -14,6 +14,7 @@ abstract class DBControllerBase : ControllerBase {
     constructor(args: Bundle?) : super(args)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+        connectDagger()
         val v = connectDataBinding(inflater, container)
         onViewBound(v)
         return v

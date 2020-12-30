@@ -21,7 +21,7 @@ import java.util.*
 
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
-class TestPlanEditVM {
+class TestPlanEditComponentVM {
 
     @get:Rule
     val testCoroutineRule = TestCoroutineRule()

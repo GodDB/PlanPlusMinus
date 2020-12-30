@@ -8,8 +8,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import javax.inject.Inject
 
-class PlanMemoVM(
+class PlanMemoVM @Inject constructor(
     private val repository: IPlannerRepository,
     private val targetDate: LocalDate = LocalDate.now()
 ) {

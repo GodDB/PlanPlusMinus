@@ -8,9 +8,10 @@ import androidx.lifecycle.switchMap
 import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.util.livedata.Event
 import com.example.todoplusminus.data.entities.PlanProject
-import com.example.todoplusminus.data.repository.PlannerRepository
+import com.example.todoplusminus.data.repository.IPlannerRepository
+import javax.inject.Inject
 
-class PlanHistoryVM(val targetId: String, private val repository: PlannerRepository) {
+class PlanHistoryVM @Inject constructor(val targetId: String, private val repository: IPlannerRepository) {
 
     val font: Typeface?
         get() = AppConfig.font

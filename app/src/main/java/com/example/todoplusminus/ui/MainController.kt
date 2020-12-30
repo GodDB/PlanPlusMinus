@@ -73,29 +73,13 @@ class MainController : VBControllerBase {
         }
     }
 
-    private fun showMainPlannerEditor(){
-        //todo test
-        val db = PlannerDatabase.getInstance(applicationContext!!)
-
-        val dataSource =
-            LocalDataSourceImpl(db)
-        val sharedPrefManager =
-            SharedPrefManager(
-                applicationContext!!
-            )
-        plannerRepository =
-            PlannerRepository(
-                dataSource,
-                sharedPrefManager
-            )
-
+    private fun showMainPlannerEditor() {
         pushControllerByTag(
             childRouter,
             RouterTransaction.with(
-                PlannerController(
-                    plannerRepository!!,
-                    plannerDelegate
-                ).apply { retainViewMode = RetainViewMode.RETAIN_DETACH })
+                PlannerController(plannerDelegate).apply {
+                    retainViewMode = RetainViewMode.RETAIN_DETACH
+                })
                 .apply {
                     tag(PlannerController.TAG)
                     SimpleSwapChangeHandler()
@@ -105,7 +89,7 @@ class MainController : VBControllerBase {
         )
     }
 
-    private fun showTrackerEditor(){
+    private fun showTrackerEditor() {
         val db = PlannerDatabase.getInstance(applicationContext!!)
         val dataSource =
             LocalDataSourceImpl(db)
@@ -122,8 +106,8 @@ class MainController : VBControllerBase {
                 TrackerController(
                     trackerVM
                 ).apply {
-                retainViewMode = RetainViewMode.RETAIN_DETACH
-            }).apply {
+                    retainViewMode = RetainViewMode.RETAIN_DETACH
+                }).apply {
                 tag(TrackerController.TAG)
                 SimpleSwapChangeHandler()
                 SimpleSwapChangeHandler()
@@ -132,7 +116,7 @@ class MainController : VBControllerBase {
         )
     }
 
-    private fun showSettingEditor(){
+    private fun showSettingEditor() {
         //todo replace dagger
         val db = PlannerDatabase.getInstance(applicationContext!!)
 
@@ -159,8 +143,8 @@ class MainController : VBControllerBase {
                 SettingController(
                     settingRepo
                 ).apply {
-                retainViewMode = RetainViewMode.RETAIN_DETACH
-            }).apply {
+                    retainViewMode = RetainViewMode.RETAIN_DETACH
+                }).apply {
                 tag(SettingController.TAG)
                 SimpleSwapChangeHandler()
                 SimpleSwapChangeHandler()
@@ -175,9 +159,7 @@ class MainController : VBControllerBase {
             Log.d("godgod", "showMemoEditor()")
             auxRouter?.setRoot(
                 RouterTransaction.with(
-                    PlanMemoController(
-                        plannerRepository!!
-                    )
+                    PlanMemoController()
                 ).apply {
                     pushChangeHandler(VerticalChangeHandler())
                     popChangeHandler(VerticalChangeHandler())
@@ -186,15 +168,8 @@ class MainController : VBControllerBase {
 
         override fun showHistoryEditor(id: String) {
             Log.d("godgod", "showHistoryEditor()")
-            val vm =
-                PlanHistoryVM(
-                    id,
-                    plannerRepository!!
-                )
             auxRouter?.setRoot(RouterTransaction.with(
-                PlanHistoryController(
-                    vm
-                )
+                PlanHistoryController(id)
             ).apply {
                 pushChangeHandler(VerticalChangeHandler())
                 popChangeHandler(VerticalChangeHandler())

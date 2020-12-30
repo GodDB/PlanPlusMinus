@@ -6,25 +6,28 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
 import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.util.ChangeHandlers.MyTransitionCH
 import com.example.todoplusminus.R
+import com.example.todoplusminus.base.BaseApplication
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.databinding.ControllerPlannerBinding
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.repository.PlannerRepository
 import com.example.todoplusminus.ui.customViews.PMCalendarView
 import com.example.todoplusminus.databinding.ControllerPlannerItemBinding
+import com.example.todoplusminus.di.MainViewModelFactory
 import com.example.todoplusminus.ui.main.edit.PlanEditController
 import com.example.todoplusminus.util.*
 import com.example.todoplusminus.ui.main.edit.PlanEditVM
-import com.example.todoplusminus.di.PlannerVMFactory
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
 import java.time.LocalDate
+import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
 
@@ -40,27 +43,28 @@ class PlannerController : DBControllerBase {
         const val TAG = "planner_controller"
     }
 
-    private lateinit var binder: ControllerPlannerBinding
-    private lateinit var planVM: PlannerViewModel
-    private var mDelegate: Delegate? = null
-
-    private var repository: PlannerRepository? = null
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    constructor(repository: PlannerRepository, delegate: Delegate?) {
-        this.repository = repository
-        mDelegate = delegate
+    constructor(delegate : PlannerController.Delegate){
+        this.mDelegate = delegate
     }
 
-    override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
-        binder = DataBindingUtil.inflate(inflater, R.layout.controller_planner, container, false)
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
-        val factory = PlannerVMFactory(repository!!)
-        planVM = ViewModelProvider(
-            activity as AppCompatActivity,
-            factory
-        ).get(PlannerViewModel::class.java)
+    private val planVM by lazy {
+        ViewModelProvider(activity as AppCompatActivity, viewModelFactory)
+            .get(PlannerViewModel::class.java)
+    }
+    private lateinit var binder: ControllerPlannerBinding
+    private var mDelegate: Delegate? = null
+
+
+    override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
+        (activity?.application as BaseApplication).appComponent.planComponent().create().inject(this)
+
+        binder = DataBindingUtil.inflate(inflater, R.layout.controller_planner, container, false)
 
         binder.vm = planVM
         binder.lifecycleOwner = this
@@ -88,10 +92,8 @@ class PlannerController : DBControllerBase {
 
     private fun showPlanEditor(id: String) {
         //todo test
-        val vm = PlanEditVM(repository!!).apply { setId(id) }
-
         pushController(RouterTransaction.with(
-            PlanEditController(vm)
+            PlanEditController(id)
         ).apply {
             pushChangeHandler(MyTransitionCH())
             popChangeHandler(MyTransitionCH())

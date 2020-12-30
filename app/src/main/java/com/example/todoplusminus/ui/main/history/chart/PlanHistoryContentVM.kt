@@ -7,14 +7,16 @@ import com.example.todoplusminus.util.livedata.ThreeCombinedLiveData
 import com.example.todoplusminus.util.livedata.TwoCombinedLiveData
 import com.example.todoplusminus.util.livedata.Event
 import com.example.todoplusminus.data.entities.PlanProject
+import com.example.todoplusminus.data.repository.IPlannerRepository
 import com.example.todoplusminus.data.repository.PlannerRepository
 import com.example.todoplusminus.util.LocalDateRange
 import com.example.todoplusminus.util.DateHelper
+import javax.inject.Inject
 
-class PlanHistoryContentVM(
-    _mode: String,
+class PlanHistoryContentVM @Inject constructor(
+    private val _mode: String = "",
     private val targetId: String,
-    private val repository: PlannerRepository
+    private val repository: IPlannerRepository
 ) {
 
     companion object {

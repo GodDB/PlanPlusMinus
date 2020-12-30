@@ -31,7 +31,7 @@ class SplashController : VBControllerBase {
     override fun connectViewBinding(inflater: LayoutInflater, container: ViewGroup): View {
         binder = ControllerSplashBinding.inflate(inflater, container, false)
 
-        (activity?.application as BaseApplication).appComponent.mainComponent().create().inject(this)
+        (activity?.application as BaseApplication).appComponent.splashComponent().create().inject(this)
 
         return binder.root
     }

@@ -14,6 +14,7 @@ abstract class VBControllerBase : ControllerBase {
     constructor(args: Bundle?) : super(args)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+        connectDagger()
         val v = connectViewBinding(inflater, container)
         onViewBound(v)
         return v

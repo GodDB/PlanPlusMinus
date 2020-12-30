@@ -1,5 +1,6 @@
 package com.example.todoplusminus.data.entities
 
+import android.media.audiofx.BassBoost
 import com.example.todoplusminus.R
 import com.example.todoplusminus.util.DateHelper
 import java.time.LocalDate
@@ -50,4 +51,33 @@ class PlanData(
                 "infoId : $infoId"
     }
 
+}
+
+
+class BaseID(val id : String){
+
+    companion object{
+        private val EMPTY_ID = "none"
+
+        fun randomID() : BaseID{
+            return BaseID(UUID.randomUUID().toString())
+        }
+
+        fun fromString(str : String) : BaseID{
+            return BaseID(str)
+        }
+
+        fun createEmpty() : BaseID{
+            return BaseID(EMPTY_ID)
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        val otherID = other as? BaseID ?: return false
+        return this.id == otherID.id
+    }
+
+    override fun toString(): String {
+        return id
+    }
 }

@@ -17,6 +17,8 @@ abstract class ControllerBase : LifecycleController {
     constructor() : super()
     constructor(args: Bundle?) : super(args)
 
+    open fun connectDagger() {}
+
     fun popCurrentController() {
         router.popCurrentController()
     }

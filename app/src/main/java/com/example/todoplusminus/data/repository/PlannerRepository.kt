@@ -11,8 +11,9 @@ import com.example.todoplusminus.data.source.file.SharedPrefManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.time.LocalDate
+import javax.inject.Inject
 
-class PlannerRepository(
+class PlannerRepository @Inject constructor(
     private val localSource: ILocalDataSource,
     private val sharedPrefManager: SharedPrefManager,
     private val dispatcher: CoroutineDispatcher = PMCoroutineSpecification.IO_DISPATCHER
