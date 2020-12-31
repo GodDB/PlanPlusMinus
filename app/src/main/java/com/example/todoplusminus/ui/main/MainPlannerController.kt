@@ -1,36 +1,37 @@
 package com.example.todoplusminus.ui.main
 
+import android.graphics.Canvas
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.AppConfig
-import com.example.todoplusminus.util.ChangeHandlers.MyTransitionCH
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.BaseApplication
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.data.entities.BaseID
-import com.example.todoplusminus.databinding.ControllerPlannerBinding
 import com.example.todoplusminus.data.entities.PlanData
-import com.example.todoplusminus.data.repository.PlannerRepository
-import com.example.todoplusminus.ui.customViews.PMCalendarView
+import com.example.todoplusminus.databinding.ControllerPlannerBinding
 import com.example.todoplusminus.databinding.ControllerPlannerItemBinding
-import com.example.todoplusminus.di.MainViewModelFactory
+import com.example.todoplusminus.ui.customViews.PMCalendarView
 import com.example.todoplusminus.ui.main.edit.PlanEditController
-import com.example.todoplusminus.util.*
-import com.example.todoplusminus.ui.main.edit.PlanEditVM
+import com.example.todoplusminus.util.ChangeHandlers.MyTransitionCH
+import com.example.todoplusminus.util.CommonDiffUtil
+import com.example.todoplusminus.util.VibrateHelper
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
 import java.time.LocalDate
 import javax.inject.Inject
-import kotlin.math.max
-import kotlin.math.min
 
 
 class PlannerController : DBControllerBase {
@@ -47,7 +48,7 @@ class PlannerController : DBControllerBase {
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    constructor(delegate : PlannerController.Delegate){
+    constructor(delegate: Delegate) {
         this.mDelegate = delegate
     }
 
@@ -63,7 +64,8 @@ class PlannerController : DBControllerBase {
 
 
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
-        (activity?.application as BaseApplication).appComponent.planComponent().create().inject(this)
+        (activity?.application as BaseApplication).appComponent.planComponent().create()
+            .inject(this)
 
         binder = DataBindingUtil.inflate(inflater, R.layout.controller_planner, container, false)
 
@@ -92,7 +94,6 @@ class PlannerController : DBControllerBase {
     }
 
     private fun showPlanEditor(id: BaseID) {
-        //todo test
         pushController(RouterTransaction.with(
             PlanEditController(id)
         ).apply {
@@ -118,11 +119,9 @@ class PlannerController : DBControllerBase {
         binder.planList.layoutManager = LinearLayoutManager(binder.rootView.context)
 
         itemTouchHelperCallback =
-            ItemTouchHelperCallback(binder.planList.adapter as PlanListAdapter)
+            ItemTouchHelperCallback(binder.planList.adapter as ItemTouchHelperCallback.ItemTouchHelperListener)
         val helper = ItemTouchHelper(itemTouchHelperCallback)
         helper.attachToRecyclerView(binder.planList)
-
-        itemSwipeEventHelper.attachToRecyclerView(binder.planList)
     }
 
     private lateinit var itemTouchHelperCallback: ItemTouchHelperCallback
@@ -131,7 +130,7 @@ class PlannerController : DBControllerBase {
 
         planVM.isEditMode.observe(this, Observer { editMode ->
             itemTouchHelperCallback.enabledLongPress = editMode
-            itemSwipeEventHelper.isSwipeEnabled = !editMode
+            itemTouchHelperCallback.enabledSwipe = !editMode
         })
 
         planVM.showMemoEditor.observe(this, Observer { event ->
@@ -197,122 +196,6 @@ class PlannerController : DBControllerBase {
     private fun getColor(colorId: Int) =
         binder.rootView.context.getColor(colorId)
 
-
-    /**
-     * 리사이클러뷰의 swipe 이벤트를 담당하는 object
-     *
-     * 다른 곳에서 재활용 할 일이 없으므로, 익명객체로 생성한다.
-     * editMode에선 작동하지 않는다.
-     * */
-    private val itemSwipeEventHelper = object {
-        var isSwipeEnabled = true
-
-        private var mRecyclerView: RecyclerView? = null
-        private var mLayoutManager: RecyclerView.LayoutManager? = null
-
-        //swipe로 이동할 수 있는 view의 x좌표
-        private val minLeft = -DpConverter.dpToPx(70f)
-        private val maxRight
-            get() = DeviceManager.getDeviceWidth() + DpConverter.dpToPx(70f) - viewWidth!!
-
-        //뷰의 원래 위치
-        private var viewWidth: Int? = null
-        private val originX
-            get() = DeviceManager.getDeviceWidth() / 2 - (viewWidth?.div(2) ?: 0)
-
-        //사용자가 처음 눌렀을 때의 위치
-        private var firstPressedX = 0f
-
-        private var result = true
-
-        fun attachToRecyclerView(rv: RecyclerView?) {
-            mRecyclerView = rv
-            mLayoutManager = rv?.layoutManager
-            mRecyclerView?.addOnItemTouchListener(mItemTouchListener)
-        }
-
-        private val mItemTouchListener = object : RecyclerView.OnItemTouchListener {
-
-            private var targetView: View? = null
-
-            override fun onTouchEvent(rv: RecyclerView, event: MotionEvent) {}
-
-            override fun onInterceptTouchEvent(rv: RecyclerView, event: MotionEvent): Boolean {
-                if (isSwipeEnabled)
-                    when (event.actionMasked) {
-                        MotionEvent.ACTION_DOWN -> {
-                            firstPressedX = event.x
-                            targetView = rv.findChildViewUnder(event.x, event.y)
-                            viewWidth = targetView?.width
-                        }
-
-                        MotionEvent.ACTION_MOVE -> {
-                            if (result) {
-                                targetView?.let { v ->
-                                    v.x = min(
-                                        maxRight,
-                                        max(originX + event.x - firstPressedX, minLeft)
-                                    )
-
-                                    //왼쪽 swipe로 끝지점에 도달
-                                    if (v.x == minLeft) {
-                                        resetLocation(v)
-                                        VibrateHelper.start()
-                                        result = false
-
-                                        val position = mLayoutManager?.getPosition(v)
-                                        if (position != null) onSwipe("left", position)
-
-                                    }
-
-                                    //오른쪽 swipe로 끝지점에 도달
-                                    else if (v.x == maxRight) {
-                                        resetLocation(v)
-                                        VibrateHelper.start()
-                                        result = false
-
-                                        val position = mLayoutManager?.getPosition(v)
-                                        if (position != null) onSwipe("right", position)
-                                    }
-                                }
-                            }
-                        }
-
-                        MotionEvent.ACTION_UP -> {
-                            targetView?.let { v ->
-                                resetLocation(v)
-                            }
-                            result = true
-                        }
-                    }
-                return false
-            }
-
-            private fun onSwipe(direction: String, position: Int) {
-                when (direction) {
-                    "right" -> {
-                        if (checkPlusDirectToRight()) planVM.updateCountByIndex(1, position)
-                        else planVM.updateCountByIndex(-1, position)
-                    }
-                    "left" -> {
-                        if (checkPlusDirectToRight()) planVM.updateCountByIndex(-1, position)
-                        else planVM.updateCountByIndex(1, position)
-                    }
-                }
-            }
-
-            private fun checkPlusDirectToRight(): Boolean =
-                AppConfig.swipeDirectionToRight
-
-
-            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
-        }
-
-        // 뷰의 위치를 원래대로 복귀시킨다.
-        private fun resetLocation(v: View) {
-            v.x = originX
-        }
-    }
 }
 
 
@@ -393,9 +276,27 @@ class PlanListAdapter(
     }
 
     override fun onSwipe(position: Int, direction: Int) {
-        //직접 구현해서 사용함.
+        updateCount(position, direction)
+
+        VibrateHelper.start() //바이브레이터
+        notifyDataSetChanged()
     }
 
+    private fun updateCount(position: Int, direction: Int) {
+        when (direction) {
+            ItemTouchHelper.END -> {
+                if (checkPlusDirectToRight()) planVM.updateCountByIndex(1, position)
+                else planVM.updateCountByIndex(-1, position)
+            }
+            ItemTouchHelper.START-> {
+                if (checkPlusDirectToRight()) planVM.updateCountByIndex(-1, position)
+                else planVM.updateCountByIndex(1, position)
+            }
+        }
+    }
+
+    private fun checkPlusDirectToRight(): Boolean =
+        AppConfig.swipeDirectionToRight
 
     /**
      * 인덱스를 재 정렬 한다.
@@ -422,7 +323,7 @@ class PlanListAdapter(
 
 
 /**
- * recyclerView item들을 이동시켜주는 object
+ * recyclerView item move, swipe 이벤트를 제공하는 object
  * */
 class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) :
     ItemTouchHelper.Callback() {
@@ -432,8 +333,8 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) :
         fun onSwipe(position: Int, direction: Int)
     }
 
-
     var enabledLongPress = false
+    var enabledSwipe = true
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,
@@ -445,7 +346,7 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) :
     }
 
     override fun isLongPressDragEnabled(): Boolean = enabledLongPress
-    override fun isItemViewSwipeEnabled(): Boolean = false
+    override fun isItemViewSwipeEnabled(): Boolean = enabledSwipe
 
     override fun onMove(
         recyclerView: RecyclerView,
@@ -454,6 +355,31 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) :
     ): Boolean = listener.onItemMove(viewHolder.adapterPosition, target.adapterPosition)
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        listener.onSwipe(viewHolder.adapterPosition, direction)
+    }
+
+    override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
+        return 0.00005f
+    }
+
+
+    override fun onChildDraw(
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
+    ) {
+        if(actionState == ItemTouchHelper.ACTION_STATE_DRAG){
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+        }
+
+        if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+            super.onChildDraw(c, recyclerView, viewHolder, dX/5, dY, actionState, isCurrentlyActive)
+        }
+
     }
 
 }
