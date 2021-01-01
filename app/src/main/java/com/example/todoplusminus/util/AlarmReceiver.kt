@@ -23,15 +23,17 @@ class AlarmReceiver : BroadcastReceiver() {
     lateinit var notificationManager : NotificationManager
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("godgod", "${intent}")
+       val title = intent.getStringExtra(AlarmManagerHelper.TITLE_ID)
+        Log.d("godgod", "$title")
+
         notificationManager = context.getSystemService(
             Context.NOTIFICATION_SERVICE) as NotificationManager
 
         createNotificationChannel()
-        deliverNotification(context)
+        deliverNotification(context, title ?: "")
     }
 
-    private fun deliverNotification(context: Context){
+    private fun deliverNotification(context: Context, title : String){
         val contentIntent = Intent(context, MainActivity::class.java)
         val contentPendingIntent = PendingIntent.getActivity(
             context,
@@ -42,8 +44,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val builder =
             NotificationCompat.Builder(context, PRIMARY_CHANNEL_ID)
                 .setSmallIcon(R.drawable.sunflower)
-                .setContentTitle("Test")
-                .setContentText("test content")
+                .setContentTitle(title)
                 .setContentIntent(contentPendingIntent)
                 .setAutoCancel(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)

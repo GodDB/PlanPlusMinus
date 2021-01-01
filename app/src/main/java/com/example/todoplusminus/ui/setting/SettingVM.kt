@@ -35,97 +35,113 @@ class SettingVM @Inject constructor(private val repository: SettingRepository) :
         Event(false)
     )
 
-    val settingDataList: MutableLiveData<MutableList<Pair<Int, SettingData>>> = MutableLiveData()
+    val valueDataList: MutableLiveData<MutableList<Triple<Int, Int, ValueData>>> = MutableLiveData()
 
     private val _settingDataList
         get() = mutableListOf(
-            Pair(
+            Triple(
                 R.string.plan,
+                R.color.black,
                 ValueEmpty()
             ),
-            Pair(
+            Triple(
                 R.string.plan_size,
+                R.color.black,
                 ValueString(
                     AppConfig.planSize.toString(),
                     TAG_PLAN_SIZE
                 )
             ),
-            Pair(
+            Triple(
                 R.string.plan_recommendation_keywords,
+                R.color.black,
                 ValueBoolean(
                     AppConfig.showSuggestedKeyword,
                     TAG_PLAN_RECOMMEND_KEYWORD
                 )
             ),
-            Pair(
+            Triple(
                 R.string.push_to_the_right,
+                R.color.black,
                 ValueBoolean(
                     AppConfig.swipeDirectionToRight,
                     TAG_PUSH_TO_THE_RIGHT
                 )
             ),
-            Pair(
+            Triple(
                 R.string.plus_minus,
+                R.color.black,
                 ValueEmpty()
             ),
-            Pair(
+            Triple(
                 R.string.font_style,
+                R.color.black,
                 ValueString(
                     AppConfig.fontName,
                     TAG_FONT_STYLE
                 )
             ),
-            Pair(
+            Triple(
                 R.string.alarm_at_10pm,
+                R.color.black,
                 ValueBoolean(
                     AppConfig.enableAlarm,
                     TAG_ALARM_AT_10
                 )
             ),
-            Pair(
+            Triple(
                 R.string.support,
+                R.color.black,
                 ValueEmpty()
             ),
-            Pair(
+            Triple(
                 R.string.official_website,
+                R.color.black,
                 ValueString(tag = 0)
             ),
-            Pair(
+            Triple(
                 R.string.faq,
+                R.color.black,
                 ValueString(tag = 0)
             ),
-            Pair(
+            Triple(
                 R.string.share_app_with_friends,
+                R.color.black,
                 ValueString(tag = 0)
             ),
-            Pair(
+            Triple(
                 R.string.app_info,
+                R.color.black,
                 ValueEmpty()
             ),
-            Pair(
+            Triple(
                 R.string.app_version,
+                R.color.black,
                 ValueString(
                     AppConfig.version,
                     TAG_APP_VERSION
                 )
             ),
-            Pair(
+            Triple(
                 R.string.empty,
+                R.color.black,
                 ValueEmpty()
             ),
-            Pair(
+            Triple(
                 R.string.to_delete_all_data,
+                R.color.red,
                 ValueString(tag = TAG_DELETE_ALL_DATA)
             ),
-            Pair(
+            Triple(
                 R.string.empty,
+                R.color.black,
                 ValueEmpty()
             )
         )
 
 
     fun reload() {
-        settingDataList.value = _settingDataList
+        valueDataList.value = _settingDataList
     }
 
     fun onSwitchEvent(tag: Int, value: Boolean) {
@@ -190,8 +206,8 @@ class SettingVM @Inject constructor(private val repository: SettingRepository) :
 
 }
 
-sealed class SettingData()
+sealed class ValueData()
 
-data class ValueString(val value: String = "", val tag: Int) : SettingData()
-data class ValueBoolean(val value: Boolean, val tag: Int) : SettingData()
-data class ValueEmpty(val value: Nothing? = null) : SettingData()
+data class ValueString(val value: String = "", val tag: Int) : ValueData()
+data class ValueBoolean(val value: Boolean, val tag: Int) : ValueData()
+data class ValueEmpty(val value: Nothing? = null) : ValueData()

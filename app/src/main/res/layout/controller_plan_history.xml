@@ -10,6 +10,7 @@
             type="com.example.todoplusminus.ui.main.history.PlanHistoryVM" />
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -96,8 +97,8 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="@id/guide_content_left"
-                app:layout_constraintRight_toRightOf="@id/guide_content_right"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/guide_scroll_area">
 
                 <LinearLayout
@@ -109,6 +110,8 @@
                         android:id="@+id/history_tab"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
                         android:background="@drawable/border_rounded"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -123,8 +126,28 @@
                     <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
                         android:id="@+id/container_history_contents"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/white" />
 
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white_smoke"
+                        android:orientation="vertical">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/alarm_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="30dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:paddingBottom="30dp"
+                            />
+                    </LinearLayout>
 
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
@@ -167,4 +190,5 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

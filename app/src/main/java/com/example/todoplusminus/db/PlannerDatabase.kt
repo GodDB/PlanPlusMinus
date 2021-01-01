@@ -4,14 +4,16 @@ import android.content.Context
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import com.example.todoplusminus.data.entities.BaseID
+import com.example.todoplusminus.data.entities.PlanAlarm
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.entities.PlanMemo
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 @Database(
-    entities = [PlannerItemEntity::class, PlannerInfoEntity::class, PlanMemo::class],
+    entities = [PlannerItemEntity::class, PlannerInfoEntity::class, PlanMemo::class, PlanAlarm::class],
     version = 1
 )
 @TypeConverters(Converters::class)
@@ -29,7 +31,6 @@ abstract class PlannerDatabase : RoomDatabase() {
                 )
                     .build()
             }
-
             return INSTANCE!!
         }
     }
@@ -60,6 +61,7 @@ data class PlannerInfoEntity(
     var planId: BaseID
 )
 
+
 data class PlannerItemInfoEntity(
     @Embedded
     var item: PlannerItemEntity,
@@ -72,7 +74,7 @@ interface UserPlanDao {
     //planInfo는 planItem의 fk관계여서 planItem삭제시 planInfo도 삭제된다.
     @Query("delete from planneritem")
     suspend fun deleteAllPlanItem()
-    
+
     @Query("delete from PlannerMemo")
     suspend fun deleteAllPlanMemo()
 
@@ -88,16 +90,12 @@ interface UserPlanDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updatePlanInfo(item: PlannerInfoEntity)
 
-    /*    @Update(onConflict = OnConflictStrategy.IGNORE)
-        suspend fun updatePlanItemList(itemlist : List<PlannerItemEntity>)
-        @Update(onConflict = OnConflictStrategy.IGNORE)
-        suspend fun updatePlanInfoList(itemlist : List<PlannerInfoEntity>)*/
     @Delete
     suspend fun deletePlanItem(item: PlannerItemEntity)
 
     @Query("delete from PlannerMemo where date == :date")
-    suspend fun deletePlanMemoByData(date : LocalDate)
-    
+    suspend fun deletePlanMemoByData(date: LocalDate)
+
     @Delete
     suspend fun deletePlanInfo(item: PlannerInfoEntity)
 
@@ -107,7 +105,7 @@ interface UserPlanDao {
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid order by item.`index` desc")
     fun getAllPlannerData(): Flow<MutableList<PlanData>>
 
-    
+
     @Query("select * from PlannerItem item left outer join PlannerInfo info on item.id = info.planId where date = :date order by item.`index` desc")
     fun getAllPlannerDataByDate(date: LocalDate): Flow<MutableList<PlanData>>
 
@@ -147,21 +145,32 @@ interface UserPlanDao {
 
 class Converters {
     @TypeConverter
-    fun stringToCalendar(value: String): LocalDate {
+    fun stringToLocalDate(value: String): LocalDate {
         return LocalDate.parse(value)
     }
 
     @TypeConverter
-    fun calendarToString(value: LocalDate): String {
+    fun localDateToString(value: LocalDate): String {
         return value.toString()
     }
 
     @TypeConverter
-    fun stringToBaseId(value : String) : BaseID {
+    fun stringToLocalDateTime(value : String) : LocalDateTime{
+        return LocalDateTime.parse(value)
+    }
+
+    @TypeConverter
+    fun localDateTimeToString(value : LocalDateTime) : String{
+        return value.toString()
+    }
+
+    @TypeConverter
+    fun stringToBaseId(value: String): BaseID {
         return BaseID.fromString(value)
     }
+
     @TypeConverter
-    fun baseIdToString(value : BaseID) : String{
+    fun baseIdToString(value: BaseID): String {
         return value.toString()
     }
 }

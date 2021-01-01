@@ -1,15 +1,18 @@
 package com.example.todoplusminus.ui.main.history
 
 import android.graphics.Typeface
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.*
 import com.example.todoplusminus.AppConfig
+import com.example.todoplusminus.R
 import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.util.livedata.Event
 import com.example.todoplusminus.data.entities.PlanProject
 import com.example.todoplusminus.data.repository.IPlannerRepository
+import com.example.todoplusminus.ui.setting.ValueData
+import com.example.todoplusminus.ui.setting.ValueEmpty
+import com.example.todoplusminus.ui.setting.ValueString
+import com.example.todoplusminus.util.ColorID
+import com.example.todoplusminus.util.StringID
 import javax.inject.Inject
 
 class PlanHistoryVM @Inject constructor(val targetId: BaseID, private val repository: IPlannerRepository) {
@@ -31,6 +34,18 @@ class PlanHistoryVM @Inject constructor(val targetId: BaseID, private val reposi
 
     var wantEditorClose: MutableLiveData<Event<Boolean>> =
         MutableLiveData(Event(false))
+
+
+    //alarm 리스트에 기본적으로 들어가는 속성
+    // title과 알람 설정화면 실행하는 뷰 데이터가 포함.
+    val defaultAlarmData : LiveData<List<Triple<List<StringID>, ColorID, ValueData>>> = liveData {
+        val data = mutableListOf<Triple<List<StringID>, ColorID, ValueData>>().apply {
+            add(Triple(listOf(StringID(R.string.alarm)), ColorID(R.color.black), ValueEmpty()))
+            add(Triple(listOf(StringID(R.string.add_new_alarm)), ColorID(R.color.sky_blue), ValueString(tag = 0)))
+        }.toList()
+
+        emit(data)
+    }
 
 
     fun onCancel() {

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="vm"
             type="com.example.todoplusminus.ui.tracker.TrackerVM" />
@@ -16,46 +17,78 @@
             android:id="@+id/tracker_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/bg_tracker"
             android:scaleType="fitXY"
-            />
+            android:src="@drawable/bg_tracker" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="70dp"
             android:text="Tracker"
             android:textSize="30sp"
             android:textStyle="bold"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="70dp"
-            />
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tracker_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@id/guide_contents_top"
             app:layout_constraintBottom_toBottomOf="@id/guide_contents_bottom"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="@id/guide_contents_top" />
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/empty_guide_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="10dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="@id/guide_contents_bottom"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guide_contents_top"
+            android:visibility="gone"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/the_plan_is_empty"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_a_new_plan_from_the_planner" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guide_contents_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.2"
-            />
+            app:layout_constraintGuide_percent="0.2" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guide_contents_bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.9"
-            />
+            app:layout_constraintGuide_percent="0.9" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

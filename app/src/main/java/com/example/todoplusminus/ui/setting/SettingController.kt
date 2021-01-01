@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,10 +26,6 @@ import com.example.todoplusminus.databinding.ControllerSettingBinding
 import com.example.todoplusminus.databinding.ControllerSettingTextviewItemBinding
 import com.example.todoplusminus.databinding.ControllerSettingTitleItemBinding
 import com.example.todoplusminus.databinding.ControllerSettingToggleItemBinding
-import com.example.todoplusminus.di.SettingVMFactory
-import com.example.todoplusminus.data.repository.SettingRepository
-import com.example.todoplusminus.ui.main.PlannerViewModel
-import com.example.todoplusminus.ui.setting.fontSetting.FontSettingVM
 import com.example.todoplusminus.util.ChangeHandlers.VerticalSlideDownCH
 import javax.inject.Inject
 
@@ -106,7 +102,7 @@ class SettingController : DBControllerBase {
             }
         })
 
-        mSettingVM.settingDataList.observe(this, Observer {
+        mSettingVM.valueDataList.observe(this, Observer {
             Log.d("godgod", "settingData notification")
         })
     }
@@ -180,8 +176,11 @@ class SettingListAdapter(
             const val TYPE = 1
         }
 
-        override fun bind(data: Pair<Int, SettingData>) {
+        override fun bind(data: Triple<Int, Int, ValueData>) {
             vb.titleTv.text = vb.root.context.getString(data.first)
+
+            //color
+            vb.titleTv.setTextColor(ContextCompat.getColor(vb.root.context,data.second))
         }
     }
 
@@ -192,13 +191,16 @@ class SettingListAdapter(
             const val TYPE = 2
         }
 
-        override fun bind(data: Pair<Int, SettingData>) {
-            val value = (data.second as? ValueBoolean)?.value
-            val tag = (data.second as? ValueBoolean)?.tag
+        override fun bind(data: Triple<Int, Int, ValueData>) {
+            val value = (data.third as? ValueBoolean)?.value
+            val tag = (data.third as? ValueBoolean)?.tag
             vb.tag = tag
 
             vb.titleTv.text = vb.root.context.getString(data.first)
             vb.valueToggle.isChecked = value ?: false
+
+            //color
+            vb.titleTv.setTextColor(ContextCompat.getColor(vb.root.context,data.second))
         }
     }
 
@@ -209,20 +211,23 @@ class SettingListAdapter(
             const val TYPE = 3
         }
 
-        override fun bind(data: Pair<Int, SettingData>) {
-            val value = (data.second as? ValueString)?.value
-            val tag = (data.second as? ValueString)?.tag
+        override fun bind(data: Triple<Int, Int, ValueData>) {
+            val value = (data.third as? ValueString)?.value
+            val tag = (data.third as? ValueString)?.tag
             vb.tag = tag
 
             vb.titleTv.text = vb.root.context.getString(data.first)
             vb.valueTv.text = value
+
+            //color
+            vb.titleTv.setTextColor(ContextCompat.getColor(vb.root.context,data.second))
         }
 
     }
 
-    private var mDataList: MutableList<Pair<Int, SettingData>> = mutableListOf()
+    private var mDataList: MutableList<Triple<Int, Int, ValueData>> = mutableListOf()
 
-    fun setSettingDatas(datas: List<Pair<Int, SettingData>>) {
+    fun setSettingDatas(datas: List<Triple<Int, Int, ValueData>>) {
         mDataList.clear()
         mDataList.addAll(datas)
         notifyDataSetChanged()
@@ -230,7 +235,7 @@ class SettingListAdapter(
 
     override fun getItemViewType(position: Int): Int {
         val item = mDataList[position]
-        return when (item.second) {
+        return when (item.third) {
             is ValueEmpty -> SettingTitleVH.TYPE
             is ValueBoolean -> SettingContainToggleBtnVH.TYPE
             is ValueString -> SettingContainTextViewVH.TYPE

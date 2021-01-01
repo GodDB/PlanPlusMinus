@@ -43,6 +43,10 @@
     <string name="the_plan_is_empty">The plan is Empty :(</string>
     <string name="tap_the_button_in_the_top_right_to_add_a_plan">Tap the ± button in the top right to add a plan</string>
     <string name="delete_memo_text">Are you sure you want to delete the recorded note?</string>
+    <string name="repeat_alarm">Repeat Alarm</string>
+    <string name="add_a_new_plan_from_the_planner">Add a new plan from the Planner</string>
+    <string name="alarm">Alarm</string>
+    <string name="add_new_alarm">Add New Alarm</string>
 
 
     <string name="monday">Mon</string>

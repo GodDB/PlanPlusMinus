@@ -7,13 +7,13 @@ import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.ui.setting.fontSetting.FontListAdapter
 import com.example.todoplusminus.ui.setting.SettingListAdapter
 import com.example.todoplusminus.ui.setting.fontSetting.FontItemData
-import com.example.todoplusminus.ui.setting.SettingData
+import com.example.todoplusminus.ui.setting.ValueData
 
 
 // -- setting vm
 
 @BindingAdapter("bind:setSettingItems")
-fun setSettingItems(rv : RecyclerView, itemList : List<Pair<Int, SettingData>>?){
+fun setSettingItems(rv : RecyclerView, itemList : List<Triple<Int, Int, ValueData>>?){
     Log.d("godgod", "${itemList == null}   ${AppConfig.fontName}")
     if(itemList == null) return
 

@@ -122,6 +122,15 @@
             android:layout_marginTop="10dp"
             bind:font="@{vm.font}"
             />
+        <View
+            android:id="@+id/devide_line_5"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/total_title"
+            android:background="@color/right_gray"
+            android:layout_marginTop="10dp"
+            />
 
 
         <androidx.constraintlayout.widget.Guideline

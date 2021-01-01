@@ -46,7 +46,7 @@
             app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintRight_toRightOf="@id/guide_right"
             app:layout_constraintTop_toBottomOf="@id/title"
-            bind:setSettingItems="@{vm.settingDataList}"
+            bind:setSettingItems="@{vm.valueDataList}"
             />
 
         <androidx.constraintlayout.widget.Guideline

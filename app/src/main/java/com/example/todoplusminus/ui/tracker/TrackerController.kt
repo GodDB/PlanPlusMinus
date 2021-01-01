@@ -1,6 +1,7 @@
 package com.example.todoplusminus.ui.tracker
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,18 +63,24 @@ class TrackerController : DBControllerBase {
 
     private fun onSubScribe() {
         mTrackerVM.trackerDataMap.observe(this, androidx.lifecycle.Observer {
-            (binder.trackerList.adapter as? TrackerListAdapter)?.setTrackerDataMap(it)
+            setDataToTrackerListAdapter(it)
         })
     }
 
-    private fun getCaptureBitmap(){
-/*        val capture = CaptureUtil.captureRecyclerView(binder.trackerList, Color.WHITE)
+    private fun setDataToTrackerListAdapter(data : Map<LocalDateRange, List<TrackerData>>){
+        if(data.isEmpty()) showEmptyGuideView()
+        else hideEmptyGuideView()
 
-        binder.trackerList.visibility = View.GONE
-        binder.trackerBg.setImageBitmap(capture)*/
+        (binder.trackerList.adapter as? TrackerListAdapter)?.setTrackerDataMap(data)
     }
 
+    private fun hideEmptyGuideView(){
+        binder.emptyGuideView.visibility = View.GONE
+    }
 
+    private fun showEmptyGuideView(){
+        binder.emptyGuideView.visibility = View.VISIBLE
+    }
 }
 
 class TrackerListAdapter : RecyclerView.Adapter<TrackerListAdapter.TrackerVM>() {
