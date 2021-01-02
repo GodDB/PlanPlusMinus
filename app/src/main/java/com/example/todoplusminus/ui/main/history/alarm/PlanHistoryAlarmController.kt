@@ -11,24 +11,27 @@ import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.databinding.ControllerPlanHistoryAlarmBinding
 import java.time.DayOfWeek
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 class PlanHistoryAlarmController : DBControllerBase {
 
     constructor() : super()
     constructor(args: Bundle?) : super(args)
-    constructor(targetId: BaseID) {
+    constructor(targetId: BaseID, alarmId : Int) {
         this._targetId = targetId
+        this._alarmId = alarmId
     }
 
     @Inject
     lateinit var alarmVM: PlanHistoryAlarmVM
     private lateinit var binder: ControllerPlanHistoryAlarmBinding
     private lateinit var _targetId: BaseID
+    private var _alarmId : Int = 0
 
     override fun connectDagger() {
         super.connectDagger()
         (activity?.application as BaseApplication).appComponent.planComponent().create()
-            .historyComponent().create(_targetId).historyAlarmComponent().create().inject(this)
+            .historyComponent().create(_targetId).historyAlarmComponent().create(_alarmId).inject(this)
     }
 
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
@@ -65,7 +68,7 @@ class PlanHistoryAlarmController : DBControllerBase {
             }
         })
 
-        alarmVM.repeatAlarmToMonday.observe(this, Observer { value ->
+     /*   alarmVM.repeatAlarmToMonday.observe(this, Observer { value ->
             if(value) binder.repeatAlarmMondayCheckView.visibility = View.VISIBLE
             else binder.repeatAlarmMondayCheckView.visibility = View.GONE
         })
@@ -98,6 +101,6 @@ class PlanHistoryAlarmController : DBControllerBase {
         alarmVM.repeatAlarmToSunday.observe(this, Observer { value ->
             if(value) binder.repeatAlarmSundayCheckView.visibility = View.VISIBLE
             else binder.repeatAlarmSundayCheckView.visibility = View.GONE
-        })
+        })*/
     }
 }

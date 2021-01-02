@@ -1,18 +1,18 @@
 package com.example.todoplusminus.data.repository
 
-import com.example.todoplusminus.data.entities.BaseID
+import com.example.todoplusminus.data.entities.*
 import com.example.todoplusminus.util.PMCoroutineSpecification
 import com.example.todoplusminus.db.PlannerInfoEntity
 import com.example.todoplusminus.db.PlannerItemEntity
-import com.example.todoplusminus.data.entities.PlanData
-import com.example.todoplusminus.data.entities.PlanMemo
-import com.example.todoplusminus.data.entities.PlanProject
 import com.example.todoplusminus.data.source.local.ILocalDataSource
 import com.example.todoplusminus.data.source.file.SharedPrefManager
+import com.example.todoplusminus.db.PlannerAlarmEntity
+import com.example.todoplusminus.db.PlannerItemAlarm
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.time.LocalDate
 import javax.inject.Inject
+
 
 class PlannerRepository @Inject constructor(
     private val localSource: ILocalDataSource,
@@ -66,8 +66,41 @@ class PlannerRepository @Inject constructor(
     override fun getMemoByDate(date: LocalDate): Flow<PlanMemo> =
         localSource.getMemoByDate(date)
 
-    override suspend fun deleteMemoByDate(date: LocalDate) {
+    override fun getAllAlarmData(planId: BaseID): Flow<List<PlanAlarmData>> {
+        return localSource.getAllAlarmData(planId).map {
+            convertAlarmItemListToAlarmDataList(it)
+        }
+    }
+
+    override fun getAlarmData(alarmId: Int): Flow<PlanAlarmData> {
+        return localSource.getAlarmData(alarmId).map {
+            convertAlarmItemToAlarmData(it)
+        }
+    }
+
+
+    override suspend fun insertAlarmData(alarmData: PlanAlarmData) {
+        withContext(dispatcher) {
+            val alarmEntity = convertAlarmDataToAlarmEntity(alarmData)
+            localSource.insertAlarmData(alarmEntity)
+        }
+    }
+
+    override suspend fun updateAlarmData(alarmData: PlanAlarmData) {
+        withContext(dispatcher) {
+            val alarmEntity = convertAlarmDataToAlarmEntity(alarmData)
+            localSource.updateAlarmData(alarmEntity)
+        }
+    }
+
+    override suspend fun deleteAlarmDataById(alarmId: Int) {
         withContext(dispatcher){
+            localSource.deleteAlarmDataById(alarmId)
+        }
+    }
+
+    override suspend fun deleteMemoByDate(date: LocalDate) {
+        withContext(dispatcher) {
             localSource.deleteMemoByDate(date)
         }
     }
@@ -148,4 +181,44 @@ class PlannerRepository @Inject constructor(
 
     private fun generateInfoData(id: BaseID, date: LocalDate) =
         PlannerInfoEntity(0, date, 0, id)
+
+
+    companion object {
+        fun convertAlarmItemListToAlarmDataList(alarmItemList: List<PlannerItemAlarm>): List<PlanAlarmData> {
+            return alarmItemList.map {
+                convertAlarmItemToAlarmData(it)
+            }
+        }
+
+        fun convertAlarmItemToAlarmData(alarmItem: PlannerItemAlarm): PlanAlarmData {
+            return PlanAlarmData(
+                planId = alarmItem.planItem.id,
+                planTitle = alarmItem.planItem.title,
+                alarmId = alarmItem.planAlarm.alarmId,
+                alarmTime = alarmItem.planAlarm.alarmTime,
+                alarmRepeatMonday = alarmItem.planAlarm.alarmMonday,
+                alarmRepeatTuesday = alarmItem.planAlarm.alarmTuesday,
+                alarmRepeatWednesday = alarmItem.planAlarm.alarmWednesday,
+                alarmRepeatThursday = alarmItem.planAlarm.alarmThursday,
+                alarmRepeatFriday = alarmItem.planAlarm.alarmFriday,
+                alarmRepeatSaturday = alarmItem.planAlarm.alarmSaturday,
+                alarmRepeatSunday = alarmItem.planAlarm.alarmSunday
+            )
+        }
+
+        fun convertAlarmDataToAlarmEntity(alarmData: PlanAlarmData): PlannerAlarmEntity {
+            return PlannerAlarmEntity(
+                alarmId = alarmData.alarmId,
+                alarmTime = alarmData.alarmTime,
+                alarmMonday = alarmData.alarmRepeatMonday,
+                alarmTuesday = alarmData.alarmRepeatTuesday,
+                alarmWednesday = alarmData.alarmRepeatWednesday,
+                alarmThursday = alarmData.alarmRepeatThursday,
+                alarmFriday = alarmData.alarmRepeatFriday,
+                alarmSaturday = alarmData.alarmRepeatSaturday,
+                alarmSunday = alarmData.alarmRepeatSunday,
+                planId = alarmData.planId
+            )
+        }
+    }
 }

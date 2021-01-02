@@ -4,16 +4,15 @@ import android.content.Context
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import com.example.todoplusminus.data.entities.BaseID
-import com.example.todoplusminus.data.entities.PlanAlarm
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.entities.PlanMemo
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.LocalTime
 
 
 @Database(
-    entities = [PlannerItemEntity::class, PlannerInfoEntity::class, PlanMemo::class, PlanAlarm::class],
+    entities = [PlannerItemEntity::class, PlannerInfoEntity::class, PlanMemo::class, PlannerAlarmEntity::class],
     version = 1
 )
 @TypeConverters(Converters::class)
@@ -66,6 +65,37 @@ data class PlannerItemInfoEntity(
     @Embedded
     var item: PlannerItemEntity,
     var info: PlannerInfoEntity
+)
+
+
+@Entity(
+    tableName = "PlannerAlarm",
+    foreignKeys = [ForeignKey(
+        entity = PlannerItemEntity::class,
+        parentColumns = ["id"],
+        childColumns = ["planId"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)
+data class PlannerAlarmEntity (
+    @PrimaryKey(autoGenerate = true) val alarmId : Int,
+    val alarmTime : LocalTime,
+    val alarmMonday : Boolean,
+    val alarmTuesday : Boolean,
+    val alarmWednesday : Boolean,
+    val alarmThursday : Boolean,
+    val alarmFriday : Boolean,
+    val alarmSaturday : Boolean,
+    val alarmSunday : Boolean,
+
+    val planId : BaseID //fk
+)
+
+data class PlannerItemAlarm(
+    @Embedded
+    var planItem : PlannerItemEntity,
+    @Embedded
+    var planAlarm : PlannerAlarmEntity
 )
 
 @Dao
@@ -135,6 +165,24 @@ interface UserPlanDao {
     @Query("select * from PlannerMemo where date = :date")
     fun getMemoByDate(date: LocalDate): Flow<PlanMemo>
 
+    @Query("select * from PlannerItem item, PlannerAlarm alarm where item.id == alarm.planId and item.id == :planId")
+    fun getAllPlanItemAndAlarm(planId : BaseID) : Flow<List<PlannerItemAlarm>>
+
+    @Query("select * from PlannerItem item, PlannerAlarm alarm where item.id == alarm.planId and alarm.alarmId == :alarmId")
+    fun getPlanItemAndAlarm(alarmId : Int) : Flow<PlannerItemAlarm>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertPlanAlarm(alarmEntity : PlannerAlarmEntity)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updatePlanAlarm(alarmEntity: PlannerAlarmEntity)
+
+    @Query("delete from PlannerAlarm where alarmId == :alarmId")
+    fun deleteAlarmById(alarmId: Int)
+
+    @Query("delete from PlannerAlarm")
+    fun deleteAllAlarm()
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updatePlanMemo(memo: PlanMemo)
 
@@ -155,12 +203,12 @@ class Converters {
     }
 
     @TypeConverter
-    fun stringToLocalDateTime(value : String) : LocalDateTime{
-        return LocalDateTime.parse(value)
+    fun stringToLocalTime(value : String) : LocalTime {
+        return LocalTime.parse(value)
     }
 
     @TypeConverter
-    fun localDateTimeToString(value : LocalDateTime) : String{
+    fun localTimeToString(value : LocalTime) : String{
         return value.toString()
     }
 

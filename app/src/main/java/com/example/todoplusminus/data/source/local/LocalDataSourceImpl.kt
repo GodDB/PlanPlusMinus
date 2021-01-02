@@ -2,11 +2,10 @@ package com.example.todoplusminus.data.source.local
 
 import androidx.room.withTransaction
 import com.example.todoplusminus.data.entities.BaseID
-import com.example.todoplusminus.db.PlannerDatabase
-import com.example.todoplusminus.db.PlannerInfoEntity
-import com.example.todoplusminus.db.PlannerItemEntity
+import com.example.todoplusminus.data.entities.PlanAlarmData
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.entities.PlanMemo
+import com.example.todoplusminus.db.*
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import javax.inject.Inject
@@ -34,6 +33,27 @@ class LocalDataSourceImpl @Inject constructor(val db: PlannerDatabase) :
 
     override fun getMemoByDate(date: LocalDate): Flow<PlanMemo> =
         db.userPlanDao().getMemoByDate(date)
+
+    override fun getAllAlarmData(planId: BaseID): Flow<List<PlannerItemAlarm>> {
+        return db.userPlanDao().getAllPlanItemAndAlarm(planId)
+    }
+
+    override fun getAlarmData(alarmId: Int): Flow<PlannerItemAlarm> {
+        return db.userPlanDao().getPlanItemAndAlarm(alarmId)
+    }
+
+    override suspend fun insertAlarmData(alarmData: PlannerAlarmEntity) {
+        db.userPlanDao().insertPlanAlarm(alarmData)
+    }
+
+    override suspend fun updateAlarmData(alarmData: PlannerAlarmEntity) {
+        db.userPlanDao().updatePlanAlarm(alarmData)
+    }
+
+    override suspend fun deleteAlarmDataById(alarmId: Int) {
+        db.userPlanDao().deleteAlarmById(alarmId)
+    }
+
 
     override suspend fun deleteMemoByDate(data: LocalDate) {
         db.userPlanDao().deletePlanMemoByData(data)

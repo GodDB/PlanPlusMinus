@@ -1,11 +1,10 @@
 package com.example.todoplusminus.data.source.local
 
 import com.example.todoplusminus.data.entities.BaseID
-import com.example.todoplusminus.db.PlannerInfoEntity
-import com.example.todoplusminus.db.PlannerItemEntity
-import com.example.todoplusminus.db.PlannerItemInfoEntity
+import com.example.todoplusminus.data.entities.PlanAlarmData
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.entities.PlanMemo
+import com.example.todoplusminus.db.*
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
@@ -22,6 +21,16 @@ interface ILocalDataSource {
     fun getLastestIndex() : Flow<Int?>
 
     fun getMemoByDate(date : LocalDate) : Flow<PlanMemo>
+
+    fun getAllAlarmData(planId : BaseID) : Flow<List<PlannerItemAlarm>>
+
+    fun getAlarmData(alarmId : Int) : Flow<PlannerItemAlarm>
+
+    suspend fun insertAlarmData(alarmData: PlannerAlarmEntity)
+
+    suspend fun updateAlarmData(alarmData: PlannerAlarmEntity)
+
+    suspend fun deleteAlarmDataById(alarmId : Int)
 
     suspend fun deleteMemoByDate(data : LocalDate)
 

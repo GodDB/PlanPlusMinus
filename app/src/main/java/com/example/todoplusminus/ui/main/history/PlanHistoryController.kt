@@ -80,20 +80,23 @@ class PlanHistoryController : DBControllerBase {
             }
         })
 
-        mPlanHistoryVM.defaultAlarmData.observe(this, Observer { alarmDatas ->
+        mPlanHistoryVM.alarmListDatas.observe(this, Observer { alarmDatas ->
             (binder.alarmList.adapter as? HistoryAlarmAdapter)?.setAlarmDatas(alarmDatas)
         })
 
         mPlanHistoryVM.showAlarmSelector.observe(this, Observer { event ->
-            event.getContentIfNotHandled()?.let { isShow ->
-                if(isShow) showAlarmSelector()
+            event.getContentIfNotHandled()?.let {
+                val planId = it.first
+                val alarmId = it.second
+
+                showAlarmSelector(planId, alarmId)
             }
 
         })
     }
 
-    private fun showAlarmSelector(){
-        this.pushController(RouterTransaction.with(PlanHistoryAlarmController(_targetId)).apply {
+    private fun showAlarmSelector(targetId: BaseID, alarmId : Int){
+        this.pushController(RouterTransaction.with(PlanHistoryAlarmController(targetId, alarmId)).apply {
             pushChangeHandler(VerticalChangeHandler(false))
             popChangeHandler(VerticalChangeHandler())
         })

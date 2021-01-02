@@ -1,9 +1,6 @@
 package com.example.todoplusminus.data.repository
 
-import com.example.todoplusminus.data.entities.BaseID
-import com.example.todoplusminus.data.entities.PlanData
-import com.example.todoplusminus.data.entities.PlanMemo
-import com.example.todoplusminus.data.entities.PlanProject
+import com.example.todoplusminus.data.entities.*
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
@@ -22,6 +19,16 @@ interface IPlannerRepository {
     fun getLastestIndex(): Flow<Int?>
 
     fun getMemoByDate(date: LocalDate): Flow<PlanMemo>
+
+    fun getAllAlarmData(planId : BaseID) : Flow<List<PlanAlarmData>>
+
+    fun getAlarmData(alarmId : Int) : Flow<PlanAlarmData>
+
+    suspend fun insertAlarmData(alarmData: PlanAlarmData)
+
+    suspend fun updateAlarmData(alarmData: PlanAlarmData)
+
+    suspend fun deleteAlarmDataById(alarmId : Int)
 
     suspend fun deleteMemoByDate(date : LocalDate)
 

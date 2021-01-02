@@ -4,7 +4,7 @@
     xmlns:bind="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="android.view.View"/>
         <variable
             name="vm"
             type="com.example.todoplusminus.ui.main.history.alarm.PlanHistoryAlarmVM" />
@@ -128,7 +128,7 @@
                 app:layout_constraintTop_toTopOf="@id/repeat_alarm_monday_tv"
                 app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_monday_tv"
                 app:layout_constraintDimensionRatio="0.5:1"
-                android:visibility="gone"
+                android:visibility="@{vm.repeatAlarmToMonday ? View.VISIBLE : View.GONE}"
                 />
 
             <TextView
@@ -152,7 +152,7 @@
                 app:layout_constraintTop_toTopOf="@id/repeat_alarm_tuesday_tv"
                 app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_tuesday_tv"
                 app:layout_constraintDimensionRatio="0.5:1"
-                android:visibility="gone"
+                android:visibility="@{vm.repeatAlarmToTuesday ? View.VISIBLE : View.GONE}"
                 />
 
             <TextView
@@ -176,7 +176,7 @@
                 app:layout_constraintTop_toTopOf="@id/repeat_alarm_wednesday_tv"
                 app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_wednesday_tv"
                 app:layout_constraintDimensionRatio="0.5:1"
-                android:visibility="gone"
+                android:visibility="@{vm.repeatAlarmToWednesday ? View.VISIBLE : View.GONE}"
                 />
 
             <TextView
@@ -200,7 +200,7 @@
                 app:layout_constraintTop_toTopOf="@id/repeat_alarm_thursday_tv"
                 app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_thursday_tv"
                 app:layout_constraintDimensionRatio="0.5:1"
-                android:visibility="gone"
+                android:visibility="@{vm.repeatAlarmToThursday ? View.VISIBLE : View.GONE}"
                 />
 
             <TextView
@@ -224,7 +224,7 @@
                 app:layout_constraintTop_toTopOf="@id/repeat_alarm_friday_tv"
                 app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_friday_tv"
                 app:layout_constraintDimensionRatio="0.5:1"
-                android:visibility="gone"
+                android:visibility="@{vm.repeatAlarmToFriday ? View.VISIBLE : View.GONE}"
                 />
 
             <TextView
@@ -248,7 +248,7 @@
                 app:layout_constraintTop_toTopOf="@id/repeat_alarm_saturday_tv"
                 app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_saturday_tv"
                 app:layout_constraintDimensionRatio="0.5:1"
-                android:visibility="gone"
+                android:visibility="@{vm.repeatAlarmToSaturday ? View.VISIBLE : View.GONE}"
                 />
 
             <TextView
@@ -272,7 +272,7 @@
                 app:layout_constraintTop_toTopOf="@id/repeat_alarm_sunday_tv"
                 app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_sunday_tv"
                 app:layout_constraintDimensionRatio="0.5:1"
-                android:visibility="gone"
+                android:visibility="@{vm.repeatAlarmToSunday ? View.VISIBLE : View.GONE}"
                 />
 
             <androidx.constraintlayout.widget.Guideline
