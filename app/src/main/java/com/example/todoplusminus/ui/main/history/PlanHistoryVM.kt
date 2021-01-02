@@ -32,8 +32,17 @@ class PlanHistoryVM @Inject constructor(val targetId: BaseID, private val reposi
         MutableLiveData(it.getPlanDataBgColorByIndex(0))
     }
 
-    var wantEditorClose: MutableLiveData<Event<Boolean>> =
+    val wantEditorClose: MutableLiveData<Event<Boolean>> =
         MutableLiveData(Event(false))
+
+
+    //test alarm 화면 다 완성되면 시간, repeat day값을 담아서 호출해야함
+    val showAlarmSelector : MutableLiveData<Event<Boolean>> = MutableLiveData()
+
+    fun showAlarmSelector(){
+        this.showAlarmSelector.value = Event(true)
+    }
+
 
 
     //alarm 리스트에 기본적으로 들어가는 속성

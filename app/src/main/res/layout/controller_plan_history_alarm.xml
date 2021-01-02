@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.example.todoplusminus.ui.main.history.alarm.PlanHistoryAlarmVM" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.example.todoplusminus.ui.customViews.BackgroundView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.2"
+            android:background="@color/black" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/root_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/card_view_border"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guide_top"
+            bind:setSlideEvent="@{() -> vm.onClose()}">
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="3dp"
+                android:background="@color/right_gray"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/root_view" />
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="@color/right_gray"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/root_view" />
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="9dp"
+                android:background="@color/right_gray"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/root_view" />
+
+            <TextView
+                android:id="@+id/title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repeat_alarm"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@id/guide_title_bottom"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/close"
+                app:layout_constraintBottom_toBottomOf="@id/guide_title_bottom"
+                app:layout_constraintLeft_toLeftOf="@id/guide_left"
+                app:layout_constraintTop_toTopOf="parent"
+                android:onClick="@{() -> vm.onClose()}"
+                />
+
+            <ImageView
+                android:id="@+id/btn_done"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/done"
+                app:layout_constraintBottom_toBottomOf="@id/guide_title_bottom"
+                app:layout_constraintRight_toRightOf="@id/guide_right"
+                app:layout_constraintTop_toTopOf="parent"
+                android:onClick="@{() -> vm.onDone()}"
+                />
+
+            <TimePicker
+                android:id="@+id/alarm_time_picker"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/white_smoke"
+                android:timePickerMode="spinner"
+                app:layout_constraintBottom_toBottomOf="@id/guide_time_picker_bottom"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guide_title_bottom"
+                android:hour="@={vm.alarmHour}"
+                android:minute="@={vm.alarmMinute}"
+                />
+
+
+            <TextView
+                android:id="@+id/repeat_alarm_monday_tv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center_vertical"
+                android:text="@string/every_monday"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@id/repeat_alarm_tuesday_tv"
+                app:layout_constraintLeft_toLeftOf="@id/guide_left"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guide_time_picker_bottom" />
+
+            <ImageView
+                android:id="@+id/repeat_alarm_monday_check_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/done"
+                app:layout_constraintRight_toRightOf="@id/guide_right"
+                app:layout_constraintTop_toTopOf="@id/repeat_alarm_monday_tv"
+                app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_monday_tv"
+                app:layout_constraintDimensionRatio="0.5:1"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/repeat_alarm_tuesday_tv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center_vertical"
+                android:text="@string/every_tuesday"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@id/repeat_alarm_wednesday_tv"
+                app:layout_constraintLeft_toLeftOf="@id/guide_left"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/repeat_alarm_monday_tv" />
+
+            <ImageView
+                android:id="@+id/repeat_alarm_tuesday_check_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/done"
+                app:layout_constraintRight_toRightOf="@id/guide_right"
+                app:layout_constraintTop_toTopOf="@id/repeat_alarm_tuesday_tv"
+                app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_tuesday_tv"
+                app:layout_constraintDimensionRatio="0.5:1"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/repeat_alarm_wednesday_tv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center_vertical"
+                android:text="@string/every_wednesday"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@id/repeat_alarm_thursday_tv"
+                app:layout_constraintLeft_toLeftOf="@id/guide_left"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/repeat_alarm_tuesday_tv" />
+
+            <ImageView
+                android:id="@+id/repeat_alarm_wednesday_check_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/done"
+                app:layout_constraintRight_toRightOf="@id/guide_right"
+                app:layout_constraintTop_toTopOf="@id/repeat_alarm_wednesday_tv"
+                app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_wednesday_tv"
+                app:layout_constraintDimensionRatio="0.5:1"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/repeat_alarm_thursday_tv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center_vertical"
+                android:text="@string/every_thursday"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@id/repeat_alarm_friday_tv"
+                app:layout_constraintLeft_toLeftOf="@id/guide_left"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/repeat_alarm_wednesday_tv" />
+
+            <ImageView
+                android:id="@+id/repeat_alarm_thursday_check_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/done"
+                app:layout_constraintRight_toRightOf="@id/guide_right"
+                app:layout_constraintTop_toTopOf="@id/repeat_alarm_thursday_tv"
+                app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_thursday_tv"
+                app:layout_constraintDimensionRatio="0.5:1"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/repeat_alarm_friday_tv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center_vertical"
+                android:text="@string/every_friday"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@id/repeat_alarm_saturday_tv"
+                app:layout_constraintLeft_toLeftOf="@id/guide_left"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/repeat_alarm_thursday_tv" />
+
+            <ImageView
+                android:id="@+id/repeat_alarm_friday_check_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/done"
+                app:layout_constraintRight_toRightOf="@id/guide_right"
+                app:layout_constraintTop_toTopOf="@id/repeat_alarm_friday_tv"
+                app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_friday_tv"
+                app:layout_constraintDimensionRatio="0.5:1"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/repeat_alarm_saturday_tv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center_vertical"
+                android:text="@string/every_saturday"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@id/repeat_alarm_sunday_tv"
+                app:layout_constraintLeft_toLeftOf="@id/guide_left"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/repeat_alarm_friday_tv" />
+
+            <ImageView
+                android:id="@+id/repeat_alarm_saturday_check_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/done"
+                app:layout_constraintRight_toRightOf="@id/guide_right"
+                app:layout_constraintTop_toTopOf="@id/repeat_alarm_saturday_tv"
+                app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_saturday_tv"
+                app:layout_constraintDimensionRatio="0.5:1"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/repeat_alarm_sunday_tv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center_vertical"
+                android:text="@string/every_sunday"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/guide_left"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/repeat_alarm_saturday_tv" />
+
+            <ImageView
+                android:id="@+id/repeat_alarm_sunday_check_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/done"
+                app:layout_constraintRight_toRightOf="@id/guide_right"
+                app:layout_constraintTop_toTopOf="@id/repeat_alarm_sunday_tv"
+                app:layout_constraintBottom_toBottomOf="@id/repeat_alarm_sunday_tv"
+                app:layout_constraintDimensionRatio="0.5:1"
+                android:visibility="gone"
+                />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_title_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.15" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.05" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.95" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_time_picker_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.2"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

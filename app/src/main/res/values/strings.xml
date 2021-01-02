@@ -47,7 +47,13 @@
     <string name="add_a_new_plan_from_the_planner">Add a new plan from the Planner</string>
     <string name="alarm">Alarm</string>
     <string name="add_new_alarm">Add New Alarm</string>
-
+    <string name="every_monday">every monday</string>
+    <string name="every_tuesday">every tuesday</string>
+    <string name="every_wednesday">every wednesday</string>
+    <string name="every_thursday">every thursday</string>
+    <string name="every_friday">every friday</string>
+    <string name="every_saturday">every saturday</string>
+    <string name="every_sunday">every sunday</string>
 
     <string name="monday">Mon</string>
     <string name="tuesday">Tue</string>

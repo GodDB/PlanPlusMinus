@@ -90,4 +90,11 @@
     <string name="add_a_new_plan_from_the_planner">계획 화면에서 새 계획을 추가하세요</string>
     <string name="alarm">알람</string>
     <string name="add_new_alarm">새 알람 추가</string>
+    <string name="every_monday">월요일 마다</string>
+    <string name="every_tuesday">화요일 마다</string>
+    <string name="every_wednesday">수요일 마다</string>
+    <string name="every_thursday">목요일 마다</string>
+    <string name="every_friday">금요일 마다</string>
+    <string name="every_saturday">토요일 마다</string>
+    <string name="every_sunday">일요일 마다</string>
 </resources>

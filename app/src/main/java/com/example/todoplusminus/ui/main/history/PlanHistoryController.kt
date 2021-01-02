@@ -12,16 +12,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.example.todoplusminus.R
 import com.example.todoplusminus.base.BaseApplication
 import com.example.todoplusminus.base.DBControllerBase
 import com.example.todoplusminus.base.GenericVH
 import com.example.todoplusminus.data.entities.BaseID
+import com.example.todoplusminus.databinding.*
 import com.example.todoplusminus.ui.main.history.chart.PlanHistoryContentsController
-import com.example.todoplusminus.databinding.ControllerPlanHistoryBinding
-import com.example.todoplusminus.databinding.ControllerSettingTextviewItemBinding
-import com.example.todoplusminus.databinding.ControllerSettingTitleItemBinding
-import com.example.todoplusminus.databinding.ControllerSettingToggleItemBinding
+import com.example.todoplusminus.ui.main.history.alarm.PlanHistoryAlarmController
 import com.example.todoplusminus.ui.main.history.chart.PlanHistoryContentVM
 import com.example.todoplusminus.ui.setting.*
 import com.example.todoplusminus.util.ColorID
@@ -70,7 +69,7 @@ class PlanHistoryController : DBControllerBase {
     }
 
     private fun initAlarmList(){
-        binder.alarmList.adapter = HistoryAlarmAdapter()
+        binder.alarmList.adapter = HistoryAlarmAdapter(mPlanHistoryVM)
         binder.alarmList.layoutManager = LinearLayoutManager(binder.root.context)
     }
 
@@ -83,6 +82,20 @@ class PlanHistoryController : DBControllerBase {
 
         mPlanHistoryVM.defaultAlarmData.observe(this, Observer { alarmDatas ->
             (binder.alarmList.adapter as? HistoryAlarmAdapter)?.setAlarmDatas(alarmDatas)
+        })
+
+        mPlanHistoryVM.showAlarmSelector.observe(this, Observer { event ->
+            event.getContentIfNotHandled()?.let { isShow ->
+                if(isShow) showAlarmSelector()
+            }
+
+        })
+    }
+
+    private fun showAlarmSelector(){
+        this.pushController(RouterTransaction.with(PlanHistoryAlarmController(_targetId)).apply {
+            pushChangeHandler(VerticalChangeHandler(false))
+            popChangeHandler(VerticalChangeHandler())
         })
     }
 
@@ -156,10 +169,11 @@ class PlanHistoryController : DBControllerBase {
 }
 
 
-class HistoryAlarmAdapter() : RecyclerView.Adapter<HistoryAlarmVH>() {
+class HistoryAlarmAdapter(private val historyVM: PlanHistoryVM) : RecyclerView.Adapter<HistoryAlarmVH>() {
 
     class HistoryAlarmTitleVH(
-        private val vb: ControllerSettingTitleItemBinding
+        private val vb: ControllerPlanHistoryAlarmTitleItemBinding,
+        private val vm : PlanHistoryVM
     ) :
         HistoryAlarmVH(vb.root) {
         companion object {
@@ -167,6 +181,8 @@ class HistoryAlarmAdapter() : RecyclerView.Adapter<HistoryAlarmVH>() {
         }
 
         override fun bind(data: Triple<List<StringID>, ColorID, ValueData>) {
+            vb.vm = vm
+
             data.first.forEach { stringID ->
                 vb.titleTv.text = "${vb.titleTv.text} ${vb.root.context.getString(stringID.id)}"
             }
@@ -177,7 +193,8 @@ class HistoryAlarmAdapter() : RecyclerView.Adapter<HistoryAlarmVH>() {
     }
 
     class HistoryAlarmContainTextViewVH(
-        private val vb: ControllerSettingTextviewItemBinding
+        private val vb: ControllerPlanHistoryAlarmTvItemBinding,
+        private val vm : PlanHistoryVM
     ) : HistoryAlarmVH(vb.root) {
         companion object {
             const val TYPE = 3
@@ -187,6 +204,7 @@ class HistoryAlarmAdapter() : RecyclerView.Adapter<HistoryAlarmVH>() {
             val value = (data.third as? ValueString)?.value
             val tag = (data.third as? ValueString)?.tag
             vb.tag = tag
+            vb.vm = vm
 
             data.first.forEach { stringID ->
                 vb.titleTv.text = "${vb.titleTv.text} ${vb.root.context.getString(stringID.id)}"
@@ -220,28 +238,28 @@ class HistoryAlarmAdapter() : RecyclerView.Adapter<HistoryAlarmVH>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryAlarmVH {
         return when (viewType) {
             HistoryAlarmTitleVH.TYPE -> {
-                val vb = ControllerSettingTitleItemBinding.inflate(
+                val vb = ControllerPlanHistoryAlarmTitleItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
-                HistoryAlarmTitleVH(vb)
+                HistoryAlarmTitleVH(vb, historyVM)
             }
             HistoryAlarmContainTextViewVH.TYPE -> {
-                val vb = ControllerSettingTextviewItemBinding.inflate(
+                val vb = ControllerPlanHistoryAlarmTvItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
-                HistoryAlarmContainTextViewVH(vb)
+                HistoryAlarmContainTextViewVH(vb, historyVM)
             }
             else -> {
-                val vb = ControllerSettingTextviewItemBinding.inflate(
+                val vb = ControllerPlanHistoryAlarmTvItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
-                HistoryAlarmContainTextViewVH(vb)
+                HistoryAlarmContainTextViewVH(vb, historyVM)
             }
         }
     }
