@@ -2,6 +2,7 @@ package com.example.todoplusminus.vm
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.todoplusminus.TestCoroutineRule
+import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.getOrAwaitValue
 import com.example.todoplusminus.data.repository.IPlannerRepository
@@ -50,7 +51,7 @@ class TestPlanEditComponentVM {
         }
 
         testCoroutineRule.runBlockingTest {
-            `when`(repository.getPlannerDataById(anyString())).thenReturn(targetData)
+            `when`(repository.getPlannerDataById(BaseID.randomID())).thenReturn(targetData)
             planEditVM.setId(targetData.id)
 
             assertEquals(planEditVM.mId, targetData.id)
@@ -62,7 +63,7 @@ class TestPlanEditComponentVM {
     @Test
     fun test_onComplete_WithoutId(){
         var targetData = PlanData.create().apply {
-            id = PlanData.EMPTY_ID
+            id = BaseID.randomID()
         }
 
         testCoroutineRule.runBlockingTest {
@@ -74,7 +75,7 @@ class TestPlanEditComponentVM {
     }
     @Test
     fun test_onComplete_Id(){
-        var id = UUID.randomUUID().toString()
+        var id = BaseID.randomID()
         var title = "Dddwdaf"
         var bgcolor = 248905
 

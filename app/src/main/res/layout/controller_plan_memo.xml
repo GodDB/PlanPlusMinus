@@ -115,8 +115,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/guide_title_bottom"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                bind:dim="@{vm.memoData.contents}"
-                bind:setClickEvent="@{vm.onDoneListener}" />
+                android:onClick="@{() -> vm.onDone()}"
+                bind:dim="@{vm.memoData.contents}"/>
 
             <EditText
                 android:id="@+id/memo_content_tv"

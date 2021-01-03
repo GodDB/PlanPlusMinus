@@ -1,5 +1,6 @@
 package com.example.todoplusminus.data.repository
 
+import android.util.Log
 import com.example.todoplusminus.data.entities.*
 import com.example.todoplusminus.util.PMCoroutineSpecification
 import com.example.todoplusminus.db.PlannerInfoEntity
@@ -74,7 +75,8 @@ class PlannerRepository @Inject constructor(
 
     override fun getAlarmData(alarmId: Int): Flow<PlanAlarmData> {
         return localSource.getAlarmData(alarmId).map {
-            convertAlarmItemToAlarmData(it)
+            Log.d("godgod", "${it == null}")
+            it?.let { convertAlarmItemToAlarmData(it)}
         }
     }
 

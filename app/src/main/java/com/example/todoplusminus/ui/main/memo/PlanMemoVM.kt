@@ -65,27 +65,8 @@ class PlanMemoVM @Inject constructor(
         wantEditorClose.value =
             Event(true)
     }
-
-    /**
-     * onDone을 호출하기 위한 인터페이스 구현체
-     *
-     * 바인딩 어댑터를 이용해서 onDone을 호출하게 하려고 하는데 람다식으론 에러가 발생함... (무조건은 아니고 간혈적임 ..)
-     * 찾아본 결과, kotlin -> java 변환간에 문제점이라고 하는데 어떤건 되고 어떤건 안되서 이해가 안가네...
-     *
-     * 그래서 람다식으론 처리가 안되서 인터페이스를 이용해서 처리함. 결국 람다 -> 인터페이스 구현체로 변경되니깐
-     * */
-    val onDoneListener = object :
-        OnDoneListener {
-        override fun onDone() {
-            this@PlanMemoVM.onDone()
-        }
-
-    }
 }
 
-interface OnDoneListener {
-    fun onDone()
-}
 
 fun <T> MutableLiveData<T>.notify() {
     CoroutineScope(Dispatchers.Main).launch {

@@ -186,6 +186,7 @@ class HistoryAlarmAdapter(private val historyVM: PlanHistoryVM) : RecyclerView.A
         override fun bind(data: Triple<List<StringID>, ColorID, ValueData>) {
             vb.vm = vm
 
+            vb.titleTv.text = null
             data.first.forEach { stringID ->
                 vb.titleTv.text = "${vb.titleTv.text} ${vb.root.context.getString(stringID.id)}"
             }
@@ -209,6 +210,8 @@ class HistoryAlarmAdapter(private val historyVM: PlanHistoryVM) : RecyclerView.A
             vb.tag = tag
             vb.vm = vm
 
+            //초기화
+            vb.titleTv.text = null
             data.first.forEach { stringID ->
                 vb.titleTv.text = "${vb.titleTv.text} ${vb.root.context.getString(stringID.id)}"
             }

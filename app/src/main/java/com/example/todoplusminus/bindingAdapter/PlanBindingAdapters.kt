@@ -2,6 +2,7 @@ package com.example.todoplusminus.bindingAdapter
 
 
 import android.graphics.Color
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -17,7 +18,6 @@ import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.entities.PlanMemo
 import com.example.todoplusminus.ui.customViews.PMCalendarView
 import com.example.todoplusminus.util.*
-import com.example.todoplusminus.ui.main.memo.OnDoneListener
 import com.google.android.material.tabs.TabLayout
 import java.time.LocalDate
 import kotlin.math.max
@@ -178,18 +178,33 @@ fun setSlideEvent(v: View, onComplete: () -> Unit) {
 }
 
 
-@BindingAdapter(value = ["bind:setClickEvent", "bind:dim"], requireAll = true)
-fun setClickEventAndDim(v: View, listener: OnDoneListener, content: String?) {
+@BindingAdapter("bind:dim")
+fun setDim(v: View, content: String?) {
     if(content == null ) return
 
     if (content != "") {
-        v.setOnClickListener { listener.onDone() }
         v.alpha = 1f
+        v.isClickable = true
     } else {
-        v.setOnClickListener {}
         v.alpha = 0.2f
+        v.isClickable = false
     }
 }
+
+@BindingAdapter("bind:dim")
+fun setDim(v: View, isDim : Boolean?) {
+    isDim?.let {
+        if (it) {
+            v.alpha = 1f
+            v.isClickable = true
+        } else {
+            v.alpha = 0.2f
+            v.isClickable = false
+        }
+    }
+}
+
+
 
 @BindingAdapter(
     value = ["bind:setGraphViewXData", "bind:setGraphViewYData", "bind:setGraphViewTitle", "bind:setGraphBarColor"],

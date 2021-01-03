@@ -97,4 +97,5 @@
     <string name="every_friday">금요일 마다</string>
     <string name="every_saturday">토요일 마다</string>
     <string name="every_sunday">일요일 마다</string>
+    <string name="delete_alarm">알람 삭제</string>
 </resources>

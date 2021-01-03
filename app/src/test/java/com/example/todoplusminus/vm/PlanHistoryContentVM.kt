@@ -4,9 +4,11 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.todoplusminus.TestCoroutineRule
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.repository.IPlannerRepository
+import com.example.todoplusminus.data.repository.PlannerRepository
 import com.example.todoplusminus.ui.main.PlannerViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
@@ -35,6 +37,11 @@ class PlanHistoryContentVM {
     }
     private val targetPlanData3 = PlanData.create().apply {
         title = "target3"
+    }
+
+    @Test
+    fun test(){
+
     }
 
 }

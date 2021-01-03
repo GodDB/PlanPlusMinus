@@ -38,6 +38,7 @@ class PlanHistoryAlarmController : DBControllerBase {
         binder = ControllerPlanHistoryAlarmBinding.inflate(inflater, container, false)
         binder.vm = alarmVM
         binder.lifecycleOwner = this
+        binder.alarmId = _alarmId
         return binder.root
     }
 
@@ -67,40 +68,5 @@ class PlanHistoryAlarmController : DBControllerBase {
                 if(close) popCurrentController()
             }
         })
-
-     /*   alarmVM.repeatAlarmToMonday.observe(this, Observer { value ->
-            if(value) binder.repeatAlarmMondayCheckView.visibility = View.VISIBLE
-            else binder.repeatAlarmMondayCheckView.visibility = View.GONE
-        })
-
-        alarmVM.repeatAlarmToTuesday.observe(this, Observer { value ->
-            if(value) binder.repeatAlarmTuesdayCheckView.visibility = View.VISIBLE
-            else binder.repeatAlarmTuesdayCheckView.visibility = View.GONE
-        })
-
-        alarmVM.repeatAlarmToWednesday.observe(this, Observer { value ->
-            if(value) binder.repeatAlarmWednesdayCheckView.visibility = View.VISIBLE
-            else binder.repeatAlarmWednesdayCheckView.visibility = View.GONE
-        })
-
-        alarmVM.repeatAlarmToThursday.observe(this, Observer { value ->
-            if(value) binder.repeatAlarmThursdayCheckView.visibility = View.VISIBLE
-            else binder.repeatAlarmThursdayCheckView.visibility = View.GONE
-        })
-
-        alarmVM.repeatAlarmToFriday.observe(this, Observer { value ->
-            if(value) binder.repeatAlarmFridayCheckView.visibility = View.VISIBLE
-            else binder.repeatAlarmFridayCheckView.visibility = View.GONE
-        })
-
-        alarmVM.repeatAlarmToSaturday.observe(this, Observer { value ->
-            if(value) binder.repeatAlarmSaturdayCheckView.visibility = View.VISIBLE
-            else binder.repeatAlarmSaturdayCheckView.visibility = View.GONE
-        })
-
-        alarmVM.repeatAlarmToSunday.observe(this, Observer { value ->
-            if(value) binder.repeatAlarmSundayCheckView.visibility = View.VISIBLE
-            else binder.repeatAlarmSundayCheckView.visibility = View.GONE
-        })*/
     }
 }

@@ -1,6 +1,7 @@
 package com.example.todoplusminus.ui.main.history
 
 import android.graphics.Typeface
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.R
@@ -43,7 +44,7 @@ class PlanHistoryVM @Inject constructor(
     //test alarm 화면 다 완성되면 시간, repeat day값을 담아서 호출해야함
     val showAlarmSelector: MutableLiveData<Event<Pair<BaseID, Int>>> = MutableLiveData()
 
-    fun showAlarmSelector(alarmId : Int) {
+    fun showAlarmSelector(alarmId: Int) {
         this.showAlarmSelector.value = Event(Pair(targetId, alarmId))
     }
 
@@ -51,18 +52,25 @@ class PlanHistoryVM @Inject constructor(
     private val alarmDataList: LiveData<List<PlanAlarmData>> =
         repository.getAllAlarmData(targetId).asLiveData()
 
-    val alarmListDatas : LiveData<List<Triple<List<StringID>, ColorID, ValueData>>> = alarmDataList.switchMap { alarmDataList ->
-        val alarmList = alarmDataList.map { alarmData ->
-            convertAlarmDataToViewData(alarmData)
-        }.toMutableList().apply { addAll(0, defaultAlarmData) }.toList()
-
-        MutableLiveData(alarmList)
-    }
+    val alarmListDatas: LiveData<List<Triple<List<StringID>, ColorID, ValueData>>> =
+        alarmDataList.switchMap { alarmDataList ->
+            val alarmList = alarmDataList.map { alarmData ->
+                convertAlarmDataToViewData(alarmData)
+            }.toMutableList().apply { addAll(0, defaultAlarmData) }.toList()
+            MutableLiveData(alarmList)
+        }
 
     //alarm 리스트에 기본적으로 들어가는 속성
     // title과 알람 설정화면 실행하는 뷰 데이터가 포함.
-    private val defaultAlarmData: List<Triple<List<StringID>, ColorID, ValueData>> = mutableListOf<Triple<List<StringID>, ColorID, ValueData>>().apply {
-            add(Triple(listOf(StringID(R.string.alarm)), ColorID(R.color.black), ValueEmpty()))
+    private val defaultAlarmData: List<Triple<List<StringID>, ColorID, ValueData>> =
+        mutableListOf<Triple<List<StringID>, ColorID, ValueData>>().apply {
+            add(
+                Triple(
+                    listOf(StringID(R.string.alarm)),
+                    ColorID(R.color.black),
+                    ValueEmpty()
+                )
+            )
             add(
                 Triple(
                     listOf(StringID(R.string.add_new_alarm)),
@@ -70,16 +78,11 @@ class PlanHistoryVM @Inject constructor(
                     ValueString(tag = PlanAlarmData.NONE_ALARM_ID)
                 )
             )
-
         }.toList()
 
 
-
-
-
     fun onCancel() {
-        wantEditorClose.value =
-            Event(true)
+        wantEditorClose.value = Event(true)
     }
 
     companion object {
@@ -88,7 +91,7 @@ class PlanHistoryVM @Inject constructor(
                 convertRepeatDaysToStringIdList(
                     alarmData.alarmRepeatMonday,
                     alarmData.alarmRepeatTuesday,
-                    alarmData.alarmRepeatSaturday,
+                    alarmData.alarmRepeatWednesday,
                     alarmData.alarmRepeatThursday,
                     alarmData.alarmRepeatFriday,
                     alarmData.alarmRepeatSaturday,

@@ -20,13 +20,14 @@ class PlanHistoryAlarmVM @Inject constructor(
     private val repo: IPlannerRepository
 ) {
 
-    private val alarmData: LiveData<PlanAlarmData> =
+    private val alarmData: LiveData<PlanAlarmData?> =
         if (alarmId != PlanAlarmData.NONE_ALARM_ID) repo.getAlarmData(alarmId).asLiveData()
         else MutableLiveData(PlanAlarmData.create(targetId))
 
     private val alarmTime: LiveData<LocalTime> = alarmData.switchMap { alarmData ->
-        MutableLiveData(alarmData.alarmTime)
+        MutableLiveData(alarmData?.alarmTime ?: LocalTime.now())
     }
+
 
     val alarmHour: MutableLiveData<Int> = MediatorLiveData<Int>().apply {
         addSource(alarmTime) {
@@ -42,50 +43,89 @@ class PlanHistoryAlarmVM @Inject constructor(
 
     val repeatAlarmToMonday: MutableLiveData<Boolean> = MediatorLiveData<Boolean>().apply {
         addSource(alarmData){
-            this.value = it.alarmRepeatMonday
+            this.value = it?.alarmRepeatMonday
         }
     }
     val repeatAlarmToTuesday: MutableLiveData<Boolean> = MediatorLiveData<Boolean>().apply {
         addSource(alarmData){
-            this.value = it.alarmRepeatTuesday
+            this.value = it?.alarmRepeatTuesday
         }
     }
     val repeatAlarmToWednesday: MutableLiveData<Boolean> = MediatorLiveData<Boolean>().apply {
         addSource(alarmData){
-            this.value = it.alarmRepeatWednesday
+            this.value = it?.alarmRepeatWednesday
         }
     }
     val repeatAlarmToThursday: MutableLiveData<Boolean> = MediatorLiveData<Boolean>().apply {
         addSource(alarmData){
-            this.value = it.alarmRepeatThursday
+            this.value = it?.alarmRepeatThursday
         }
     }
     val repeatAlarmToFriday: MutableLiveData<Boolean> = MediatorLiveData<Boolean>().apply {
         addSource(alarmData){
-            this.value = it.alarmRepeatFriday
+            this.value = it?.alarmRepeatFriday
         }
     }
     val repeatAlarmToSaturday: MutableLiveData<Boolean> = MediatorLiveData<Boolean>().apply {
         addSource(alarmData){
-            this.value = it.alarmRepeatSaturday
+            this.value = it?.alarmRepeatSaturday
         }
     }
     val repeatAlarmToSunday: MutableLiveData<Boolean> = MediatorLiveData<Boolean>().apply {
         addSource(alarmData){
-            this.value = it.alarmRepeatSunday
+            this.value = it?.alarmRepeatSunday
         }
     }
 
+    /**
+     * done 버튼 액션을 제어하는 livedata
+     *
+     * 사용자는 월~일요일까지 중 하나 이상을 선택해야만 done버튼을 사용할 수 있다.
+     * */
+    val isDoneAllow : LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
+        addSource(repeatAlarmToMonday){
+            this.value = checkRepeatDay()
+        }
+        addSource(repeatAlarmToTuesday){
+            this.value = checkRepeatDay()
+        }
+        addSource(repeatAlarmToWednesday){
+            this.value = checkRepeatDay()
+        }
+        addSource(repeatAlarmToThursday){
+            this.value = checkRepeatDay()
+        }
+        addSource(repeatAlarmToFriday){
+            this.value = checkRepeatDay()
+        }
+        addSource(repeatAlarmToSaturday){
+            this.value = checkRepeatDay()
+        }
+        addSource(repeatAlarmToSunday){
+            this.value = checkRepeatDay()
+        }
+    }
+
+    val showDeleteBtn : LiveData<Boolean> = MutableLiveData(alarmId != PlanAlarmData.NONE_ALARM_ID)
+
     val closeEditor: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
-    //todo 알람을 제대로 설정하지 않았을때 done 버튼 막기
+
     fun onDone() {
+        if(!checkRepeatDay()) return
+
         val alarmData = alarmData.value ?: PlanAlarmData.create(targetId)
         val newAlarmData = reflectChangeValueTo(alarmData)
-
         CoroutineScope(Dispatchers.Main).launch {
             repo.insertAlarmData(newAlarmData)
             onClose()
+        }
+    }
+
+    fun onDelete(alarmId : Int){
+        CoroutineScope(Dispatchers.Main).launch {
+            onClose()
+            repo.deleteAlarmDataById(alarmId)
         }
     }
 
@@ -114,7 +154,7 @@ class PlanHistoryAlarmVM @Inject constructor(
     }
 
     private fun reflectChangeValueTo(alarmData: PlanAlarmData) : PlanAlarmData{
-        //null일 수가 없다... 강제 캐팅해도 괜찮다
+        //null일 수가 없다... 강제 캐스팅해도 괜찮다
         val newTime = LocalTime.of(alarmHour.value!!, alarmMinute.value!!)
 
         return alarmData.apply {
@@ -133,5 +173,20 @@ class PlanHistoryAlarmVM @Inject constructor(
     private fun confirmToDuplicateCheck(value: Boolean?): Boolean {
         if (value == null) return false
         return value
+    }
+
+    //repeatDay들의 값이 모두 false인지를 확인한다
+    private fun checkRepeatDay() : Boolean{
+        var result : Boolean = false
+
+        if(this.repeatAlarmToMonday.value == true) result = true
+        if(this.repeatAlarmToTuesday.value == true) result = true
+        if(this.repeatAlarmToWednesday.value == true) result = true
+        if(this.repeatAlarmToThursday.value == true) result = true
+        if(this.repeatAlarmToFriday.value == true) result = true
+        if(this.repeatAlarmToSaturday.value == true) result = true
+        if(this.repeatAlarmToSunday.value == true) result = true
+
+        return result
     }
 }
