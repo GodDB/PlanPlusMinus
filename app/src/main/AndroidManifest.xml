@@ -3,6 +3,7 @@
     package="com.example.todoplusminus">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".base.BaseApplication"
@@ -14,6 +15,7 @@
         android:theme="@style/Theme.TodoPlusMinus">
         <activity android:name=".ui.MainActivity"
             android:windowSoftInputMode="stateAlwaysVisible"
+            android:screenOrientation="portrait"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
+import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.ui.MainController
 import com.example.todoplusminus.base.BaseApplication
 
@@ -37,16 +38,16 @@ class SplashController : VBControllerBase {
     }
 
     override fun onViewBound(v: View) {
-        //todo 완료했을때 적용하자... 지금 테스트 단계이니깐 0.5초 기다리기 좀 그래
+
         CoroutineScope(Dispatchers.Main).launch {
             initialize()
-
             replaceController(RouterTransaction.with(MainController()).apply {
                 pushChangeHandler(FadeChangeHandler())
             })
         }
 
     }
+
 
     private suspend fun initialize(){
         DpConverter.setUp(applicationContext!!)

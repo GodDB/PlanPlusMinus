@@ -22,13 +22,17 @@ interface IPlannerRepository {
 
     fun getAllAlarmData(planId : BaseID) : Flow<List<PlanAlarmData>>
 
-    fun getAlarmData(alarmId : Int) : Flow<PlanAlarmData>
+    fun getAlarmData(alarmId : Int) : Flow<PlanAlarmData?>
+
+    fun getLatestAlarmId() : Flow<Int?>
+
+    fun getPlannerTitle(planId : BaseID) : Flow<String>
 
     suspend fun insertAlarmData(alarmData: PlanAlarmData)
 
-    suspend fun updateAlarmData(alarmData: PlanAlarmData)
+    suspend fun updateAlarmData(oldAlarmData: PlanAlarmData, newAlarmData: PlanAlarmData)
 
-    suspend fun deleteAlarmDataById(alarmId : Int)
+    suspend fun deleteAlarmData(alarmData : PlanAlarmData)
 
     suspend fun deleteMemoByDate(date : LocalDate)
 

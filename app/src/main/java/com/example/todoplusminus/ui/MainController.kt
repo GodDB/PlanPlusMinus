@@ -12,20 +12,11 @@ import com.example.todoplusminus.R
 import com.example.todoplusminus.base.VBControllerBase
 import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.databinding.ControllerMainBinding
-import com.example.todoplusminus.db.PlannerDatabase
-import com.example.todoplusminus.data.repository.PlannerRepository
-import com.example.todoplusminus.data.repository.SettingRepository
-import com.example.todoplusminus.data.repository.TrackerRepository
-import com.example.todoplusminus.data.source.file.SharedPrefManager
-import com.example.todoplusminus.data.source.local.LocalDataSourceImpl
-import com.example.todoplusminus.data.source.remote.FontDownloadManager
 import com.example.todoplusminus.ui.main.PlannerController
 import com.example.todoplusminus.ui.main.history.PlanHistoryController
-import com.example.todoplusminus.ui.main.history.PlanHistoryVM
 import com.example.todoplusminus.ui.main.memo.PlanMemoController
 import com.example.todoplusminus.ui.setting.SettingController
 import com.example.todoplusminus.ui.tracker.TrackerController
-import com.example.todoplusminus.ui.tracker.TrackerVM
 
 class MainController : VBControllerBase {
 

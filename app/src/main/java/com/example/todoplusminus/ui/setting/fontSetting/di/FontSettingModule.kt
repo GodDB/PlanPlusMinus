@@ -1,6 +1,6 @@
 package com.example.todoplusminus.ui.setting.fontSetting.di
 
-import com.example.todoplusminus.data.repository.SettingRepository
+import com.example.todoplusminus.data.repository.ISettingRepository
 import com.example.todoplusminus.ui.setting.fontSetting.FontSettingVM
 import dagger.Module
 import dagger.Provides
@@ -10,7 +10,7 @@ import dagger.Provides
 class FontSettingModule {
 
     @Provides
-    fun provideFontSettingVM(settingRepo : SettingRepository) : FontSettingVM{
+    fun provideFontSettingVM(settingRepo : ISettingRepository) : FontSettingVM{
         return FontSettingVM(settingRepo)
     }
 }

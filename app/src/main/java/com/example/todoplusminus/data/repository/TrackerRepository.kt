@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class TrackerRepository @Inject constructor(private val dataSource: ILocalDataSource) {
+class TrackerRepository @Inject constructor(private val dataSource: ILocalDataSource) : ITrackerRepository {
 
-    fun getAllDatePlanProject(): Flow<PlanProject> {
+    override fun getAllDatePlanProject(): Flow<PlanProject> {
         return dataSource.getAllPlannerData().map {
             PlanProject.create(it)
         }

@@ -1,12 +1,13 @@
 package com.example.todoplusminus
 
 import android.graphics.Typeface
+import com.example.todoplusminus.data.source.remote.FontDownloadManager
 
 object AppConfig {
 
     val version : String = "1.0.0"
     var font : Typeface? = null
-    var fontName : String = "Aladin"
+    var fontName : String = FontDownloadManager.FONT_YEON_SUNG
     var showSuggestedKeyword : Boolean = true
     var swipeDirectionToRight : Boolean = true
     var showCalendar : Boolean = false

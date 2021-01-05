@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TodoPlusMinus</string>
+    <string name="app_name">오늘할일</string>
     <string name="please_write_here">여기에 적어주세요</string>
     <string name="edit_title">계획 수정하기✏️</string>
     <string name="travel">여행✈️</string>
@@ -98,4 +98,5 @@
     <string name="every_saturday">토요일 마다</string>
     <string name="every_sunday">일요일 마다</string>
     <string name="delete_alarm">알람 삭제</string>
+    <string name="alarm_name">일반 알람</string>
 </resources>

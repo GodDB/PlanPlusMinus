@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.os.PowerManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.todoplusminus.R
@@ -21,6 +22,7 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     lateinit var notificationManager : NotificationManager
+    lateinit var powerManager : PowerManager
 
     override fun onReceive(context: Context, intent: Intent) {
        val title = intent.getStringExtra(AlarmManagerHelper.TITLE_ID)
@@ -28,6 +30,8 @@ class AlarmReceiver : BroadcastReceiver() {
 
         notificationManager = context.getSystemService(
             Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
 
         createNotificationChannel()
         deliverNotification(context, title ?: "")
@@ -49,7 +53,10 @@ class AlarmReceiver : BroadcastReceiver() {
                 .setAutoCancel(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
 
+        val wakeLock : PowerManager.WakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "MyApp::MyWakelockTag")
+        wakeLock.acquire(10*60*1000L /*10 minutes*/)
         notificationManager.notify(NOTIFICATION_ID, builder.build())
+        wakeLock.release()
     }
 
     fun createNotificationChannel(){
@@ -63,7 +70,7 @@ class AlarmReceiver : BroadcastReceiver() {
         notificationChannel.enableLights(true)
         notificationChannel.lightColor = Color.RED
         notificationChannel.enableVibration(true)
-        notificationChannel.description = "aaaa"
+        notificationChannel.description = "stand up notification"
         notificationManager.createNotificationChannel( notificationChannel)
 
     }

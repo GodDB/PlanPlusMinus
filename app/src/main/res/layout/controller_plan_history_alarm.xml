@@ -9,7 +9,7 @@
 
         <variable
             name="vm"
-            type="com.example.todoplusminus.ui.main.history.alarm.PlanHistoryAlarmVM" />
+            type="com.example.todoplusminus.ui.main.history.alarm.BaseHistoryAlarmVM" />
 
         <variable
             name="alarmId"

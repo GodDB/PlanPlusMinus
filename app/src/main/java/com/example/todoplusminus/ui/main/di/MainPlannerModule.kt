@@ -7,6 +7,7 @@ import com.example.todoplusminus.data.source.file.SharedPrefManager
 import com.example.todoplusminus.data.source.local.ILocalDataSource
 import com.example.todoplusminus.di.AACViewModelKey
 import com.example.todoplusminus.ui.main.PlannerViewModel
+import com.example.todoplusminus.util.AlarmManagerHelper
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -21,9 +22,10 @@ class MainPlannerModule() {
     fun providePlanRepo(
         localSource: ILocalDataSource,
         sharedPrefManager: SharedPrefManager,
+        alarmHelper : AlarmManagerHelper,
         dispatcher: CoroutineDispatcher
     ) : IPlannerRepository {
-        return PlannerRepository(localSource, sharedPrefManager, dispatcher)
+        return PlannerRepository(localSource, sharedPrefManager, alarmHelper, dispatcher)
     }
 }
 

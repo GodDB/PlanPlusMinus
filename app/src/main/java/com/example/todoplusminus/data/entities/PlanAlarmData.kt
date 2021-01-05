@@ -4,8 +4,8 @@ import java.time.LocalTime
 
 data class PlanAlarmData(
     val planId: BaseID,
-    val planTitle: String?,
-    val alarmId: Int,
+    var planTitle: String?,
+    var alarmId: Int,
     var alarmTime: LocalTime,
     var alarmRepeatMonday: Boolean = false,
     var alarmRepeatTuesday: Boolean = false,

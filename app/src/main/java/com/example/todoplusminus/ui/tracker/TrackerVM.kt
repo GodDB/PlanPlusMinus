@@ -1,22 +1,20 @@
 package com.example.todoplusminus.ui.tracker
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.todoplusminus.compareUntilWeek
 import com.example.todoplusminus.copy
 import com.example.todoplusminus.customPlusWeeks
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.entities.PlanProject
-import com.example.todoplusminus.data.repository.TrackerRepository
+import com.example.todoplusminus.data.repository.ITrackerRepository
 import com.example.todoplusminus.util.*
-import com.example.todoplusminus.util.livedata.Event
 import kotlinx.coroutines.*
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
 
-class TrackerVM @Inject constructor(trackerRepo: TrackerRepository) : ViewModel() {
+class TrackerVM @Inject constructor(trackerRepo: ITrackerRepository) : ViewModel() {
 
     companion object {
 

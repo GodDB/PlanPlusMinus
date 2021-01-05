@@ -9,6 +9,10 @@ import com.example.todoplusminus.data.repository.IPlannerRepository
 import com.example.todoplusminus.ui.main.edit.PlanEditVM
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,23 +39,28 @@ class TestPlanEditComponentVM {
     @Mock
     lateinit var repository: IPlannerRepository
 
-
+    lateinit var targetData : PlanData
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
 
-        planEditVM =
-            PlanEditVM(repository)
+        runBlocking{
+            targetData = PlanData.create().apply {
+                title = "갓갓갓"
+            }
+            `when`(repository.getPlannerDataById(targetData.id)).thenReturn(targetData)
+            `when`(repository.getLastestIndex()).thenReturn(flow { emit(1) })
+        }
+        planEditVM = PlanEditVM(repository)
+
     }
+
+
     @Test
     fun test_setData_notEmptyId() {
-        var targetData = PlanData.create().apply {
-            title = "갓갓갓"
-        }
-
         testCoroutineRule.runBlockingTest {
-            `when`(repository.getPlannerDataById(BaseID.randomID())).thenReturn(targetData)
+
             planEditVM.setId(targetData.id)
 
             assertEquals(planEditVM.mId, targetData.id)
@@ -61,11 +70,7 @@ class TestPlanEditComponentVM {
     }
 
     @Test
-    fun test_onComplete_WithoutId(){
-        var targetData = PlanData.create().apply {
-            id = BaseID.randomID()
-        }
-
+    fun test_onComplete_WithoutId() {
         testCoroutineRule.runBlockingTest {
             planEditVM.setId(targetData.id)
             planEditVM.onComplete()
@@ -73,8 +78,9 @@ class TestPlanEditComponentVM {
             assertEquals(planEditVM.isEditClose.getOrAwaitValue().peekContent(), true)
         }
     }
+
     @Test
-    fun test_onComplete_Id(){
+    fun test_onComplete_Id() {
         var id = BaseID.randomID()
         var title = "Dddwdaf"
         var bgcolor = 248905
@@ -91,7 +97,7 @@ class TestPlanEditComponentVM {
     }
 
     @Test
-    fun test(){
+    fun test() {
 
         val calendar = Calendar.getInstance()
 
@@ -101,7 +107,7 @@ class TestPlanEditComponentVM {
         println(currentMonthMaxDate)
 
 
-        val prevMonthTail = calendar.get(Calendar.DAY_OF_WEEK) -1
+        val prevMonthTail = calendar.get(Calendar.DAY_OF_WEEK) - 1
         println(prevMonthTail)
 
         calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1)
@@ -110,7 +116,6 @@ class TestPlanEditComponentVM {
 
         println(maxOffsetDate)
     }
-
 
 
 }

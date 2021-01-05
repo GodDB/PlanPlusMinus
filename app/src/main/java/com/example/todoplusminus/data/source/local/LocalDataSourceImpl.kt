@@ -1,5 +1,6 @@
 package com.example.todoplusminus.data.source.local
 
+import android.util.Log
 import androidx.room.withTransaction
 import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.data.entities.PlanAlarmData
@@ -42,6 +43,14 @@ class LocalDataSourceImpl @Inject constructor(val db: PlannerDatabase) :
         return db.userPlanDao().getPlanItemAndAlarm(alarmId)
     }
 
+    override fun getLatestAlarmId(): Flow<Int?> {
+        return db.userPlanDao().getLatestAlarmId()
+    }
+
+    override fun getPlannerTitle(planId: BaseID): Flow<String> {
+        return db.userPlanDao().getPlannerTitle(planId)
+    }
+
     override suspend fun insertAlarmData(alarmData: PlannerAlarmEntity) {
         db.userPlanDao().insertPlanAlarm(alarmData)
     }
@@ -51,6 +60,7 @@ class LocalDataSourceImpl @Inject constructor(val db: PlannerDatabase) :
     }
 
     override suspend fun deleteAlarmDataById(alarmId: Int) {
+        Log.d("godgod", "deleteAlarm")
         db.userPlanDao().deleteAlarmById(alarmId)
     }
 

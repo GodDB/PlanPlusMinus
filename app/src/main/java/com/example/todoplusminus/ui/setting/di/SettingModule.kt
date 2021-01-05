@@ -1,6 +1,7 @@
 package com.example.todoplusminus.ui.setting.di
 
 import androidx.lifecycle.ViewModel
+import com.example.todoplusminus.data.repository.ISettingRepository
 import com.example.todoplusminus.data.repository.SettingRepository
 import com.example.todoplusminus.data.source.file.SharedPrefManager
 import com.example.todoplusminus.data.source.local.ILocalDataSource
@@ -21,7 +22,7 @@ class SettingModule {
                            fontManager: FontDownloadManager,
                            localDataSource : ILocalDataSource,
                            dispatcher: CoroutineDispatcher
-    ) : SettingRepository = SettingRepository(sharedPrefManager, fontManager, localDataSource, dispatcher)
+    ) : ISettingRepository = SettingRepository(sharedPrefManager, fontManager, localDataSource, dispatcher)
 }
 
 @Module

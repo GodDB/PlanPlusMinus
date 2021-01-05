@@ -78,7 +78,7 @@ data class PlannerItemInfoEntity(
     )]
 )
 data class PlannerAlarmEntity (
-    @PrimaryKey(autoGenerate = true) val alarmId : Int,
+    @PrimaryKey val alarmId : Int,
     val alarmTime : LocalTime,
     val alarmMonday : Boolean,
     val alarmTuesday : Boolean,
@@ -147,6 +147,9 @@ interface UserPlanDao {
     @Query("select `index` from PlannerItem order by `index` DESC LIMIT 1")
     fun getLastIndex(): Flow<Int?>
 
+    @Query("select title from PlannerItem where id == :planId")
+    fun getPlannerTitle(planId : BaseID) : Flow<String>
+
     @Query("select * from PlannerItem item, PlannerInfo info where item.id == info.planid and item.id == :id")
     fun getPlannerDataById(id: BaseID): PlanData
 
@@ -170,6 +173,10 @@ interface UserPlanDao {
 
     @Query("select * from PlannerItem item, PlannerAlarm alarm where item.id == alarm.planId and alarm.alarmId == :alarmId")
     fun getPlanItemAndAlarm(alarmId : Int) : Flow<PlannerItemAlarm>
+
+    //가장 최신의 알람Id를 가져온다
+    @Query("select `alarmId` from PlannerAlarm order by `alarmId` DESC LIMIT 1")
+    fun getLatestAlarmId(): Flow<Int?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPlanAlarm(alarmEntity : PlannerAlarmEntity)

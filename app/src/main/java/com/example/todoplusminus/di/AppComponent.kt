@@ -10,6 +10,7 @@ import com.example.todoplusminus.ui.main.di.MainPlannerComponent
 import com.example.todoplusminus.ui.setting.di.SettingComponent
 import com.example.todoplusminus.ui.splash.di.SplashComponent
 import com.example.todoplusminus.ui.tracker.di.TrackerComponent
+import com.example.todoplusminus.util.AlarmManagerHelper
 import dagger.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -60,6 +61,9 @@ class CommonModule {
     @Singleton
     @Provides
     fun provideLocalSource(db: PlannerDatabase): ILocalDataSource = LocalDataSourceImpl(db)
+    
+    @Provides
+    fun provideAlarmHelper(context: Context) : AlarmManagerHelper = AlarmManagerHelper(context)
 
     @Singleton
     @Provides

@@ -1,6 +1,7 @@
 package com.example.todoplusminus.ui.main.history.alarm
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,15 +24,18 @@ class PlanHistoryAlarmController : DBControllerBase {
     }
 
     @Inject
-    lateinit var alarmVM: PlanHistoryAlarmVM
+    lateinit var alarmVM: BaseHistoryAlarmVM
     private lateinit var binder: ControllerPlanHistoryAlarmBinding
     private lateinit var _targetId: BaseID
     private var _alarmId : Int = 0
 
     override fun connectDagger() {
         super.connectDagger()
-        (activity?.application as BaseApplication).appComponent.planComponent().create()
-            .historyComponent().create(_targetId).historyAlarmComponent().create(_alarmId).inject(this)
+        (activity?.application as BaseApplication).appComponent
+            .planComponent().create()
+            .historyComponent().create(_targetId)
+            .historyAlarmComponent().create(_alarmId)
+            .inject(this)
     }
 
     override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
@@ -65,6 +69,7 @@ class PlanHistoryAlarmController : DBControllerBase {
     private fun onSubscribe(){
         alarmVM.closeEditor.observe(this, Observer { event ->
             event.getContentIfNotHandled()?.let { close ->
+                Log.d("godgod","onClose")
                 if(close) popCurrentController()
             }
         })

@@ -79,9 +79,7 @@ class PlannerViewModel @Inject constructor(
         Event(false)
     )
 
-    val showHistoryId: MutableLiveData<Event<BaseID>> = MutableLiveData(
-        Event(BaseID.createEmpty())
-    )
+    val showHistoryId: MutableLiveData<Event<BaseID>> = MutableLiveData()
 
     val showCalendar: MutableLiveData<Event<Boolean>> = MutableLiveData(
         Event(false)

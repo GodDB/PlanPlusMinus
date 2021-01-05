@@ -4,6 +4,8 @@ import android.graphics.Typeface
 import android.renderscript.BaseObj
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
 import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.util.livedata.Event
@@ -11,12 +13,18 @@ import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.repository.IPlannerRepository
 import com.example.todoplusminus.util.ColorManager
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class PlanEditVM @Inject constructor(
     private val repository: IPlannerRepository
 ) {
+
+    init {
+        CoroutineScope(Dispatchers.Main).launch {
+            mLastestIndex = repository.getLastestIndex().first() ?: 0
+        }
+    }
 
     val font: Typeface?
         get() = AppConfig.font
@@ -25,15 +33,7 @@ class PlanEditVM @Inject constructor(
     val mBgColor: MutableLiveData<Int> = MutableLiveData(ColorManager.getRandomColor())
     val mTitle: MutableLiveData<String> = MutableLiveData("")
 
-    //todo 수
-    private val mLastestIndex: LiveData<Int> = MutableLiveData<Int>().apply {
-        CoroutineScope(Dispatchers.Main).launch {
-            repository.getLastestIndex().collect{
-                this@apply.value = it
-            }
-        }
-    }
-
+    private var mLastestIndex : Int = 0
 
     /** edit 작업이 끝났는지(done or back or cancel)를 체크한다.
      * */
@@ -62,7 +62,7 @@ class PlanEditVM @Inject constructor(
     private fun onCreateItem() {
         if (!checkIsEmptyId(mId) && checkIsEmptyContent()) return
         val newData = PlanData.create().apply {
-            this.index = mLastestIndex.value?.plus(1) ?: 0
+            this.index = mLastestIndex?.plus(1) ?: 0
             this.title = mTitle.value ?: ""
             this.bgColor = mBgColor.value ?: PlanData.DEFAULT_BG_COLOR
         }

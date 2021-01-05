@@ -9,6 +9,7 @@ import com.example.todoplusminus.data.source.local.ILocalDataSource
 import com.example.todoplusminus.data.source.file.SharedPrefManager
 import com.example.todoplusminus.db.PlannerAlarmEntity
 import com.example.todoplusminus.db.PlannerItemAlarm
+import com.example.todoplusminus.util.AlarmManagerHelper
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.time.LocalDate
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class PlannerRepository @Inject constructor(
     private val localSource: ILocalDataSource,
     private val sharedPrefManager: SharedPrefManager,
+    private val alarmHelper : AlarmManagerHelper,
     private val dispatcher: CoroutineDispatcher = PMCoroutineSpecification.IO_DISPATCHER
 ) : IPlannerRepository {
 
@@ -73,31 +75,41 @@ class PlannerRepository @Inject constructor(
         }
     }
 
-    override fun getAlarmData(alarmId: Int): Flow<PlanAlarmData> {
+    override fun getAlarmData(alarmId: Int): Flow<PlanAlarmData?> {
         return localSource.getAlarmData(alarmId).map {
-            Log.d("godgod", "${it == null}")
             it?.let { convertAlarmItemToAlarmData(it)}
         }
     }
 
+    override fun getLatestAlarmId(): Flow<Int?> {
+        return localSource.getLatestAlarmId()
+    }
+
+    override fun getPlannerTitle(planId: BaseID): Flow<String> {
+        return localSource.getPlannerTitle(planId)
+    }
 
     override suspend fun insertAlarmData(alarmData: PlanAlarmData) {
         withContext(dispatcher) {
+            registerRepeatAlarm(alarmData)
             val alarmEntity = convertAlarmDataToAlarmEntity(alarmData)
             localSource.insertAlarmData(alarmEntity)
         }
     }
 
-    override suspend fun updateAlarmData(alarmData: PlanAlarmData) {
+    override suspend fun updateAlarmData(oldAlarmData : PlanAlarmData, newAlarmData: PlanAlarmData) {
         withContext(dispatcher) {
-            val alarmEntity = convertAlarmDataToAlarmEntity(alarmData)
+            unregisterAlarm(oldAlarmData)
+            registerRepeatAlarm(newAlarmData)
+            val alarmEntity = convertAlarmDataToAlarmEntity(newAlarmData)
             localSource.updateAlarmData(alarmEntity)
         }
     }
 
-    override suspend fun deleteAlarmDataById(alarmId: Int) {
+    override suspend fun deleteAlarmData(alarmData : PlanAlarmData) {
         withContext(dispatcher){
-            localSource.deleteAlarmDataById(alarmId)
+            unregisterAlarm(alarmData)
+            localSource.deleteAlarmDataById(alarmData.alarmId)
         }
     }
 
@@ -184,6 +196,13 @@ class PlannerRepository @Inject constructor(
     private fun generateInfoData(id: BaseID, date: LocalDate) =
         PlannerInfoEntity(0, date, 0, id)
 
+    private fun registerRepeatAlarm(alarmData: PlanAlarmData){
+        alarmHelper.registerAlarm(alarmData, AlarmManagerHelper.TYPE_REPEAT)
+    }
+
+    private fun unregisterAlarm(alarmData: PlanAlarmData){
+        alarmHelper.cancelAlarm(alarmData)
+    }
 
     companion object {
         fun convertAlarmItemListToAlarmDataList(alarmItemList: List<PlannerItemAlarm>): List<PlanAlarmData> {

@@ -7,6 +7,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
@@ -16,7 +17,12 @@ import com.example.todoplusminus.data.source.remote.FontDownloadManager
 import com.example.todoplusminus.data.source.file.SharedPrefManager
 import com.example.todoplusminus.data.repository.SplashRepository
 import com.example.todoplusminus.ui.splash.SplashVM
+import com.example.todoplusminus.util.AlarmManagerHelper
 import com.example.todoplusminus.util.AlarmReceiver
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,13 +35,13 @@ class MainActivity : AppCompatActivity() {
 
         router = Conductor.attachRouter(this, vb.main, savedInstanceState)
 
-       /* testAlarm(1, "갓1", 0)
-        testAlarm(2, "갓2", 12000)
-        testAlarm(3, "갓3", 24000)
-        testAlarm(4, "갓4", 36000)
-        testAlarm(5, "갓5", 48000)
-        testAlarm(6, "갓6",60000)
-        testAlarm(7, "갓7",72000)*/
+      /*  testAlarm(1, "갓1", 0)
+        testAlarm(1, "갓2", 1200)
+        testAlarm(1, "갓3", 2400)
+        testAlarm(1, "갓4", 3600)
+        testAlarm(1, "갓5", 4800)
+        testAlarm(1, "갓6",6000)
+        testAlarm(1, "갓7",7200)*/
 
         if (!router.hasRootController())
             router.setRoot(RouterTransaction.with(SplashController()))
@@ -60,16 +66,23 @@ class MainActivity : AppCompatActivity() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val intent = Intent(this, AlarmReceiver::class.java)
-        intent.putExtra("test", title)
+        intent.putExtra(AlarmManagerHelper.TITLE_ID, title)
 
         val pendingIntent = PendingIntent.getBroadcast(
             this, requestCode, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_ONE_SHOT
         )
-        val triggerTime = SystemClock.elapsedRealtime() + timeInterval
+        /*val triggerTime = SystemClock.elapsedRealtime() + timeInterval
+
+        Log.d()*/
+
+        val triggerTime = System.currentTimeMillis()
+
+        val a = LocalDateTime.ofInstant(Instant.ofEpochMilli(triggerTime), ZoneId.systemDefault())
+        Log.d("godgod", "${a}")
 
         alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            AlarmManager.RTC_WAKEUP,
             triggerTime,
             pendingIntent
         )

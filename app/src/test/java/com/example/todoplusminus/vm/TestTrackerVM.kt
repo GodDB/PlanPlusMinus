@@ -4,6 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.todoplusminus.TestCoroutineRule
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.entities.PlanProject
+import com.example.todoplusminus.data.repository.ITrackerRepository
+import com.example.todoplusminus.data.repository.TrackerRepository
 import com.example.todoplusminus.ui.tracker.TrackerVM
 import com.example.todoplusminus.util.LocalDateRange
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -11,6 +13,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import java.time.LocalDate
@@ -26,15 +30,15 @@ class TestTrackerVM {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     lateinit var trackerVM: TrackerVM
-/*
+
     @Mock
-    lateinit var trackerRepository: TrackerRepository*/
+    lateinit var trackerRepository: ITrackerRepository
 
     lateinit var testPlanProject : PlanProject
     lateinit var testLocalDateRange : LocalDateRange
     @Before
     fun setup(){
-        MockitoAnnotations.initMocks(this)
+
 
         val planData = mutableListOf<PlanData>().apply{
             add(PlanData.create().apply { title = "갓갓"; count = 1; date = LocalDate.of(2020,12,1) })
@@ -62,7 +66,7 @@ class TestTrackerVM {
 
         testPlanProject = PlanProject.create(planData)
         testLocalDateRange = LocalDateRange(LocalDate.of(2020,12,1), LocalDate.of(2020,12,21))
-        /*trackerVM = TrackerVM(trackerRepository)*/
+        trackerVM = TrackerVM(trackerRepository)
     }
 
     @Test

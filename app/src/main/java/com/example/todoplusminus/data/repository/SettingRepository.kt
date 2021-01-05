@@ -15,36 +15,36 @@ class SettingRepository @Inject constructor(
     private val fontManager: FontDownloadManager,
     private val localDataSource : ILocalDataSource,
     private val dispatcher: CoroutineDispatcher
-) {
+) : ISettingRepository {
 
-    suspend fun getFont(fontName: String) : Typeface? {
+    override suspend fun getFont(fontName: String) : Typeface? {
         val font = fontManager.downloadFont(fontName)
         registerFont(font, fontName)
 
         return font
     }
 
-    fun setSuggestedKeyword(wantShow: Boolean) {
+    override fun setSuggestedKeyword(wantShow: Boolean) {
         sharedPrefManager.setSuggestedKeyword(wantShow)
     }
 
-    fun setShowCalendar(wantShow: Boolean) {
+    override fun setShowCalendar(wantShow: Boolean) {
         sharedPrefManager.setShowCalendar(wantShow)
     }
 
-    fun setSwipeToRight(wantRight: Boolean) {
+    override fun setSwipeToRight(wantRight: Boolean) {
         sharedPrefManager.setSwipeToRight(wantRight)
     }
 
-    fun setEnableAlarm(wantAlarm: Boolean) {
+    override fun setEnableAlarm(wantAlarm: Boolean) {
         sharedPrefManager.setEnableAlarm(wantAlarm)
     }
 
-    fun setPlanSize(planSize : Int){
+    override fun setPlanSize(planSize : Int){
         sharedPrefManager.setPlanSize(planSize)
     }
 
-    suspend fun onDeleteAllData(){
+    override suspend fun onDeleteAllData(){
         withContext(dispatcher){
             localDataSource.deleteAllData()
         }

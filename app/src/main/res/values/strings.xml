@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TodoPlusMinus</string>
+    <string name="app_name">TodayTODO</string>
 
     <string name="please_write_here">please, write here</string>
     <string name="edit_title">editing plan✏️</string>
@@ -55,6 +55,7 @@
     <string name="every_saturday">every saturday</string>
     <string name="every_sunday">every sunday</string>
     <string name="delete_alarm">Delete Alarm</string>
+    <string name="alarm_name">Basic Alarm</string>
 
     <string name="monday">Mon</string>
     <string name="tuesday">Tue</string>

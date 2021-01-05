@@ -26,6 +26,10 @@ interface ILocalDataSource {
 
     fun getAlarmData(alarmId : Int) : Flow<PlannerItemAlarm>
 
+    fun getLatestAlarmId() : Flow<Int?>
+
+    fun getPlannerTitle(planId : BaseID) : Flow<String>
+
     suspend fun insertAlarmData(alarmData: PlannerAlarmEntity)
 
     suspend fun updateAlarmData(alarmData: PlannerAlarmEntity)

@@ -3,15 +3,15 @@ package com.example.todoplusminus.ui.setting.fontSetting
 import androidx.lifecycle.MutableLiveData
 import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.R
+import com.example.todoplusminus.data.repository.ISettingRepository
 import com.example.todoplusminus.util.livedata.Event
 import com.example.todoplusminus.data.source.remote.FontDownloadManager
-import com.example.todoplusminus.data.repository.SettingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class FontSettingVM @Inject constructor(private val repository: SettingRepository) {
+class FontSettingVM @Inject constructor(private val repository: ISettingRepository) {
 
     val downloadingFontName : MutableLiveData<Event<String>> = MutableLiveData()
     val allowDownload : MutableLiveData<Event<Boolean>> = MutableLiveData(

@@ -4,15 +4,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.R
+import com.example.todoplusminus.data.repository.ISettingRepository
 import com.example.todoplusminus.util.livedata.Event
-import com.example.todoplusminus.data.repository.SettingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-class SettingVM @Inject constructor(private val repository: SettingRepository) : ViewModel() {
+class SettingVM @Inject constructor(private val repository: ISettingRepository) : ViewModel() {
 
     companion object {
         private const val TAG_PLAN_RECOMMEND_KEYWORD: Int = 1
