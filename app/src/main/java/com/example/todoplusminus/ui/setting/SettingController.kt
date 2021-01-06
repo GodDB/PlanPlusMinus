@@ -101,10 +101,6 @@ class SettingController : DBControllerBase {
                 if (show) showWarningDialog()
             }
         })
-
-        mSettingVM.valueDataList.observe(this, Observer {
-            Log.d("godgod", "settingData notification")
-        })
     }
 
     private fun showWarningDialog() {

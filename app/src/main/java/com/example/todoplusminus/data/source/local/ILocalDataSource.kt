@@ -22,13 +22,16 @@ interface ILocalDataSource {
 
     fun getMemoByDate(date : LocalDate) : Flow<PlanMemo>
 
-    fun getAllAlarmData(planId : BaseID) : Flow<List<PlannerItemAlarm>>
+    fun getAllAlarmData() : Flow<List<PlannerItemAlarm>>
 
     fun getAlarmData(alarmId : Int) : Flow<PlannerItemAlarm>
+
+    fun getAlarmDataListByPlanId(planId: BaseID) : Flow<List<PlannerItemAlarm>>
 
     fun getLatestAlarmId() : Flow<Int?>
 
     fun getPlannerTitle(planId : BaseID) : Flow<String>
+
 
     suspend fun insertAlarmData(alarmData: PlannerAlarmEntity)
 
@@ -63,6 +66,7 @@ interface ILocalDataSource {
     suspend fun insertPlanMemo(memo : PlanMemo)
 
     suspend fun insertPlanInfo(info : PlannerInfoEntity)
+
 }
 
 class PlannerMapper() {

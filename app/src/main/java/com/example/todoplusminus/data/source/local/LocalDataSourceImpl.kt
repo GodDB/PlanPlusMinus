@@ -3,7 +3,6 @@ package com.example.todoplusminus.data.source.local
 import android.util.Log
 import androidx.room.withTransaction
 import com.example.todoplusminus.data.entities.BaseID
-import com.example.todoplusminus.data.entities.PlanAlarmData
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.entities.PlanMemo
 import com.example.todoplusminus.db.*
@@ -14,79 +13,84 @@ import javax.inject.Inject
 class LocalDataSourceImpl @Inject constructor(val db: PlannerDatabase) :
     ILocalDataSource {
 
+    private val dao : UserPlanDao = db.userPlanDao()
+
     val mapper = PlannerMapper()
 
     override fun getAllPlannerData(): Flow<MutableList<PlanData>> =
-        db.userPlanDao().getAllPlannerData()
+        dao.getAllPlannerData()
 
     override fun getAllPlanMemo(): Flow<MutableList<PlanMemo>> =
-        db.userPlanDao().getAllPlanMemo()
+        dao.getAllPlanMemo()
 
     override fun getAllPlannerDataByDate(date: LocalDate): Flow<MutableList<PlanData>> =
-        db.userPlanDao().getAllPlannerDataByDate(date)
+        dao.getAllPlannerDataByDate(date)
 
     override fun getAllPlannerDataById(id: BaseID): Flow<List<PlanData>> =
-        db.userPlanDao().getAllPlannerDataById(id)
+        dao.getAllPlannerDataById(id)
 
     override fun getLastestIndex(): Flow<Int?> {
-        return db.userPlanDao().getLastIndex()
+        return dao.getLastIndex()
     }
 
     override fun getMemoByDate(date: LocalDate): Flow<PlanMemo> =
-        db.userPlanDao().getMemoByDate(date)
+        dao.getMemoByDate(date)
 
-    override fun getAllAlarmData(planId: BaseID): Flow<List<PlannerItemAlarm>> {
-        return db.userPlanDao().getAllPlanItemAndAlarm(planId)
+    override fun getAllAlarmData(): Flow<List<PlannerItemAlarm>> {
+        return dao.getAllAlarmData()
     }
 
     override fun getAlarmData(alarmId: Int): Flow<PlannerItemAlarm> {
-        return db.userPlanDao().getPlanItemAndAlarm(alarmId)
+        return dao.getPlanItemAndAlarm(alarmId)
+    }
+
+    override fun getAlarmDataListByPlanId(planId: BaseID): Flow<List<PlannerItemAlarm>> {
+        return dao.getAlarmDataListByPlanId(planId)
     }
 
     override fun getLatestAlarmId(): Flow<Int?> {
-        return db.userPlanDao().getLatestAlarmId()
+        return dao.getLatestAlarmId()
     }
 
     override fun getPlannerTitle(planId: BaseID): Flow<String> {
-        return db.userPlanDao().getPlannerTitle(planId)
+        return dao.getPlanItemTitle(planId)
     }
 
     override suspend fun insertAlarmData(alarmData: PlannerAlarmEntity) {
-        db.userPlanDao().insertPlanAlarm(alarmData)
+        dao.insertPlanAlarm(alarmData)
     }
 
     override suspend fun updateAlarmData(alarmData: PlannerAlarmEntity) {
-        db.userPlanDao().updatePlanAlarm(alarmData)
+        dao.updatePlanAlarm(alarmData)
     }
 
     override suspend fun deleteAlarmDataById(alarmId: Int) {
-        Log.d("godgod", "deleteAlarm")
-        db.userPlanDao().deleteAlarmById(alarmId)
+        dao.deleteAlarmById(alarmId)
     }
 
 
     override suspend fun deleteMemoByDate(data: LocalDate) {
-        db.userPlanDao().deletePlanMemoByData(data)
+        dao.deletePlanMemoByData(data)
     }
 
     override suspend fun deleteAllData() {
         db.withTransaction {
-            db.userPlanDao().deleteAllPlanItem()
-            db.userPlanDao().deleteAllPlanMemo()
+            dao.deleteAllPlanItem()
+            dao.deleteAllPlanMemo()
         }
     }
 
 
     override suspend fun deletePlannerDataById(id: BaseID) {
-        db.userPlanDao().deletePlannerDataById(id)
+        dao.deletePlanItemById(id)
     }
 
     override suspend fun insertPlannerData(planData: PlanData) {
         val itemAndInfo = mapper.planDataToRoomEntity(planData)
 
         db.withTransaction {
-            db.userPlanDao().insertPlanItem(itemAndInfo.item)
-            db.userPlanDao().insertPlanInfo(itemAndInfo.info)
+            dao.insertPlanItem(itemAndInfo.item)
+            dao.insertPlanInfo(itemAndInfo.info)
         }
     }
 
@@ -95,8 +99,8 @@ class LocalDataSourceImpl @Inject constructor(val db: PlannerDatabase) :
 
         db.withTransaction {
             itemAndInfoList.forEach {
-                db.userPlanDao().updatePlanItem(it.item)
-                db.userPlanDao().updatePlanInfo(it.info)
+                dao.updatePlanItem(it.item)
+                dao.updatePlanInfo(it.info)
             }
         }
     }
@@ -105,8 +109,8 @@ class LocalDataSourceImpl @Inject constructor(val db: PlannerDatabase) :
         val itemAndInfo = mapper.planDataToRoomEntity(data)
 
         db.withTransaction {
-            db.userPlanDao().updatePlanItem(itemAndInfo.item)
-            db.userPlanDao().updatePlanInfo(itemAndInfo.info)
+            dao.updatePlanItem(itemAndInfo.item)
+            dao.updatePlanInfo(itemAndInfo.info)
         }
     }
 
@@ -117,39 +121,40 @@ class LocalDataSourceImpl @Inject constructor(val db: PlannerDatabase) :
         db.withTransaction {
 
             updateItemAndInfoList.forEach {
-                db.userPlanDao().updatePlanItem(it.item)
-                db.userPlanDao().updatePlanInfo(it.info)
+                dao.updatePlanItem(it.item)
+                dao.updatePlanInfo(it.info)
             }
 
-            db.userPlanDao().deletePlanInfo(deleteItemAndInfo.info)
-            db.userPlanDao().deletePlanItem(deleteItemAndInfo.item)
+            dao.deletePlanInfo(deleteItemAndInfo.info)
+            dao.deletePlanItem(deleteItemAndInfo.item)
         }
     }
 
     override suspend fun getPlannerDataById(id: BaseID): PlanData =
-        db.userPlanDao().getPlannerDataById(id)
+        dao.getPlannerDataById(id)
 
     override suspend fun getAllPlanItem(): List<PlannerItemEntity> =
-        db.userPlanDao().getAllPlanItem()
+        dao.getAllPlanItem()
 
     override suspend fun getAllPlanInfoByDate(date: LocalDate): List<PlannerInfoEntity> =
-        db.userPlanDao().getAllPlanInfoByDate(date)
+        dao.getAllPlanInfoByDate(date)
 
     override suspend fun updateTitleBgById(id: BaseID, title: String, bgColor: Int) {
-        db.userPlanDao().updateTitleBgById(id, title, bgColor)
+        dao.updatePlanItemTitleBgById(id, title, bgColor)
     }
 
     override suspend fun updatePlanMemo(memo: PlanMemo) {
-        db.userPlanDao().updatePlanMemo(memo)
+        dao.updatePlanMemo(memo)
     }
 
     override suspend fun insertPlanMemo(memo: PlanMemo) {
-        db.userPlanDao().insertPlanMemo(memo)
+        dao.insertPlanMemo(memo)
     }
 
     override suspend fun insertPlanInfo(info: PlannerInfoEntity) {
-        db.userPlanDao().insertPlanInfo(info)
+        dao.insertPlanInfo(info)
     }
+
 
 
 }

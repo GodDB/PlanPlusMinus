@@ -8,6 +8,7 @@ import com.example.todoplusminus.data.source.local.ILocalDataSource
 import com.example.todoplusminus.data.source.remote.FontDownloadManager
 import com.example.todoplusminus.di.AACViewModelKey
 import com.example.todoplusminus.ui.setting.SettingVM
+import com.example.todoplusminus.util.AlarmManagerHelper
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -21,8 +22,9 @@ class SettingModule {
     fun provideSettingRepo(sharedPrefManager: SharedPrefManager,
                            fontManager: FontDownloadManager,
                            localDataSource : ILocalDataSource,
+                           alarmHelepr : AlarmManagerHelper,
                            dispatcher: CoroutineDispatcher
-    ) : ISettingRepository = SettingRepository(sharedPrefManager, fontManager, localDataSource, dispatcher)
+    ) : ISettingRepository = SettingRepository(sharedPrefManager, fontManager, localDataSource, alarmHelepr, dispatcher)
 }
 
 @Module

@@ -1,7 +1,6 @@
 package com.example.todoplusminus.ui.main.history
 
 import android.graphics.Typeface
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.todoplusminus.AppConfig
 import com.example.todoplusminus.R
@@ -50,7 +49,7 @@ class PlanHistoryVM @Inject constructor(
 
 
     private val alarmDataList: LiveData<List<PlanAlarmData>> =
-        repository.getAllAlarmData(targetId).asLiveData()
+        repository.getAlarmDataListByPlanId(targetId).asLiveData()
 
     val alarmListDatas: LiveData<List<Triple<List<StringID>, ColorID, ValueData>>> =
         alarmDataList.switchMap { alarmDataList ->

@@ -22,7 +22,6 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     lateinit var notificationManager : NotificationManager
-    lateinit var powerManager : PowerManager
 
     override fun onReceive(context: Context, intent: Intent) {
        val title = intent.getStringExtra(AlarmManagerHelper.TITLE_ID)
@@ -30,8 +29,6 @@ class AlarmReceiver : BroadcastReceiver() {
 
         notificationManager = context.getSystemService(
             Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
 
         createNotificationChannel()
         deliverNotification(context, title ?: "")
@@ -47,16 +44,13 @@ class AlarmReceiver : BroadcastReceiver() {
         )
         val builder =
             NotificationCompat.Builder(context, PRIMARY_CHANNEL_ID)
-                .setSmallIcon(R.drawable.sunflower)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
                 .setContentIntent(contentPendingIntent)
                 .setAutoCancel(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
 
-        val wakeLock : PowerManager.WakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "MyApp::MyWakelockTag")
-        wakeLock.acquire(10*60*1000L /*10 minutes*/)
         notificationManager.notify(NOTIFICATION_ID, builder.build())
-        wakeLock.release()
     }
 
     fun createNotificationChannel(){

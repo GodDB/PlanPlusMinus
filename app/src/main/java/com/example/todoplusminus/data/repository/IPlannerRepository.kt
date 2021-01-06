@@ -20,7 +20,7 @@ interface IPlannerRepository {
 
     fun getMemoByDate(date: LocalDate): Flow<PlanMemo>
 
-    fun getAllAlarmData(planId : BaseID) : Flow<List<PlanAlarmData>>
+    fun getAlarmDataListByPlanId(planId : BaseID) : Flow<List<PlanAlarmData>>
 
     fun getAlarmData(alarmId : Int) : Flow<PlanAlarmData?>
 

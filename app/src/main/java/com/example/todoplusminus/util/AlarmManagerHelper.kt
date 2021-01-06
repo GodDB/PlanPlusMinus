@@ -19,9 +19,8 @@ class AlarmManagerHelper(private val context: Context) {
 
         private val ALARM_RECEIVER_CLASS: Class<AlarmReceiver> = AlarmReceiver::class.java
 
-        //todo test
-   /*     private const val INTERVAL_TIME : Long = AlarmManager.INTERVAL_DAY * 7*/
-        private const val INTERVAL_TIME : Long = 1000 * 60 * 3
+        private const val INTERVAL_TIME : Long = AlarmManager.INTERVAL_DAY * 7
+
 
         const val TYPE_ONESHOT = 1
         const val TYPE_REPEAT = 2
@@ -149,7 +148,7 @@ class AlarmManagerHelper(private val context: Context) {
         return alarmItems
     }
 
-   fun generateAlarmItemId(alarmId: Int, dayOfWeekValue: Int): Int {
+   private fun generateAlarmItemId(alarmId: Int, dayOfWeekValue: Int): Int {
         return (alarmId.toString() + dayOfWeekValue.toString()).toInt()
     }
 
