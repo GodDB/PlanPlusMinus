@@ -6,23 +6,17 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.example.todoplusminus.ui.splash.SplashController
 import com.example.todoplusminus.databinding.ActivityMainBinding
-import com.example.todoplusminus.data.source.remote.FontDownloadManager
-import com.example.todoplusminus.data.source.file.SharedPrefManager
-import com.example.todoplusminus.data.repository.SplashRepository
-import com.example.todoplusminus.ui.splash.SplashVM
 import com.example.todoplusminus.util.AlarmManagerHelper
-import com.example.todoplusminus.util.AlarmReceiver
+import com.example.todoplusminus.receivers.AlarmReceiver
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 
 class MainActivity : AppCompatActivity() {
 
@@ -66,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val intent = Intent(this, AlarmReceiver::class.java)
-        intent.putExtra(AlarmManagerHelper.TITLE_ID, title)
+        intent.putExtra(AlarmManagerHelper.ALARM_CONTENT_ID, title)
 
         val pendingIntent = PendingIntent.getBroadcast(
             this, requestCode, intent,

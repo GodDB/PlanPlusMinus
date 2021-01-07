@@ -6,10 +6,9 @@ import com.example.todoplusminus.data.entities.PlanAlarmData
 import com.example.todoplusminus.data.source.local.ILocalDataSource
 import com.example.todoplusminus.data.source.file.SharedPrefManager
 import com.example.todoplusminus.data.source.remote.FontDownloadManager
-import com.example.todoplusminus.db.PlannerAlarmEntity
-import com.example.todoplusminus.db.PlannerItemAlarm
+import com.example.todoplusminus.data.source.local.db.PlannerAlarmEntity
+import com.example.todoplusminus.data.source.local.db.PlannerItemAlarm
 import com.example.todoplusminus.util.AlarmManagerHelper
-import com.example.todoplusminus.util.PMCoroutineSpecification
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
@@ -44,8 +43,10 @@ class SettingRepository @Inject constructor(
         sharedPrefManager.setSwipeToRight(wantRight)
     }
 
-    override fun setEnableAlarm(wantAlarm: Boolean) {
+    override fun setEnableDefaultAlarm(wantAlarm: Boolean) {
         sharedPrefManager.setEnableAlarm(wantAlarm)
+
+        registerOrUnregisterDefaultAlarm(wantAlarm)
     }
 
     override fun setPlanSize(planSize: Int) {
@@ -68,6 +69,23 @@ class SettingRepository @Inject constructor(
         }
     }
 
+    override suspend fun reloadAllAlarm() {
+        withContext(dispatcher){
+            localDataSource.getAllAlarmData()
+                .take(1)
+                .map { convertAlarmItemListToAlarmDataList(it) }
+                .collect {
+                    registerRepeatAlarmList(it)
+                }
+        }
+    }
+
+    private fun registerOrUnregisterDefaultAlarm(wantAlarm: Boolean){
+        if(wantAlarm) return alarmHelper.registerDefaultAlarm()
+
+        alarmHelper.unregisterDefaultAlarm()
+    }
+
     private fun registerFont(font: Typeface?, fontName: String) {
         if (font != null) sharedPrefManager.setFontName(fontName)
         AppConfig.font = font
@@ -79,12 +97,18 @@ class SettingRepository @Inject constructor(
         }
     }
 
+    private fun registerRepeatAlarmList(alarmDataList : List<PlanAlarmData>) {
+        alarmDataList.forEach {
+            registerRepeatAlarm(it)
+        }
+    }
+
     private fun registerRepeatAlarm(alarmData: PlanAlarmData) {
         alarmHelper.registerAlarm(alarmData, AlarmManagerHelper.TYPE_REPEAT)
     }
 
     private fun unregisterAlarm(alarmData: PlanAlarmData) {
-        alarmHelper.cancelAlarm(alarmData)
+        alarmHelper.unregisterAlarm(alarmData)
     }
 
 

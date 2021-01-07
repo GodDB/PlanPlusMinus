@@ -201,7 +201,7 @@ class SettingVM @Inject constructor(private val repository: ISettingRepository) 
     }
 
     private fun onAlarm(value: Boolean) {
-        repository.setEnableAlarm(value)
+        repository.setEnableDefaultAlarm(value)
     }
 
 }

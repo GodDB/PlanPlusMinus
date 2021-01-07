@@ -54,5 +54,4 @@ interface IPlannerRepository {
 
     suspend fun insertPlanMemo(memo: PlanMemo)
 
-
 }

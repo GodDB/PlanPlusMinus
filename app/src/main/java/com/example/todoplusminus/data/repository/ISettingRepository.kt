@@ -13,10 +13,12 @@ interface ISettingRepository {
 
     fun setSwipeToRight(wantRight: Boolean)
 
-    fun setEnableAlarm(wantAlarm: Boolean)
+    fun setEnableDefaultAlarm(wantAlarm: Boolean)
 
     fun setPlanSize(planSize : Int)
 
     suspend fun onDeleteAllData()
+
+    suspend fun reloadAllAlarm()
 
 }

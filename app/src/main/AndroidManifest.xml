@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name=".base.BaseApplication"
@@ -24,9 +25,16 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".util.AlarmReceiver"
-            android:exported="false"
-            />
+        <receiver android:name=".receivers.AlarmReceiver"
+            android:exported="false" />
+
+        <receiver android:name=".receivers.RebootReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action
+                    android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="preloaded_fonts"

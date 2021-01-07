@@ -2,12 +2,12 @@ package com.example.todoplusminus.data.repository
 
 import com.example.todoplusminus.data.entities.*
 import com.example.todoplusminus.util.PMCoroutineSpecification
-import com.example.todoplusminus.db.PlannerInfoEntity
-import com.example.todoplusminus.db.PlannerItemEntity
+import com.example.todoplusminus.data.source.local.db.PlannerInfoEntity
+import com.example.todoplusminus.data.source.local.db.PlannerItemEntity
 import com.example.todoplusminus.data.source.local.ILocalDataSource
 import com.example.todoplusminus.data.source.file.SharedPrefManager
-import com.example.todoplusminus.db.PlannerAlarmEntity
-import com.example.todoplusminus.db.PlannerItemAlarm
+import com.example.todoplusminus.data.source.local.db.PlannerAlarmEntity
+import com.example.todoplusminus.data.source.local.db.PlannerItemAlarm
 import com.example.todoplusminus.util.AlarmManagerHelper
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -175,6 +175,7 @@ class PlannerRepository @Inject constructor(
     }
 
 
+
     /**
      * 전달 받은 date값과 대응되는 info data가 있는지를 확인한다.
      *
@@ -212,7 +213,7 @@ class PlannerRepository @Inject constructor(
     }
 
     private fun unregisterAlarm(alarmData: PlanAlarmData) {
-        alarmHelper.cancelAlarm(alarmData)
+        alarmHelper.unregisterAlarm(alarmData)
     }
 
     companion object {
