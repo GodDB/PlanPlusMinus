@@ -12,7 +12,7 @@ import com.example.todoplusminus.R
 import com.example.todoplusminus.base.VBControllerBase
 import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.databinding.ControllerMainBinding
-import com.example.todoplusminus.ui.main.PlannerController
+import com.example.todoplusminus.ui.main.MainPlannerController
 import com.example.todoplusminus.ui.main.history.PlanHistoryController
 import com.example.todoplusminus.ui.main.memo.PlanMemoController
 import com.example.todoplusminus.ui.setting.SettingController
@@ -66,15 +66,15 @@ class MainController : VBControllerBase {
         pushControllerByTag(
             childRouter,
             RouterTransaction.with(
-                PlannerController(plannerDelegate).apply {
+                MainPlannerController(plannerDelegate).apply {
                     retainViewMode = RetainViewMode.RETAIN_DETACH
                 })
                 .apply {
-                    tag(PlannerController.TAG)
+                    tag(MainPlannerController.TAG)
                     SimpleSwapChangeHandler()
                     SimpleSwapChangeHandler()
                 },
-            PlannerController.TAG
+            MainPlannerController.TAG
         )
     }
 
@@ -109,7 +109,7 @@ class MainController : VBControllerBase {
     }
 
 
-    private val plannerDelegate = object : PlannerController.Delegate {
+    private val plannerDelegate = object : MainPlannerController.Delegate {
         override fun showMemoEditor() {
             Log.d("godgod", "showMemoEditor()")
             auxRouter?.setRoot(

@@ -1,14 +1,13 @@
 package com.example.todoplusminus.vm
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import com.example.todoplusminus.TestCoroutineRule
 import com.example.todoplusminus.data.entities.BaseID
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.entities.PlanMemo
 import com.example.todoplusminus.getOrAwaitValue
 import com.example.todoplusminus.data.repository.IPlannerRepository
-import com.example.todoplusminus.ui.main.PlannerViewModel
+import com.example.todoplusminus.ui.main.MainPlannerVM
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
@@ -34,7 +33,7 @@ class PlannerVM {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    lateinit var planVM: PlannerViewModel
+    lateinit var planVM: MainPlannerVM
 
     @Mock
     lateinit var repository: IPlannerRepository
@@ -74,7 +73,7 @@ class PlannerVM {
                 }
             )
 
-            planVM = PlannerViewModel(repository)
+            planVM = MainPlannerVM(repository)
 
             //plan project에 대해서 옵저빙을 실시한다.
             planVM.targetDatePlanProject.getOrAwaitValue()

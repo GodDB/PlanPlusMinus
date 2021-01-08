@@ -34,7 +34,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 
-class PlannerController : DBControllerBase {
+class MainPlannerController : DBControllerBase {
 
     interface Delegate {
         fun showMemoEditor()
@@ -57,16 +57,20 @@ class PlannerController : DBControllerBase {
 
     private val planVM by lazy {
         ViewModelProvider(activity as AppCompatActivity, viewModelFactory)
-            .get(PlannerViewModel::class.java)
+            .get(MainPlannerVM::class.java)
     }
     private lateinit var binder: ControllerPlannerBinding
     private var mDelegate: Delegate? = null
 
+    override fun connectDagger() {
+        super.connectDagger()
 
-    override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
         (activity?.application as BaseApplication).appComponent.planComponent().create()
             .inject(this)
+    }
 
+
+    override fun connectDataBinding(inflater: LayoutInflater, container: ViewGroup): View {
         binder = DataBindingUtil.inflate(inflater, R.layout.controller_planner, container, false)
 
         binder.vm = planVM
@@ -75,8 +79,8 @@ class PlannerController : DBControllerBase {
     }
 
     override fun onViewBound(v: View) {
+        configureUI()
         addEvent()
-        configureRV()
         onSubscribe()
     }
 
@@ -85,12 +89,15 @@ class PlannerController : DBControllerBase {
         binder.mainWatch.start()
 
         planVM.reload()
-
     }
 
     override fun onDetach(view: View) {
         binder.subWatch.stop()
         binder.mainWatch.stop()
+    }
+
+    private fun configureUI(){
+        configureRV()
     }
 
     private fun showPlanEditor(id: BaseID) {
@@ -112,6 +119,7 @@ class PlannerController : DBControllerBase {
             }
         )
     }
+
 
     private fun configureRV() {
         binder.planList.adapter =
@@ -163,6 +171,7 @@ class PlannerController : DBControllerBase {
                 if (show) showFirecrackerAnim()
             }
         })
+
     }
 
     private fun planListScrollMoveTo(index: Int) {
@@ -204,7 +213,7 @@ class PlannerController : DBControllerBase {
  * recyclerView adapter
  * */
 class PlanListAdapter(
-    private val planVM: PlannerViewModel,
+    private val planVM: MainPlannerVM,
     private val mLifecycleOwner: LifecycleOwner
 ) :
     RecyclerView.Adapter<PlanListAdapter.PlanListVH>(),

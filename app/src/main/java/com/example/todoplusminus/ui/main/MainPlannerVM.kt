@@ -12,6 +12,7 @@ import com.example.todoplusminus.data.entities.PlanMemo
 import com.example.todoplusminus.data.entities.PlanProject
 import com.example.todoplusminus.data.repository.IPlannerRepository
 import com.example.todoplusminus.util.DateHelper
+import com.example.todoplusminus.util.livedata.ThreeCombinedLiveData
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -24,7 +25,7 @@ import javax.inject.Inject
  * 이번 프로젝트에서는 livedata를 사용했기 때문에 참조 대상인 controller가 deActive 상황일 때 livedata에 의해 controller가가 향받게 된다.
  *  그래서 viewModel()을 사용한다.
  * */
-class PlannerViewModel @Inject constructor(
+class MainPlannerVM @Inject constructor(
     private val repository: IPlannerRepository
 ) : ViewModel() {
 
@@ -37,7 +38,7 @@ class PlannerViewModel @Inject constructor(
     val font: MutableLiveData<Typeface?> = MutableLiveData(AppConfig.font)
 
     //planner item의 tv의 텍스트 사이즈를 변경하기 위함
-    val planSize : MutableLiveData<Int> = MutableLiveData(AppConfig.planSize)
+    val planSize: MutableLiveData<Int> = MutableLiveData(AppConfig.planSize)
 
     private val _targetDate: MutableLiveData<LocalDate> =
         MutableLiveData<LocalDate>(DateHelper.getCurDate())
@@ -85,11 +86,37 @@ class PlannerViewModel @Inject constructor(
         Event(false)
     )
 
-    val showFirecrackerAnim : MutableLiveData<Event<Boolean>> = MutableLiveData(
+    val showFirecrackerAnim: MutableLiveData<Event<Boolean>> = MutableLiveData(
         Event(false)
     )
 
-    fun reload(){
+    //앱 처음 실행여부
+    val isFirstTimeRunningApp: Boolean = repository.checkFirstTimeRunningApp()
+
+    val showToolTipView1: MutableLiveData<Boolean> = MutableLiveData(isFirstTimeRunningApp)
+
+    val showToolTipView2: MutableLiveData<Boolean> = MediatorLiveData<Boolean>().apply {
+        addSource(isEditMode) { editMode ->
+            this.value = isFirstTimeRunningApp && editMode
+        }
+    }
+
+    val showToolTipView3: TwoCombinedLiveData<PlanProject, Boolean, Boolean> =
+        TwoCombinedLiveData(_allDatePlanData, isEditMode) { planProject, show ->
+            planProject.getPlanDataList().isNotEmpty()
+                    && show
+                    && isFirstTimeRunningApp
+        }
+
+    val showToolTipView4 : TwoCombinedLiveData<PlanProject, Boolean, Boolean> =
+        TwoCombinedLiveData(_allDatePlanData, isEditMode) { planProject, show ->
+            planProject.getPlanDataList().isNotEmpty()
+                    && planProject.getTotalCount() == 0
+                    && !show
+                    && isFirstTimeRunningApp
+        }
+
+    fun reload() {
         font.value = AppConfig.font
         planSize.value = AppConfig.planSize
     }
@@ -106,17 +133,20 @@ class PlannerViewModel @Inject constructor(
         if (checkWhetherEditMode()) {
             isEditMode.value = false
             updateAll()
+            hideTooltipView3()
             return
         }
 
         isEditMode.value = true
+        hideTooltipView1()
     }
 
 
     //creteView 클릭 이벤트
-    fun onCreateItemClick(){
+    fun onCreateItemClick() {
         val id = BaseID.createEmpty()
         showEditEditor(id)
+        hideTooltipView2()
     }
 
     // plan list item 클릭 이벤트
@@ -152,7 +182,7 @@ class PlannerViewModel @Inject constructor(
         updateByIndex(index)
 
         //animation
-        if(count>0) showFirecrackerAnim()
+        if (count > 0) showFirecrackerAnim()
     }
 
     fun showMemo() {
@@ -175,7 +205,7 @@ class PlannerViewModel @Inject constructor(
         _targetDate.value = date
     }
 
-    private fun showFirecrackerAnim(){
+    private fun showFirecrackerAnim() {
         this.showFirecrackerAnim.value =
             Event(true)
     }
@@ -206,6 +236,19 @@ class PlannerViewModel @Inject constructor(
     private fun checkWhetherEditMode(): Boolean = isEditMode.value!!
 
     private fun checkIdEmpty(id: BaseID): Boolean = id.isEmpty()
+
+    private fun hideTooltipView1() {
+        this.showToolTipView1.value = false
+    }
+    private fun hideTooltipView2() {
+        this.showToolTipView2.value = false
+    }
+    private fun hideTooltipView3() {
+        this.showToolTipView3.value = false
+    }
+    private fun hideTooltipView4() {
+        this.showToolTipView4.value = false
+    }
 }
 
 

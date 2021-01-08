@@ -50,6 +50,8 @@ class PlannerRepository @Inject constructor(
         }
     }
 
+    override fun checkFirstTimeRunningApp(): Boolean = sharedPrefManager.checkFirstTimeRunningApp()
+
     override fun getAllPlanProject(): Flow<PlanProject> =
         localSource.getAllPlannerData().map { PlanProject.create(it) }
 

@@ -1,7 +1,7 @@
 package com.example.todoplusminus.ui.main.di
 
 
-import com.example.todoplusminus.ui.main.PlannerController
+import com.example.todoplusminus.ui.main.MainPlannerController
 import com.example.todoplusminus.ui.main.edit.di.PlanEditComponent
 import com.example.todoplusminus.ui.main.history.di.PlanHistoryComponent
 import com.example.todoplusminus.ui.main.memo.di.PlanMemoComponent
@@ -20,7 +20,7 @@ interface MainPlannerComponent {
     fun editComponent() : PlanEditComponent.Factory
     fun historyComponent() : PlanHistoryComponent.Factory
 
-    fun inject(mainPlanVC: PlannerController)
+    fun inject(mainPlanVC: MainPlannerController)
 }
 
 @Module(subcomponents = [PlanMemoComponent::class, PlanEditComponent::class, PlanHistoryComponent::class])

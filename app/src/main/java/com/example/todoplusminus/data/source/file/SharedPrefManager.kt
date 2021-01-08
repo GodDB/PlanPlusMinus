@@ -10,6 +10,9 @@ class SharedPrefManager(private val context: Context) {
     companion object {
         private const val PREFERENCE_NAME = "plan_preference"
 
+        //사용자가 앱을 처음 실행시켰는지 여부
+        const val FIRST_TIME_RUNNING = "first_time_running"
+
         //setting attribute
         const val SUGGESTED_KEYWORD = "suggested_keyword"
         const val SWIPE_DIRECTION_TO_RIGHT = "swipe_direction_to_right"
@@ -28,6 +31,10 @@ class SharedPrefManager(private val context: Context) {
         mEditor = mPreference?.edit()
     }
 
+    fun setFirstTimeRunning(){
+        mEditor?.putBoolean(FIRST_TIME_RUNNING, false)
+        mEditor?.commit()
+    }
 
     fun setSuggestedKeyword(wantShow: Boolean) {
         mEditor?.putBoolean(SUGGESTED_KEYWORD, wantShow)
@@ -72,6 +79,12 @@ class SharedPrefManager(private val context: Context) {
     }
 
     fun getAllData() = mPreference?.all
+
+
+    //앱을 처음 실행시켰는지를 확인한다.
+    fun checkFirstTimeRunningApp() : Boolean{
+        return mPreference?.getBoolean(FIRST_TIME_RUNNING, true) ?: true
+    }
 
     /**
      * sharedPreference에 저장된 내용을 AppConfig에 채운다.

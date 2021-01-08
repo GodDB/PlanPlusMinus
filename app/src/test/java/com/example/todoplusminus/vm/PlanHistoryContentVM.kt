@@ -4,8 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.todoplusminus.TestCoroutineRule
 import com.example.todoplusminus.data.entities.PlanData
 import com.example.todoplusminus.data.repository.IPlannerRepository
-import com.example.todoplusminus.data.repository.PlannerRepository
-import com.example.todoplusminus.ui.main.PlannerViewModel
+import com.example.todoplusminus.ui.main.MainPlannerVM
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Rule
 import org.junit.Test
@@ -24,7 +23,7 @@ class PlanHistoryContentVM {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    lateinit var planVM: PlannerViewModel
+    lateinit var planVM: MainPlannerVM
 
     @Mock
     lateinit var repository: IPlannerRepository

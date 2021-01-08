@@ -8,6 +8,8 @@ interface IPlannerRepository {
 
     suspend fun refreshPlannerData(date : LocalDate)
 
+    fun checkFirstTimeRunningApp() : Boolean
+
     fun getAllPlanProject(): Flow<PlanProject>
 
     fun getAllPlanMemo() : Flow<MutableList<PlanMemo>>

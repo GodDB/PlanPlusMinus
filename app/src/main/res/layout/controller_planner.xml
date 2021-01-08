@@ -9,11 +9,11 @@
         <import type="com.example.todoplusminus.data.entities.BaseID"/>
         <variable
             name="vm"
-            type="com.example.todoplusminus.ui.main.PlannerViewModel" />
+            type="com.example.todoplusminus.ui.main.MainPlannerVM" />
 
         <variable
             name="vc"
-            type="com.example.todoplusminus.ui.main.PlannerController" />
+            type="com.example.todoplusminus.ui.main.MainPlannerController" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -112,6 +112,7 @@
             app:layout_constraintTop_toTopOf="@id/guide_top"
             bind:editMode="@{!vm.isEditMode().booleanValue()}" />
 
+
         <ImageView
             android:id="@+id/btn_done"
             android:layout_width="30dp"
@@ -130,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginTop="50dp"
-            app:layout_constraintRight_toRightOf="@id/guide_right"
+            app:layout_constraintLeft_toLeftOf="@id/guide_left"
             app:layout_constraintTop_toBottomOf="@id/guide_top"
             bind:font="@{vm.font}"
             bind:showCalendar="@{!vm.showCalendar.contentIfNotHandled}" />
@@ -160,6 +161,7 @@
                 android:layout_gravity="center"
                 android:src="@drawable/plus1" />
         </androidx.cardview.widget.CardView>
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
@@ -245,7 +247,65 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.95" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <!-- tooltips : 앱 첫 실행시에만 보여진다. -->
+        <com.example.todoplusminus.ui.customViews.TooltipView
+            android:id="@+id/tooltip_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@id/btn_edit"
+            app:layout_constraintRight_toRightOf="@id/btn_edit"
+            app:layout_constraintTop_toBottomOf="@id/btn_edit"
+            app:toolTipColor="@color/purple_200"
+            app:text="@string/click_me"
+            app:arrowDirection="top"
+            android:visibility="@{vm.showToolTipView1 ? View.VISIBLE : View.GONE}"
+            />
+
+        <com.example.todoplusminus.ui.customViews.TooltipView
+            android:id="@+id/tooltip_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@id/create_plan_view"
+            app:layout_constraintRight_toRightOf="@id/create_plan_view"
+            app:layout_constraintTop_toBottomOf="@id/create_plan_view"
+            app:text="@string/click_here_to_add_a_plan"
+            app:arrowDirection="top"
+            app:toolTipColor="@color/purple_200"
+            android:visibility="@{vm.showToolTipView2 ? View.VISIBLE : View.GONE}"
+            />
+
+        <com.example.todoplusminus.ui.customViews.TooltipView
+            android:id="@+id/tooltip_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@id/create_plan_view"
+            app:layout_constraintRight_toRightOf="@id/create_plan_view"
+            app:layout_constraintTop_toBottomOf="@id/create_plan_view"
+            android:layout_marginTop="100dp"
+            app:text="@string/long_press_here_to_rearrange_plans"
+            app:arrowDirection="top"
+            app:toolTipColor="@color/purple_200"
+            android:visibility="@{vm.showToolTipView3 ? View.VISIBLE : View.GONE}"
+            />
+
+        <com.example.todoplusminus.ui.customViews.TooltipView
+            android:id="@+id/tooltip_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@id/create_plan_view"
+            app:layout_constraintRight_toRightOf="@id/create_plan_view"
+            app:layout_constraintTop_toBottomOf="@id/create_plan_view"
+            android:layout_marginTop="100dp"
+            app:text="@string/swipe_left_and_right_to_achieve_your_plan"
+            app:arrowDirection="top"
+            app:toolTipColor="@color/purple_200"
+            android:visibility="@{vm.showToolTipView4 ? View.VISIBLE : View.GONE}"
+            />
+
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guide_planlist_top"
