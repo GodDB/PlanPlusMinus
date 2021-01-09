@@ -10,10 +10,13 @@ import android.util.Log
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
+import com.example.todoplusminus.R
 import com.example.todoplusminus.ui.splash.SplashController
 import com.example.todoplusminus.databinding.ActivityMainBinding
 import com.example.todoplusminus.util.AlarmManagerHelper
 import com.example.todoplusminus.receivers.AlarmReceiver
+import com.example.todoplusminus.ui.common.CommonDialogController
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -29,57 +32,14 @@ class MainActivity : AppCompatActivity() {
 
         router = Conductor.attachRouter(this, vb.main, savedInstanceState)
 
-      /*  testAlarm(1, "갓1", 0)
-        testAlarm(1, "갓2", 1200)
-        testAlarm(1, "갓3", 2400)
-        testAlarm(1, "갓4", 3600)
-        testAlarm(1, "갓5", 4800)
-        testAlarm(1, "갓6",6000)
-        testAlarm(1, "갓7",7200)*/
-
         if (!router.hasRootController())
             router.setRoot(RouterTransaction.with(SplashController()))
     }
 
     override fun onBackPressed() {
+        //router가 handleback을 처리할 수 없을 때 (즉, 백스택이 비었을 떼)
         if (!router.handleBack())
             super.onBackPressed()
+
     }
-
-
-    fun testAlarm(requestCode : Int, title : String, timeInterval : Int){
-
-/*        alarmManager.cancel(pendingIntent)*/
-       /* alarmManager.setRepeating(
-            AlarmManager.ELAPSED_REALTIME_WAKEUP,
-            triggerTime,
-            60,
-            pendingIntent
-        )*/
-
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        val intent = Intent(this, AlarmReceiver::class.java)
-        intent.putExtra(AlarmManagerHelper.ALARM_CONTENT_ID, title)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            this, requestCode, intent,
-            PendingIntent.FLAG_ONE_SHOT
-        )
-        /*val triggerTime = SystemClock.elapsedRealtime() + timeInterval
-
-        Log.d()*/
-
-        val triggerTime = System.currentTimeMillis()
-
-        val a = LocalDateTime.ofInstant(Instant.ofEpochMilli(triggerTime), ZoneId.systemDefault())
-        Log.d("godgod", "${a}")
-
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            triggerTime,
-            pendingIntent
-        )
-    }
-
 }

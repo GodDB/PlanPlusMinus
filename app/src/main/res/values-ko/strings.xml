@@ -103,4 +103,5 @@
     <string name="click_here_to_add_a_plan">여기를 클릭해 플랜을 생성해보세요!</string>
     <string name="swipe_left_and_right_to_achieve_your_plan">좌, 우로 스와이프를 해서 계획을 달성하세요!!</string>
     <string name="long_press_here_to_rearrange_plans">여기를 길게 눌러 계획들을 재 정렬 할 수 있어요 !!</string>
+    <string name="want_to_quit_the_app">앱을 종료하시겠습니까?</string>
 </resources>
