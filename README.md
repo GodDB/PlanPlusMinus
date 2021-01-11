@@ -13,4 +13,16 @@
 
 ## 기술스택
 
-MVVM architecture / Single Activity(with conductor) / AAC ViewModel / AAC Databinding / AAC Livedata / Room / Coroutine / Dagger2 /  
+MVVM architecture / Single Activity(with conductor) / AAC ViewModel / AAC Databinding / AAC Livedata / Room / Coroutine / Dagger2 
+
+
+## 아키텍처
+
+-등록예정
+
+
+## 데이터 구조
+
+-등록예정
+
+
