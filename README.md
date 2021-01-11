@@ -13,7 +13,21 @@
 
 ## 기술스택
 
-MVVM architecture / Single Activity(with conductor) / AAC ViewModel / AAC Databinding / AAC Livedata / Room / Coroutine / Dagger2 
+- MVVM (architecture) 
+
+- Single Activity(with conductor) 
+
+- AAC ViewModel 
+
+- AAC Databinding 
+
+- AAC Livedata 
+
+- Room (Database)
+
+- Coroutine (RX Programming)
+
+- Dagger2 (Depedency Injection)
 
 
 ## 아키텍처
@@ -25,4 +39,9 @@ MVVM architecture / Single Activity(with conductor) / AAC ViewModel / AAC Databi
 
 -등록예정
 
+## 앱 정보
+
+min sdk 26 ~ target sdk 30
+
+language : Kotlin
 
