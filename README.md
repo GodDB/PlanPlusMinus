@@ -6,5 +6,7 @@
 이미지 클릭하시면 app preview 영상을 보실 수 있습니다.
 
 
+
 기술스택
+
 MVVM architecture / Single Activity(with conductor) / AAC ViewModel / AAC Databinding / AAC Livedata / Room / Coroutine / Dagger2 /  
