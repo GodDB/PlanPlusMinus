@@ -1,5 +1,6 @@
 package com.example.todoplusminus.ui.setting
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.todoplusminus.AppConfig
@@ -23,6 +24,7 @@ class SettingVM @Inject constructor(private val repository: ISettingRepository) 
         private const val TAG_APP_VERSION: Int = 6
         private const val TAG_PLAN_SIZE: Int = 7
         private const val TAG_DELETE_ALL_DATA: Int = 8
+        private const val TAG_SEND_SHARE_MESSAGE : Int = 9
     }
 
     val showFontSettingEditor: MutableLiveData<Event<Boolean>> = MutableLiveData(
@@ -34,6 +36,8 @@ class SettingVM @Inject constructor(private val repository: ISettingRepository) 
     val showWarningDialog: MutableLiveData<Event<Boolean>> = MutableLiveData(
         Event(false)
     )
+
+    val startSendShareMessage : MutableLiveData<Event<Boolean>> = MutableLiveData()
 
     val valueDataList: MutableLiveData<MutableList<Triple<Int, Int, ValueData>>> = MutableLiveData()
 
@@ -89,7 +93,8 @@ class SettingVM @Inject constructor(private val repository: ISettingRepository) 
                     TAG_ALARM_AT_10
                 )
             ),
-            Triple(
+          /*  //todo 추후에 지원할 기능
+          Triple(
                 R.string.support,
                 R.color.black,
                 ValueEmpty()
@@ -107,8 +112,8 @@ class SettingVM @Inject constructor(private val repository: ISettingRepository) 
             Triple(
                 R.string.share_app_with_friends,
                 R.color.black,
-                ValueString(tag = 0)
-            ),
+                ValueString(tag = TAG_SEND_SHARE_MESSAGE)
+            ),*/
             Triple(
                 R.string.app_info,
                 R.color.black,
@@ -158,6 +163,7 @@ class SettingVM @Inject constructor(private val repository: ISettingRepository) 
             TAG_FONT_STYLE -> showFontSettingEditor()
             TAG_PLAN_SIZE -> showPlanSizeEditor()
             TAG_DELETE_ALL_DATA -> showWarningDialog()
+            TAG_SEND_SHARE_MESSAGE -> sendShareMessage()
         }
     }
 
@@ -202,6 +208,10 @@ class SettingVM @Inject constructor(private val repository: ISettingRepository) 
 
     private fun onAlarm(value: Boolean) {
         repository.setEnableDefaultAlarm(value)
+    }
+
+    private fun sendShareMessage(){
+        this.startSendShareMessage.value = Event(true)
     }
 
 }

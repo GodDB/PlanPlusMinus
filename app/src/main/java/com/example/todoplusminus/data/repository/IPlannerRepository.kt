@@ -6,13 +6,11 @@ import java.time.LocalDate
 
 interface IPlannerRepository {
 
-    suspend fun refreshPlannerData(date : LocalDate)
-
-    fun checkFirstTimeRunningApp() : Boolean
+    suspend fun refreshPlannerData(date: LocalDate)
 
     fun getAllPlanProject(): Flow<PlanProject>
 
-    fun getAllPlanMemo() : Flow<MutableList<PlanMemo>>
+    fun getAllPlanMemo(): Flow<MutableList<PlanMemo>>
 
     fun getAllPlanDataByDate(date: LocalDate): Flow<MutableList<PlanData>>
 
@@ -22,21 +20,21 @@ interface IPlannerRepository {
 
     fun getMemoByDate(date: LocalDate): Flow<PlanMemo>
 
-    fun getAlarmDataListByPlanId(planId : BaseID) : Flow<List<PlanAlarmData>>
+    fun getAlarmDataListByPlanId(planId: BaseID): Flow<List<PlanAlarmData>>
 
-    fun getAlarmData(alarmId : Int) : Flow<PlanAlarmData?>
+    fun getAlarmData(alarmId: Int): Flow<PlanAlarmData?>
 
-    fun getLatestAlarmId() : Flow<Int?>
+    fun getLatestAlarmId(): Flow<Int?>
 
-    fun getPlannerTitle(planId : BaseID) : Flow<String>
+    fun getPlannerTitle(planId: BaseID): Flow<String>
 
     suspend fun insertAlarmData(alarmData: PlanAlarmData)
 
     suspend fun updateAlarmData(oldAlarmData: PlanAlarmData, newAlarmData: PlanAlarmData)
 
-    suspend fun deleteAlarmData(alarmData : PlanAlarmData)
+    suspend fun deleteAlarmData(alarmData: PlanAlarmData)
 
-    suspend fun deleteMemoByDate(date : LocalDate)
+    suspend fun deleteMemoByDate(date: LocalDate)
 
     suspend fun deletePlannerDataById(id: BaseID)
 
@@ -55,5 +53,16 @@ interface IPlannerRepository {
     suspend fun updatePlanMemo(memo: PlanMemo)
 
     suspend fun insertPlanMemo(memo: PlanMemo)
+
+    //tooltip
+    fun checkShowTooltip1(): Flow<Boolean>
+    fun checkShowTooltip2(): Flow<Boolean>
+    fun checkShowTooltip3(): Flow<Boolean>
+    fun checkShowTooltip4(): Flow<Boolean>
+
+    fun enabledTooltip1()
+    fun enabledTooltip2()
+    fun enabledTooltip3()
+    fun enabledTooltip4()
 
 }

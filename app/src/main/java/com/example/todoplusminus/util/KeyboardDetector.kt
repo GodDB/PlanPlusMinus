@@ -1,6 +1,7 @@
 package com.example.todoplusminus.util
 
 import android.graphics.Rect
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 
@@ -86,6 +87,7 @@ class KeyboardDetector(private val mTargetView : View?) : ViewTreeObserver.OnGlo
             this.mVisibleHeight = visibleHeight
 
             val softInputY = mVisibleRect.bottom
+
             val softInputVisible = softInputY > SOFT_INPUT_MIN_HEIGHT
 
             if(this.mIsVisibleSoftKeyboard != softInputVisible || this.mSoftKeyPadY != softInputY){
@@ -97,7 +99,5 @@ class KeyboardDetector(private val mTargetView : View?) : ViewTreeObserver.OnGlo
             }
         }
     }
-
-
 }
 

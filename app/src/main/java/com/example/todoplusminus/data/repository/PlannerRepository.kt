@@ -50,8 +50,6 @@ class PlannerRepository @Inject constructor(
         }
     }
 
-    override fun checkFirstTimeRunningApp(): Boolean = sharedPrefManager.checkFirstTimeRunningApp()
-
     override fun getAllPlanProject(): Flow<PlanProject> =
         localSource.getAllPlannerData().map { PlanProject.create(it) }
 
@@ -176,6 +174,40 @@ class PlannerRepository @Inject constructor(
         }
     }
 
+
+    //tooltip관련 메소드 ------------------------
+
+    override fun checkShowTooltip1(): Flow<Boolean> {
+        return sharedPrefManager.checkShowTooltip1()
+    }
+
+    override fun checkShowTooltip2(): Flow<Boolean> {
+        return sharedPrefManager.checkShowTooltip2()
+    }
+
+    override fun checkShowTooltip3(): Flow<Boolean> {
+        return sharedPrefManager.checkShowTooltip3()
+    }
+
+    override fun checkShowTooltip4(): Flow<Boolean> {
+        return sharedPrefManager.checkShowTooltip4()
+    }
+
+    override fun enabledTooltip1() {
+        sharedPrefManager.enabledTooltip1()
+    }
+
+    override fun enabledTooltip2() {
+        sharedPrefManager.enabledTooltip2()
+    }
+
+    override fun enabledTooltip3() {
+        sharedPrefManager.enabledTooltip3()
+    }
+
+    override fun enabledTooltip4() {
+        sharedPrefManager.enabledTooltip4()
+    }
 
 
     /**

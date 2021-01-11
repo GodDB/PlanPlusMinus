@@ -1,6 +1,5 @@
 package com.example.todoplusminus.ui
 
-import android.content.res.Resources
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -55,15 +54,19 @@ class MainController : VBControllerBase {
      * back press event
      * */
     override fun handleBack(): Boolean {
-        //back으로 인한 컨트롤러를 pop 시킨 후
+        if(binder.bottomMenu.selectedItemId == R.id.plannerItem) {
+            showExitDialog()
+            return true
+        }
+
         val result = super.handleBack()
 
-        //pop된 백스택에서 가장 최상단을 구해 bottomSheet icon을 변경한다.
         val targetTag = getTopTransactionTagToChildRouter() ?: return result
-        val bottomId = convertTransactionTagToBottomId(targetTag)
-        binder.bottomMenu.menu.findItem(bottomId).isChecked = true
+        val navId = convertTransactionTagToBottomId(targetTag)
+        changeNavigationCheckedIconBy(navId)
 
         return result
+
     }
 
     private fun configureBottomMenu() {
@@ -80,18 +83,15 @@ class MainController : VBControllerBase {
         }
     }
 
-    private fun showExitDialog() : Boolean {
-        var result : Boolean = false
-
+    private fun showExitDialog() {
         val dialogController = CommonDialogController(
             delegate = object : CommonDialogController.Delegate {
                 override fun onComplete() {
-                    result = true
                     auxRouter?.popCurrentController()
+                    activity?.finish()
                 }
 
                 override fun onCancel() {
-                    result = false
                     auxRouter?.popCurrentController()
                 }
             },
@@ -104,8 +104,6 @@ class MainController : VBControllerBase {
                 popChangeHandler(FadeChangeHandler())
             }
         )
-
-        return result
     }
 
     private fun showMainPlannerEditor() {
@@ -154,24 +152,26 @@ class MainController : VBControllerBase {
         )
     }
 
+    private fun changeNavigationCheckedIconBy(navId : Int){
+        binder.bottomMenu.menu.findItem(navId).isChecked = true
+    }
 
     //child router의 백스택에서 최상단에 위치한 transaction의 tag를 리턴한다.
-    fun getTopTransactionTagToChildRouter() : String?{
+    private fun getTopTransactionTagToChildRouter(): String? {
         return childRouter.backstack.lastOrNull()?.tag()
     }
 
     /**
      * transaction의 tag값으로 해당 bottom navigation의 id로 변환한다.
      * */
-    private fun convertTransactionTagToBottomId(tag : String) : Int{
-        return when(tag){
+    private fun convertTransactionTagToBottomId(tag: String): Int {
+        return when (tag) {
             MainPlannerController.TAG -> R.id.plannerItem
             SettingController.TAG -> R.id.settingItem
             TrackerController.TAG -> R.id.trackerItem
             else -> throw Exception()
         }
     }
-
 
 
     private val plannerDelegate = object : MainPlannerController.Delegate {

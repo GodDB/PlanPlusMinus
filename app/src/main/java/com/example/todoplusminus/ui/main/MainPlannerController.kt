@@ -2,6 +2,7 @@ package com.example.todoplusminus.ui.main
 
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -144,13 +145,17 @@ class MainPlannerController : DBControllerBase {
         planVM.showMemoEditor.observe(this, Observer { event ->
             //livedata 변경 후에 이벤트가 처리된 적 있다면 null, 아니면 변경된 값을 전달받는다.
             event.getContentIfNotHandled()?.let { isShow ->
-                if (isShow) mDelegate?.showMemoEditor()
+                if (isShow) {
+                    Log.d("godgod", "show Memo")
+                    mDelegate?.showMemoEditor()
+                }
             }
         })
 
         planVM.showHistoryId.observe(this, Observer { event ->
             //livedata 변경 후에 이벤트가 처리된 적 있다면 null, 아니면 변경된 값을 전달받는다.
             event.getContentIfNotHandled()?.let { id ->
+                Log.d("godgod", "show history")
                 mDelegate?.showHistoryEditor(id)
             }
         })
@@ -158,6 +163,7 @@ class MainPlannerController : DBControllerBase {
 
         planVM.showEditPlanDataID.observe(this, Observer { event ->
             event?.getContentIfNotHandled()?.let { id ->
+                Log.d("godgod", "show planEditor")
                 showPlanEditor(id)
             }
         })

@@ -4,14 +4,20 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.example.todoplusminus.AppConfig
+import com.example.todoplusminus.util.BooleanPreference
+import com.example.todoplusminus.util.asFlow
+import kotlinx.coroutines.flow.Flow
 
 class SharedPrefManager(private val context: Context) {
 
     companion object {
         private const val PREFERENCE_NAME = "plan_preference"
 
-        //사용자가 앱을 처음 실행시켰는지 여부
-        const val FIRST_TIME_RUNNING = "first_time_running"
+        //tooltip을 보여줄 것인지 여부(앱 첫 실행시에만 보여진다)
+        const val FIRST_TIME_RUNNING_TOOLTIP1 = "first_time_running_tooltip1"
+        const val FIRST_TIME_RUNNING_TOOLTIP2 = "first_time_running_tooltip2"
+        const val FIRST_TIME_RUNNING_TOOLTIP3 = "first_time_running_tooltip3"
+        const val FIRST_TIME_RUNNING_TOOLTIP4 = "first_time_running_tooltip4"
 
         //setting attribute
         const val SUGGESTED_KEYWORD = "suggested_keyword"
@@ -22,18 +28,13 @@ class SharedPrefManager(private val context: Context) {
         const val PLAN_SIZE = "plan_size"
     }
 
-    private var mPreference: SharedPreferences? = null
+    private var mPreference: SharedPreferences
     private var mEditor: SharedPreferences.Editor? = null
 
 
     init {
         mPreference = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
         mEditor = mPreference?.edit()
-    }
-
-    fun setFirstTimeRunning(){
-        mEditor?.putBoolean(FIRST_TIME_RUNNING, false)
-        mEditor?.commit()
     }
 
     fun setSuggestedKeyword(wantShow: Boolean) {
@@ -81,10 +82,39 @@ class SharedPrefManager(private val context: Context) {
     fun getAllData() = mPreference?.all
 
 
-    //앱을 처음 실행시켰는지를 확인한다.
-    fun checkFirstTimeRunningApp() : Boolean{
-        return mPreference?.getBoolean(FIRST_TIME_RUNNING, true) ?: true
+    //tooltip을 보여줄것인지? (앱 첫 실행시 )
+    fun checkShowTooltip1() : Flow<Boolean> {
+        val preference = BooleanPreference(mPreference, FIRST_TIME_RUNNING_TOOLTIP1, true)
+        return preference.asFlow()
     }
+    fun checkShowTooltip2() : Flow<Boolean>{
+        val preference = BooleanPreference(mPreference, FIRST_TIME_RUNNING_TOOLTIP2, true)
+        return preference.asFlow()
+    }
+    fun checkShowTooltip3() : Flow<Boolean>{
+        val preference = BooleanPreference(mPreference, FIRST_TIME_RUNNING_TOOLTIP3, true)
+        return preference.asFlow()
+    }
+    fun checkShowTooltip4() : Flow<Boolean>{
+        val preference = BooleanPreference(mPreference, FIRST_TIME_RUNNING_TOOLTIP4, true)
+        return preference.asFlow()
+    }
+
+    //tooltip을 보여주지 않아야 한다.
+    fun enabledTooltip1(){
+        mEditor?.putBoolean(FIRST_TIME_RUNNING_TOOLTIP1, false)?.apply()
+    }
+    fun enabledTooltip2(){
+        mEditor?.putBoolean(FIRST_TIME_RUNNING_TOOLTIP2, false)?.apply()
+    }
+    fun enabledTooltip3(){
+        mEditor?.putBoolean(FIRST_TIME_RUNNING_TOOLTIP3, false)?.apply()
+    }
+    fun enabledTooltip4(){
+        mEditor?.putBoolean(FIRST_TIME_RUNNING_TOOLTIP4, false)?.apply()
+    }
+
+
 
     /**
      * sharedPreference에 저장된 내용을 AppConfig에 채운다.

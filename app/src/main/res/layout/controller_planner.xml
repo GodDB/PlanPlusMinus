@@ -6,7 +6,9 @@
     <data>
 
         <import type="android.view.View" />
-        <import type="com.example.todoplusminus.data.entities.BaseID"/>
+
+        <import type="com.example.todoplusminus.data.entities.BaseID" />
+
         <variable
             name="vm"
             type="com.example.todoplusminus.ui.main.MainPlannerVM" />
@@ -256,55 +258,51 @@
             android:id="@+id/tooltip_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="@{vm.showToolTipView1 ? View.VISIBLE : View.GONE}"
+            app:arrowDirection="top"
             app:layout_constraintLeft_toLeftOf="@id/btn_edit"
             app:layout_constraintRight_toRightOf="@id/btn_edit"
             app:layout_constraintTop_toBottomOf="@id/btn_edit"
-            app:toolTipColor="@color/white_smoke"
             app:text="@string/click_me"
-            app:arrowDirection="top"
-            android:visibility="@{vm.showToolTipView1 ? View.VISIBLE : View.GONE}"
-            />
+            app:toolTipColor="@color/pastel_color10" />
 
         <com.example.todoplusminus.ui.customViews.TooltipView
             android:id="@+id/tooltip_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="@{vm.showToolTipView2 ? View.VISIBLE : View.GONE}"
+            app:arrowDirection="top"
             app:layout_constraintLeft_toLeftOf="@id/create_plan_view"
             app:layout_constraintRight_toRightOf="@id/create_plan_view"
             app:layout_constraintTop_toBottomOf="@id/create_plan_view"
             app:text="@string/click_here_to_add_a_plan"
-            app:arrowDirection="top"
-            app:toolTipColor="@color/white_smoke"
-            android:visibility="@{vm.showToolTipView2 ? View.VISIBLE : View.GONE}"
-            />
+            app:toolTipColor="@color/pastel_color10" />
 
         <com.example.todoplusminus.ui.customViews.TooltipView
             android:id="@+id/tooltip_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:visibility="@{vm.showToolTipView3 ? View.VISIBLE : View.GONE}"
+            app:arrowDirection="top"
             app:layout_constraintLeft_toLeftOf="@id/create_plan_view"
             app:layout_constraintRight_toRightOf="@id/create_plan_view"
             app:layout_constraintTop_toBottomOf="@id/create_plan_view"
-            android:layout_marginTop="100dp"
             app:text="@string/long_press_here_to_rearrange_plans"
-            app:arrowDirection="top"
-            app:toolTipColor="@color/pastel_color10"
-            android:visibility="@{vm.showToolTipView3 ? View.VISIBLE : View.GONE}"
-            />
+            app:toolTipColor="@color/pastel_color10" />
 
         <com.example.todoplusminus.ui.customViews.TooltipView
             android:id="@+id/tooltip_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:visibility="@{vm.showToolTipView4 ? View.VISIBLE : View.GONE}"
+            app:arrowDirection="top"
             app:layout_constraintLeft_toLeftOf="@id/create_plan_view"
             app:layout_constraintRight_toRightOf="@id/create_plan_view"
             app:layout_constraintTop_toBottomOf="@id/create_plan_view"
-            android:layout_marginTop="100dp"
             app:text="@string/swipe_left_and_right_to_achieve_your_plan"
-            app:arrowDirection="top"
-            app:toolTipColor="@color/white_smoke"
-            android:visibility="@{vm.showToolTipView4 ? View.VISIBLE : View.GONE}"
-            />
+            app:toolTipColor="@color/pastel_color10" />
 
 
         <androidx.constraintlayout.widget.Guideline

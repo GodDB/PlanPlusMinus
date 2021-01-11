@@ -27,6 +27,7 @@ import com.example.todoplusminus.databinding.ControllerSettingTextviewItemBindin
 import com.example.todoplusminus.databinding.ControllerSettingTitleItemBinding
 import com.example.todoplusminus.databinding.ControllerSettingToggleItemBinding
 import com.example.todoplusminus.util.ChangeHandlers.VerticalSlideDownCH
+import com.example.todoplusminus.util.ExternalAppSender
 import javax.inject.Inject
 
 class SettingController : DBControllerBase {
@@ -100,6 +101,16 @@ class SettingController : DBControllerBase {
             event.getContentIfNotHandled()?.let { show ->
                 if (show) showWarningDialog()
             }
+        })
+
+        mSettingVM.startSendShareMessage.observe(this, Observer { event ->
+            event.getContentIfNotHandled()?.let {  send ->
+                if(send){
+                    val sender = ExternalAppSender()
+                    sender.sendShareAppMessage(activity!!)
+                }
+            }
+
         })
     }
 
