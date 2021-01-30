@@ -33,6 +33,8 @@
 
 - Dagger2 (Depedency Injection)
 
+- Clean Architecture 일부 적용 (UseCase Layer는 두지 않았습니다..)
+
 
 ## 아키텍처
 ![alt text](https://github.com/GodDB/PlanPlusMinus/blob/master/todayTodo-architecture.png?raw=true)
