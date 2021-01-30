@@ -41,8 +41,9 @@
 
 ### Data Flow
 
-- VM 데이터 요청 -> Repository 데이터요청 -> DataSource 데이터 요청 -> DB or Shared Preference 데이터 전달
-  -> DataSource 데이터 전달 -> Repository에서 Mapper를 통해 데이터 변환 (Data -> Entity)
+- VM (데이터 요청) -> Repository (데이터 요청) -> DataSource or SharedPreferenceManager (데이터 요청)
+   -> DB or Shared Preference (데이터 요청 후 데이터 전달)
+  -> DataSource or SharedPreferenceManager(데이터 전달) -> Repository에서 Mapper를 통해 데이터 변환 (Data -> Entity)
   -> VM에서 Mapper를 통해 데이터 변환 (Entity -> ViewData) -> View에 데이터 변경을 알림 -> View 갱신
   
   * 이 과정은 Coroutine의 Flow api를 사용하여 데이터 스트림 형태로 전달 받습니다. (즉, 데이터 변경 시 위 과정이 자동으로 처리됨) 
